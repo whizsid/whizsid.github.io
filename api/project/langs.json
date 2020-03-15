@@ -1,0 +1,11 @@
+[
+    {
+        "id":"rust",
+        "name": "Rust",
+        "color": "#f0f0f0",
+        "logo": "img/langs/rust.svg",
+        "projects":[
+            "osm-to-sql"
+        ]
+    }
+]
