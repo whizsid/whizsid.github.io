@@ -1,0 +1,12 @@
+{
+    "success": true,
+    "title": "osm-to-sql",
+    "description": "A command line utility to convert open street map to sql.",
+    "image": "img/3232.png",
+    "repository": "https://github.com/whizsid/osm-to-sql.git",
+    "languages": [
+        "rust"
+    ],
+    "tags":["rust"],
+    "keywords": "OpenStreet, Map, Converter"
+}

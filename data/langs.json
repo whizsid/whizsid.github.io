@@ -1,0 +1,12 @@
+{
+    "success": true,
+    "langs":[
+        {
+            "id": "rust",
+            "name": "Rust",
+            "logo": "/img/langs/rust.svg",
+            "color": "#ff0000",
+            "description": "Rust is a multi paragram"
+        }
+    ]
+}

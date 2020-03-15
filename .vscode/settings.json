@@ -1,0 +1,20 @@
+{
+    "json.schemas": [
+        {
+            "fileMatch": ["data/projects/*.json"],
+            "url":"./schemas/projects-schema.json"
+        },
+        {
+            "fileMatch": ["data/langs.json"],
+            "url":"./schemas/langs-schema.json"
+        },
+        {
+            "fileMatch": ["data/social.json"],
+            "url":"./schemas/social-schema.json"
+        },
+        {
+            "fileMatch": ["data/pinned.json"],
+            "url": "/schemas/pinned-schema.json"
+        }
+    ]
+}

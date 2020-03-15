@@ -1,9 +1,0 @@
-{
-    "name": "osm-to-sql",
-    "logo": "http://imgur.jsnjn",
-    "description": "Njnj",
-    "repository": "https://github.com/whizsid/osm-to-sql",
-    "langs":[
-        "rust"
-    ]
-}
