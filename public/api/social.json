@@ -1,0 +1,20 @@
+{
+    "success": true,
+    "links": [
+        {
+            "name": "Facebook",
+            "icon": "/img/social/facebook.svg",
+            "link": "https://facebook.com/Prince.Of.SL"
+        },
+        {
+            "name": "Github",
+            "icon": "/img/social/github.svg",
+            "link": "https://github.com/whizsid"
+        },
+        {
+            "name": "Twitter",
+            "icon": "/img/social/twitter.svg",
+            "link": "https://twitter.com/@whiz_sid"
+        }
+    ]
+}
