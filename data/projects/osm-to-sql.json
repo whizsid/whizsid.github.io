@@ -7,6 +7,6 @@
     "languages": [
         "rust"
     ],
-    "tags":["rust"],
+    "tags":["rust","php"],
     "keywords": "OpenStreet, Map, Converter"
 }

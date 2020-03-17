@@ -10,5 +10,5 @@ description="Laravel Starter ajn jnj"
 date="2020-03-10"
 tags = "laravel,php"
 keywords="Laravel,Passport,Install,Authentication,API,REST"
-image="/img/blog/123.png"
+image="img/blog/123.png"
 ```

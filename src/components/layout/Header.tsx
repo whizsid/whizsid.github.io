@@ -1,11 +1,15 @@
-import { AppBar, Avatar, Button, Toolbar, withStyles, IconButton, Icon } from "@material-ui/core";
+import { AppBar, Button, IconButton, Toolbar, withStyles } from "@material-ui/core";
 import * as React from "react";
 import { getSocialLinks } from "../../agent";
 import { SocialLink } from "../../types";
 
-const styler = withStyles(theme=>({
-    grow: {
-        flexGrow: 1,
+const styler = withStyles((theme) => ({
+	appBar: {
+		zIndex: theme.zIndex.drawer + 1,
+		borderBottom: "solid 2px " + theme.palette.text.primary
+	},
+	grow: {
+		flexGrow: 1
 	},
 	brandName: {
 		color: theme.palette.common.white
@@ -13,10 +17,11 @@ const styler = withStyles(theme=>({
 }));
 
 interface HeaderProps {
-    classes: {
+	classes: {
+		appBar: string;
 		grow: string;
 		brandName: string;
-    };
+	};
 }
 
 interface HeaderState {
@@ -25,17 +30,16 @@ interface HeaderState {
 }
 
 class Header extends React.Component<HeaderProps, HeaderState> {
-
-	constructor(props:HeaderProps) {
+	constructor(props: HeaderProps) {
 		super(props);
 
 		this.state = {
 			links: [],
-			loading: true,
+			loading: true
 		};
 
-		getSocialLinks().then((response)=>{
-			if(response.success){
+		getSocialLinks().then((response) => {
+			if (response.success) {
 				this.setState({
 					links: response.links,
 					loading: false
@@ -50,20 +54,16 @@ class Header extends React.Component<HeaderProps, HeaderState> {
 
 	public render() {
 		const { classes } = this.props;
-		const {links} = this.state;
+		const { links } = this.state;
+
 		return (
-			<AppBar variant="outlined" position="fixed">
+			<AppBar className={classes.appBar} variant="outlined" position="fixed">
 				<Toolbar variant="dense">
-					<img height="48" src="/logo200.png" alt="WhizSid" />
-					<Button
-						className={classes.brandName}
-					>
-						WhizSid
-					</Button>
-                    <div className={classes.grow} />
-					{links.map((link, id)=>(
-						<IconButton title={link.name} href={link.link} >
-							<img width="32px" src={link.icon}/>
+					<Button className={classes.brandName}>WhizSid</Button>
+					<div className={classes.grow} />
+					{links.map((link, key) => (
+						<IconButton key={key} title={link.name} href={link.link}>
+							<img alt={"Transparent SVG " + link.name + " icon by simpleicons.org"} width="32px" src={link.icon} />
 						</IconButton>
 					))}
 				</Toolbar>
@@ -72,4 +72,4 @@ class Header extends React.Component<HeaderProps, HeaderState> {
 	}
 }
 
-export default styler (Header);
+export default styler(Header);

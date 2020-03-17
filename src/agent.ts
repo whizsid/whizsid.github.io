@@ -1,6 +1,6 @@
 import axios, { AxiosError, AxiosRequestConfig, AxiosResponse } from "axios";
 import { API_URL } from "./config";
-import { SocialLink } from "./types";
+import { SocialLink, Language, Project } from "./types";
 
 interface SuccessResponse {
     success: true;
@@ -40,5 +40,22 @@ const request = <S extends SuccessResponse>(
 export interface SocialLinkResponse extends SuccessResponse {
     links: SocialLink[];
 }
-
 export const getSocialLinks = ()=>request<SocialLinkResponse>("social");
+
+export interface LanguagesResponse extends SuccessResponse {
+    langs: Language[];
+}
+export const getLangs = ()=>request<LanguagesResponse>("langs");
+
+export interface PinnedResponse extends SuccessResponse {
+    projects: string[];
+    posts: string[];
+}
+export const getPinned = ()=>request<PinnedResponse>("pinned");
+
+export interface ProjectResponse extends Project {
+    success: true;
+    message?: string;
+    [x: string]: any;
+}
+export const getProject = (projectName: string)=>request<ProjectResponse>("projects/"+projectName);

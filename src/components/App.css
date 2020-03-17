@@ -1,0 +1,4 @@
+a:link, a:visited, a:active {
+    all: inherit;
+    cursor: pointer;
+}

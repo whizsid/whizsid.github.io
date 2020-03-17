@@ -4,7 +4,6 @@
     <meta charset="utf-8" />
     <link rel="icon" href="%PUBLIC_URL%/favicon.ico" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="theme-color" content="#000000" />
     <meta
       name="description"
       content="{{ description }}"
@@ -12,6 +11,7 @@
     <meta name="keywords" content="{{ keywords }}">
     <link rel="apple-touch-icon" href="%PUBLIC_URL%/logo.png" />
     <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
+    <link href="https://fonts.googleapis.com/css?family=Source+Code+Pro&display=swap" rel="stylesheet">
 
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
@@ -19,7 +19,7 @@
 
     <!-- SEO And Open Graph Meta Data-->
     <link rel="fluid-icon" href="%PUBLIC_URL%/logo.png" title="WhizSid">
-    <meta property="og:url" content="%PUBLIC_URL%">
+    <meta property="og:url" content="{{ url }}">
     <meta property="og:type" content="website"/>
     <meta property="og:site_name" content="WhizSid">
     <meta property="og:title" content="{{ title }}">
@@ -41,7 +41,7 @@
     <meta name="HandheldFriendly" content="true">
     <title>WhizSid - {{ title }}</title>
   </head>
-  <body>
+  <body style="margin:0">
     <noscript>You need to enable JavaScript to run this app.</noscript>
     <div id="root"></div>
   </body>
