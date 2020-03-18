@@ -78,6 +78,7 @@ export interface HomePageState {
     showProject: boolean;
     redirectingToProject: boolean;
     redirectedToProject: boolean;
+    redirectedToProjectShow: boolean;
 }
 
 class HomePage extends React.Component<HomePageProps, HomePageState> {
@@ -91,7 +92,8 @@ class HomePage extends React.Component<HomePageProps, HomePageState> {
 			showAllProjects: true,
             showProject: true,
             redirectingToProject: false,
-            redirectedToProject: false
+            redirectedToProject: false,
+            redirectedToProjectShow: false
 		};
 	}
 
@@ -155,10 +157,15 @@ class HomePage extends React.Component<HomePageProps, HomePageState> {
             window.setTimeout(()=>{
                 window.open(project.repository);
                 this.setState({
-                    redirectedToProject: true
+                    redirectedToProject: true,
+                    redirectedToProjectShow: true
                 });
             },900);
         }
+    }
+
+    protected handleToggleRedirectedToProjectShow = ()=>{
+        this.setState({redirectedToProjectShow: !this.state.redirectedToProjectShow});
     }
 
 	public render() {
@@ -170,7 +177,8 @@ class HomePage extends React.Component<HomePageProps, HomePageState> {
             showAllProjects,
             showProject,
             redirectingToProject,
-            redirectedToProject
+            redirectedToProject,
+            redirectedToProjectShow
         } = this.state;
 
 		return (
@@ -232,10 +240,11 @@ class HomePage extends React.Component<HomePageProps, HomePageState> {
                                 {redirectingToProject?
                                     <React.Fragment>
                                         <Command
-                                            show={true}
+                                            show={redirectedToProjectShow}
                                             command={"wget "+ project.repository }
+                                            onToggle={this.handleToggleRedirectedToProjectShow}
                                         />
-                                        {redirectedToProject?
+                                        {redirectedToProject&&redirectedToProjectShow?
                                         <Typography className={classes.padding} variant="body2">301 Redirected.</Typography>
                                         :null}
                                     </React.Fragment>
