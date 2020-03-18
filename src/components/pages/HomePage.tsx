@@ -3,11 +3,12 @@ import Grid from "@material-ui/core/Grid";
 import { withStyles } from "@material-ui/styles";
 import * as React from "react";
 import {RouteComponentProps, withRouter} from "react-router-dom";
-import { getPinned, getProject } from "../../agent";
-import { Project as ProjectType } from "../../types";
+import { getPinned, getProject, getPost } from "../../agent";
+import {  Post as PostType, Project as ProjectType } from "../../types";
 import Layout from "../layout/Layout";
 import PaginatedLoader from "./PaginatedLoader";
 import Project from "./Project";
+import Post from "./Post";
 
 const styler = withStyles((theme: Theme) => ({
 	terminal: {
@@ -98,10 +99,21 @@ class HomePage extends React.Component<HomePageProps & RouteComponentProps, Home
         });
     }
 
+    protected fetchPost = (postId: string): Promise<PostType|null>=>{
+        return getPost(postId).then((response)=>{
+            if(response.success){
+                return response;
+            } else {
+                return null;
+            }
+        });
+    }
+
 	public render() {
 		const { classes } = this.props;
         const {
-            projects
+            projects,
+            posts
         } = this.state;
 
 		return (
@@ -125,7 +137,21 @@ class HomePage extends React.Component<HomePageProps & RouteComponentProps, Home
                         :null}
 					</Grid>
 					<Grid className={classes.terminal} item={true} md={4} xs={12}>
-						<Typography variant="subtitle2">$ ls posts/</Typography>
+                        {posts.length?
+                            <PaginatedLoader
+                                fetchItem={this.fetchPost}
+                                title="ls posts/"
+                                perPage={8}
+                                itemNames={posts}
+                                renderItem={(item: PostType, key:number)=>(
+                                    <Post
+                                        {...item}
+                                        onLanguageClick={this.handleClickLangFab}
+                                        key={key}
+                                    />
+                                )}
+                            />
+                        :null}
 					</Grid>
 					<Grid className={classes.terminal} item={true} md={3} xs={12}>
 						<Typography variant="subtitle2">$ history</Typography>

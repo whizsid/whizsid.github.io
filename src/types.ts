@@ -23,3 +23,13 @@ export interface Project {
     tags: string[];
     keywords: string;
 }
+
+export interface Post {
+    title: string;
+    description: string;
+    image: string;
+    languages: string[];
+    tags: string[];
+    keywords: string;
+    date: string;
+}

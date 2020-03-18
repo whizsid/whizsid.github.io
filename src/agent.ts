@@ -1,6 +1,6 @@
 import axios, { AxiosError, AxiosRequestConfig, AxiosResponse } from "axios";
 import { API_URL } from "./config";
-import { SocialLink, Language, Project } from "./types";
+import { SocialLink, Language, Project, Post } from "./types";
 
 interface SuccessResponse {
     success: true;
@@ -59,3 +59,10 @@ export interface ProjectResponse extends Project {
     [x: string]: any;
 }
 export const getProject = (projectName: string)=>request<ProjectResponse>("projects/"+projectName);
+
+export interface PostResponse extends Post {
+    success: true;
+    message?: string;
+    [x: string]: any;
+}
+export const getPost = (postName: string)=>request<PostResponse>("posts/"+postName);
