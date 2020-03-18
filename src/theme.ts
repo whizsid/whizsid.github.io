@@ -13,6 +13,11 @@ const theme = createMuiTheme({
             primary: "#21cdea",
             disabled: "#0e6b0e",
             hint: "#9ccc9c"
+        },
+        secondary: {
+            main: "#21cdea",
+            dark: "#20cce9",
+            light: "#22ceeb"
         }
     }
 });
