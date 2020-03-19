@@ -1,11 +1,11 @@
-import { Theme, List, ListItem, ListItemText, ListItemIcon } from "@material-ui/core";
+import { List, ListItem, ListItemIcon, ListItemText, Theme } from "@material-ui/core";
 import MuiDrawer from "@material-ui/core/Drawer";
 import withStyles from "@material-ui/core/styles/withStyles";
 import clsx from "clsx";
 import * as React from "react";
+import { Link } from "react-router-dom";
 import { getLangs } from "../../agent";
 import { Language } from "../../types";
-import { Link } from "react-router-dom";
 
 export interface DrawerProps {
     open: boolean;
@@ -101,7 +101,7 @@ class Drawer extends React.Component<DrawerProps, DrawerState> {
                 <List dense={true}>
                     {langs.map((lang, key) => (
                         <ListItem divider={true} dense={true} className={classes.listItem} key={key}>
-                            <Link to={"/lang/" + lang.id} title={lang.description}>
+                            <Link to={"/lang/" + lang.id+ ".html"} title={lang.description}>
                                 <ListItemIcon>
                                     <img width="32px" src={lang.logo} alt={"Transparent SVG logo of " + lang.name} />
                                 </ListItemIcon>

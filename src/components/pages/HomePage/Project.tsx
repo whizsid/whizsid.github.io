@@ -1,8 +1,8 @@
-import * as React from "react";
-import { Project as ProjectType } from "../../types";
-import { Grid, CardHeader, Card, CardMedia, CardContent, Typography, CardActions, Fab, Theme } from "@material-ui/core";
+import { Card, CardActionArea, CardActions, CardContent, CardHeader, CardMedia, Fab, Grid, Theme, Typography } from "@material-ui/core";
 import { makeStyles } from "@material-ui/styles";
-import { APP_URL } from "../../config";
+import * as React from "react";
+import { APP_URL } from "../../../config";
+import { Project as ProjectType } from "../../../types";
 
 const useStyles = makeStyles((theme: Theme)=>({
     projectCard:{
@@ -23,6 +23,7 @@ const useStyles = makeStyles((theme: Theme)=>({
 
 export interface ProjectProps extends ProjectType {
     onLanguageClick: (id: string)=>(e:React.MouseEvent)=>void;
+    onCardClick: (e: React.MouseEvent<HTMLElement>)=>void;
 }
 
 const Project:React.FunctionComponent<ProjectProps> = (project:ProjectProps)=>{
@@ -32,11 +33,13 @@ const Project:React.FunctionComponent<ProjectProps> = (project:ProjectProps)=>{
     return (
         <Grid md={5} xs={12} item={true}>
             <Card className={classes.projectCard} >
-                <CardHeader titleTypographyProps={{variant:"body1"}} title={project.title} />
-                <CardMedia image={APP_URL+project.image} className={classes.projectCardMedia} />
-                <CardContent>
-                    <Typography variant="caption">{project.description}</Typography>
-                </CardContent>
+                <CardActionArea onClick={project.onCardClick} >
+                    <CardHeader titleTypographyProps={{variant:"body1"}} title={project.title} />
+                    <CardMedia image={APP_URL+project.image} className={classes.projectCardMedia} />
+                    <CardContent>
+                        <Typography variant="caption">{project.description}</Typography>
+                    </CardContent>
+                </CardActionArea>
                 <CardActions>
                     {project.languages.map((lang,langKey)=>(
                         <Fab

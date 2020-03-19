@@ -1,14 +1,16 @@
-import { Theme, Typography } from "@material-ui/core";
+import { Divider, Theme, Typography } from "@material-ui/core";
 import Grid from "@material-ui/core/Grid";
 import { withStyles } from "@material-ui/styles";
 import * as React from "react";
 import {RouteComponentProps, withRouter} from "react-router-dom";
-import { getPinned, getProject, getPost } from "../../agent";
+import ScrollArea from "react-scrollbar";
+import { getPinned, getPost, getProject } from "../../agent";
 import {  Post as PostType, Project as ProjectType } from "../../types";
 import Layout from "../layout/Layout";
-import PaginatedLoader from "./PaginatedLoader";
-import Project from "./Project";
-import Post from "./Post";
+import History from "./HomePage/History";
+import PaginatedLoader from "./HomePage/PaginatedLoader";
+import Post from "./HomePage/Post";
+import Project from "./HomePage/Project";
 
 const styler = withStyles((theme: Theme) => ({
 	terminal: {
@@ -17,8 +19,7 @@ const styler = withStyles((theme: Theme) => ({
         padding: theme.spacing(0.5),
         fontFamily: "'Source Code Pro', monospace",
         fontSize: 16,
-        height: "100%",
-        overflowY: "auto"
+        height: "100%"
 	},
     container: {
         height: "calc(100vh - 56px)",
@@ -27,14 +28,11 @@ const styler = withStyles((theme: Theme) => ({
     title: {
         padding: theme.spacing(1)
     },
-    divider: {
-        background: "unset",
-        borderTop: "dashed 1px",
-        marginTop: theme.spacing(0.5),
-        marginBottom: theme.spacing(1),
-    },
     grow: {
         flexGrow: 1
+    },
+    scrollArea: {
+        height: "100%"
     }
 }));
 
@@ -43,8 +41,8 @@ export interface HomePageProps {
         terminal: string;
         title: string;
         container: string;
-        divider: string;
         grow: string;
+        scrollArea: string;
 	};
 }
 
@@ -86,7 +84,11 @@ class HomePage extends React.Component<HomePageProps & RouteComponentProps, Home
 
 
     protected handleClickLangFab = (langId: string)=>(e:React.MouseEvent)=>{
-        this.props.history.push("/lang/"+langId);
+        this.props.history.push("/lang/"+langId+".html");
+    }
+
+    protected handleClickTagFab = (tagId: string)=>(e: React.MouseEvent)=>{
+        this.props.history.push("/tag/"+tagId+".html");
     }
 
     protected fetchProject = (projectId: string): Promise<ProjectType|null>=>{
@@ -102,11 +104,22 @@ class HomePage extends React.Component<HomePageProps & RouteComponentProps, Home
     protected fetchPost = (postId: string): Promise<PostType|null>=>{
         return getPost(postId).then((response)=>{
             if(response.success){
-                return response;
+                return {
+                    ...response,
+                    id: postId
+                };
             } else {
                 return null;
             }
         });
+    }
+
+    protected handleClickPost = (postId:string)=>(e:React.MouseEvent)=>{
+        this.props.history.push("/blog/" + postId + ".html");
+    }
+
+    protected handleClickProject = (projectId: string)=>(e:React.MouseEvent)=>{
+        this.props.history.push("/project/"+projectId+".html");
     }
 
 	public render() {
@@ -120,6 +133,11 @@ class HomePage extends React.Component<HomePageProps & RouteComponentProps, Home
 			<Layout>
 				<Grid className={classes.container} justify="space-between" container={true}>
 					<Grid className={classes.terminal} item={true} md={4} xs={12}>
+                        <ScrollArea
+                            speed={0.8}
+                            horizontal={false}
+                            className={classes.scrollArea}
+                        >
                         {projects.length?
                             <PaginatedLoader
                                 fetchItem={this.fetchProject}
@@ -130,13 +148,20 @@ class HomePage extends React.Component<HomePageProps & RouteComponentProps, Home
                                     <Project
                                         {...item}
                                         onLanguageClick={this.handleClickLangFab}
+                                        onCardClick={this.handleClickProject(item.title)}
                                         key={key}
                                     />
                                 )}
                             />
                         :null}
+                        </ScrollArea>
 					</Grid>
 					<Grid className={classes.terminal} item={true} md={4} xs={12}>
+                        <ScrollArea
+                            speed={0.8}
+                            horizontal={false}
+                            className={classes.scrollArea}
+                        >
                         {posts.length?
                             <PaginatedLoader
                                 fetchItem={this.fetchPost}
@@ -146,15 +171,19 @@ class HomePage extends React.Component<HomePageProps & RouteComponentProps, Home
                                 renderItem={(item: PostType, key:number)=>(
                                     <Post
                                         {...item}
-                                        onLanguageClick={this.handleClickLangFab}
+                                        onTagClick={this.handleClickTagFab}
+                                        onCardClick={this.handleClickPost(item.id)}
                                         key={key}
                                     />
                                 )}
                             />
                         :null}
+                        </ScrollArea>
 					</Grid>
 					<Grid className={classes.terminal} item={true} md={3} xs={12}>
-						<Typography variant="subtitle2">$ history</Typography>
+						<Typography className={classes.title} variant="body2">$ history</Typography>
+                        <Divider/>
+                        <History />
 					</Grid>
 				</Grid>
 			</Layout>

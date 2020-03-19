@@ -19,6 +19,21 @@ const theme = createMuiTheme({
             dark: "#20cce9",
             light: "#22ceeb"
         }
+    },
+    overrides: {
+        MuiFab:{
+            extended: {
+                borderRadius: "0px!important"
+            }
+        },
+        MuiDivider: {
+            root: {
+                background: "unset",
+                borderTop: "dashed 1px",
+                marginTop: 4,
+                marginBottom: 4,
+            }
+        }
     }
 });
 

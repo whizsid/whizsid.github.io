@@ -10,7 +10,8 @@
         "indent":false,
         "ordered-imports": true,
         "trailing-comma": true,
-        "no-unused-variable": true
+        "no-unused-variable": true,
+        "radix": false
     },
     "rulesDirectory": []
 }

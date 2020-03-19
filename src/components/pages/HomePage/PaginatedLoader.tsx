@@ -9,7 +9,6 @@ interface PaginatedLoaderProps <T> {
     title: string;
     perPage: number;
     classes?: {
-        divider: string;
         title: string;
         grow: string;
     };
@@ -23,12 +22,6 @@ interface PaginatedLoaderState <T> {
 const styler = withStyles((theme: Theme)=>({
     title: {
         padding: theme.spacing(1)
-    },
-    divider: {
-        background: "unset",
-        borderTop: "dashed 1px",
-        marginTop: theme.spacing(0.5),
-        marginBottom: theme.spacing(1),
     },
     grow: {
         flexGrow: 1
@@ -92,11 +85,11 @@ extends React.Component<PaginatedLoaderProps<S>, PaginatedLoaderState<S>> {
         return (
             <React.Fragment>
                 <Typography className={classes.title} variant="body2">$ {title}</Typography>
-                <Divider className={classes.divider} />
+                <Divider />
                 <Grid container={true} justify="space-between" >
                     {items.map((item,itemKey)=>renderItem(item,itemKey))}
                 </Grid>
-                <Divider className={classes.divider} />
+                <Divider />
                 <Toolbar
                     variant="dense"
                 >

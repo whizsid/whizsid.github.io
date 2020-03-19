@@ -1,6 +1,6 @@
 import axios, { AxiosError, AxiosRequestConfig, AxiosResponse } from "axios";
 import { API_URL } from "./config";
-import { SocialLink, Language, Project, Post } from "./types";
+import { Language, Post, Project, SocialLink } from "./types";
 
 interface SuccessResponse {
     success: true;
@@ -66,3 +66,13 @@ export interface PostResponse extends Post {
     [x: string]: any;
 }
 export const getPost = (postName: string)=>request<PostResponse>("posts/"+postName);
+
+export interface TimelineResponse extends SuccessResponse {
+    dates: string[];
+}
+export const getTimeline = ()=>request<TimelineResponse>("timeline");
+
+export interface PostsForMonthResponse extends SuccessResponse {
+    posts: string[];
+}
+export const getPostsForMonth = (year: number, month: number)=> request<PostsForMonthResponse>(`timeline/${year}/${month.toString().padStart(2,"0")}`);
