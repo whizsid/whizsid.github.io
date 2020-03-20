@@ -1,8 +1,8 @@
 import { Card, CardActionArea, CardActions, CardContent, CardHeader, CardMedia, Fab, Grid, Theme, Typography } from "@material-ui/core";
 import { makeStyles } from "@material-ui/styles";
 import * as React from "react";
-import { APP_URL } from "../../../config";
-import { Project as ProjectType } from "../../../types";
+import { APP_URL } from "../../config";
+import { Project as ProjectType } from "../../types";
 
 const useStyles = makeStyles((theme: Theme)=>({
     projectCard:{
@@ -18,6 +18,9 @@ const useStyles = makeStyles((theme: Theme)=>({
     langFab: {
         fontSize: 10,
         height: "24px !important"
+    },
+    wrapper: {
+        padding: theme.spacing(0.5)
     }
 }));
 
@@ -31,7 +34,7 @@ const Project:React.FunctionComponent<ProjectProps> = (project:ProjectProps)=>{
     const classes = useStyles();
 
     return (
-        <Grid md={5} xs={12} item={true}>
+        <Grid className={classes.wrapper} md={4} xs={12} item={true}>
             <Card className={classes.projectCard} >
                 <CardActionArea onClick={project.onCardClick} >
                     <CardHeader titleTypographyProps={{variant:"body1"}} title={project.title} />

@@ -4,8 +4,8 @@ import ExpandMore from "@material-ui/icons/ExpandMore";
 import { withStyles } from "@material-ui/styles";
 import * as React from "react";
 import {RouteComponentProps, withRouter} from "react-router-dom";
-import { getPost, getPostsForMonth, getTimeline } from "../../../agent";
-import { Post } from "../../../types";
+import { getPost, getPostsForMonth, getTimeline } from "../../agent";
+import { Post } from "../../types";
 
 export interface HistoryMonthItem {
 	month: number;

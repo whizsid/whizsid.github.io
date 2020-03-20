@@ -1,5 +1,6 @@
 import { AppBar, Button, IconButton, Toolbar, withStyles } from "@material-ui/core";
 import * as React from "react";
+import {RouteComponentProps, withRouter} from "react-router-dom";
 import { getSocialLinks } from "../../agent";
 import { SocialLink } from "../../types";
 
@@ -29,8 +30,8 @@ interface HeaderState {
 	loading: boolean;
 }
 
-class Header extends React.Component<HeaderProps, HeaderState> {
-	constructor(props: HeaderProps) {
+class Header extends React.Component<HeaderProps & RouteComponentProps, HeaderState> {
+	constructor(props: HeaderProps & RouteComponentProps) {
 		super(props);
 
 		this.state = {
@@ -52,6 +53,10 @@ class Header extends React.Component<HeaderProps, HeaderState> {
 		});
 	}
 
+	handleClickBrandName = ()=>{
+		this.props.history.push("/");
+	}
+
 	public render() {
 		const { classes } = this.props;
 		const { links } = this.state;
@@ -59,7 +64,7 @@ class Header extends React.Component<HeaderProps, HeaderState> {
 		return (
 			<AppBar className={classes.appBar} variant="outlined" position="fixed">
 				<Toolbar variant="dense">
-					<Button className={classes.brandName}>WhizSid</Button>
+					<Button onClick={this.handleClickBrandName} className={classes.brandName}>WhizSid</Button>
 					<div className={classes.grow} />
 					{links.map((link, key) => (
 						<IconButton key={key} title={link.name} href={link.link}>
@@ -72,4 +77,4 @@ class Header extends React.Component<HeaderProps, HeaderState> {
 	}
 }
 
-export default styler(Header);
+export default styler( withRouter(Header));

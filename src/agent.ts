@@ -1,14 +1,14 @@
 import axios, { AxiosError, AxiosRequestConfig, AxiosResponse } from "axios";
-import { API_URL } from "./config";
+import { API_URL, APP_URL } from "./config";
 import { Language, Post, Project, SocialLink } from "./types";
 
-interface SuccessResponse {
+export interface SuccessResponse {
     success: true;
     message?: string;
     [x: string]: any;
 }
 
-interface ErrorResponse {
+export interface ErrorResponse {
     success: false;
     message?: string;
     [x: string]: any;
@@ -76,3 +76,35 @@ export interface PostsForMonthResponse extends SuccessResponse {
     posts: string[];
 }
 export const getPostsForMonth = (year: number, month: number)=> request<PostsForMonthResponse>(`timeline/${year}/${month.toString().padStart(2,"0")}`);
+
+export interface ByCategoryResponse extends SuccessResponse {
+    projects: string[];
+    posts: string[];
+}
+export const getByLanguage = (langId: string)=> request<ByCategoryResponse>(`langs/${langId}`);
+export const getByTag = (tagId: string)=> request<ByCategoryResponse>(`tags/${tagId}`);
+
+
+export interface PostContentResponse extends SuccessResponse {
+    content: string;
+}
+export const getPostContent = (
+    postId: string
+) =>
+    axios
+        .get(APP_URL + "posts/"+postId + ".md")
+        .then(
+            (response: AxiosResponse): PostContentResponse => ({
+                success: true,
+                content: response.data
+            })
+        )
+        .catch(
+            (err: AxiosError): ErrorResponse => ({
+                message:
+                    typeof err.response !== "undefined"
+                        ? err.response.data.message
+                        : "",
+                success: false
+            })
+        );

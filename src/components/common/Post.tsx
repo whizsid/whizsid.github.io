@@ -1,8 +1,8 @@
 import { Card, CardActionArea, CardActions, CardContent, CardHeader, CardMedia, Fab, Grid, Theme, Typography } from "@material-ui/core";
 import { makeStyles } from "@material-ui/styles";
 import * as React from "react";
-import { APP_URL } from "../../../config";
-import { Post as PostType } from "../../../types";
+import { APP_URL } from "../../config";
+import { Post as PostType } from "../../types";
 
 const useStyles = makeStyles((theme: Theme)=>({
     postCard:{
@@ -32,6 +32,7 @@ const useStyles = makeStyles((theme: Theme)=>({
 export interface PostProps extends PostType {
     onTagClick: (id: string)=>(e:React.MouseEvent)=>void;
     onCardClick: (e: React.MouseEvent<HTMLElement>)=>void;
+    md?: boolean | 1 | "auto" | 2 | 7 | 4 | 6 | 5 | 3 | 8 | 10 | 9 | 11 | 12 | undefined;
 }
 
 const Post:React.FunctionComponent<PostProps> = (post:PostProps)=>{
@@ -39,7 +40,7 @@ const Post:React.FunctionComponent<PostProps> = (post:PostProps)=>{
     const classes = useStyles();
 
     return (
-        <Grid md={12} xs={12} item={true}>
+        <Grid md={post.md} xs={12} item={true}>
             <Card className={classes.postCard} >
                 <CardActionArea onClick={post.onCardClick} >
                     <CardHeader action={

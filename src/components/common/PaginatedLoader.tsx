@@ -6,7 +6,6 @@ interface PaginatedLoaderProps <T> {
     itemNames: string[];
     fetchItem: (itemId: string)=>Promise<T|null>;
     renderItem: (item: T, key: number)=> React.ReactChild;
-    title: string;
     perPage: number;
     classes?: {
         title: string;
@@ -77,15 +76,13 @@ extends React.Component<PaginatedLoaderProps<S>, PaginatedLoaderState<S>> {
     public render(){
 
         const {items} = this.state;
-        const {title, itemNames, classes, renderItem} = this.props;
+        const {itemNames, classes, renderItem} = this.props;
 
         if(!classes)
             return null;
 
         return (
             <React.Fragment>
-                <Typography className={classes.title} variant="body2">$ {title}</Typography>
-                <Divider />
                 <Grid container={true} justify="space-between" >
                     {items.map((item,itemKey)=>renderItem(item,itemKey))}
                 </Grid>
