@@ -253,10 +253,10 @@ class PostPage extends React.Component<PostPageProps & RouteComponentProps, Post
                                     </Fab>
                                 ))}
                                 <div className={classes.grow} />
-                                <FacebookShareButton className={classes.shareButton} url={APP_URL+"blog/"+postId+".html"} >
+                                <FacebookShareButton className={classes.shareButton} url={APP_URL+"blog/"+postId.split(".")[0]+".html"} >
                                     <img src="/img/social/facebook.svg" height="24" width="24"/>
                                 </FacebookShareButton>
-                                <TwitterShareButton className={classes.shareButton} url={APP_URL+"blog/"+postId+".html"} >
+                                <TwitterShareButton className={classes.shareButton} url={APP_URL+"blog/"+postId.split(".")[0]+".html"} >
                                     <img src="/img/social/twitter.svg" height="24" width="24"/>
                                 </TwitterShareButton>
                             </Toolbar>
