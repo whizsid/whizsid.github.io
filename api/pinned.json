@@ -1,7 +1,7 @@
 {
     "success": true,
     "projects": [
-        "osm-to-sql"
+        "jsonapiunit"
     ],
     "posts": [
         "laravel-7-laravel-starter"
