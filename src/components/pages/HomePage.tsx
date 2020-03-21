@@ -19,11 +19,17 @@ const styler = withStyles((theme: Theme) => ({
         padding: theme.spacing(0.5),
         fontFamily: "'Source Code Pro', monospace",
         fontSize: 16,
-        height: "100%"
+        height: "100%",
+        [theme.breakpoints.down("md")]:{
+            height: 400,
+            marginTop: theme.spacing(2)
+        }
 	},
     container: {
         height: "calc(100vh - 56px)",
-        maxHeight: 700
+        [theme.breakpoints.down("md")]:{
+            height: "unset",
+        }
     },
     title: {
         padding: theme.spacing(1)
@@ -158,12 +164,13 @@ class HomePage extends React.Component<HomePageProps & RouteComponentProps, Home
         this.props.history.push("/blog/" + postId + ".html");
     }
 
-    protected handleClickProject = (projectId: string)=>(e:React.MouseEvent)=>{
-        this.props.history.push("/projects/"+projectId+".html");
+    protected handleClickProject = (repositoryUrl: string)=>(e:React.MouseEvent)=>{
+        window.open(repositoryUrl,"_blank");
     }
 
 	public render() {
-		const { classes } = this.props;
+        const { classes } = this.props;
+        const {item} = this.props.match.params;
         const {
             projects,
             posts
@@ -178,18 +185,18 @@ class HomePage extends React.Component<HomePageProps & RouteComponentProps, Home
                             horizontal={false}
                             className={classes.scrollArea}
                         >
-                        <Typography className={classes.title} variant="body2">$ ls projects/</Typography>
+                        <Typography className={classes.title} variant="body2">$ ls projects/{item?item.split(".")[0]+"/":null}</Typography>
                         <Divider />
                         {projects.length?
                             <PaginatedLoader
                                 fetchItem={this.fetchProject}
                                 perPage={8}
                                 itemNames={projects}
-                                renderItem={(item: ProjectType, key:number)=>(
+                                renderItem={(project: ProjectType, key:number)=>(
                                     <Project
-                                        {...item}
+                                        {...project}
                                         onLanguageClick={this.handleClickLangFab}
-                                        onCardClick={this.handleClickProject(item.title)}
+                                        onCardClick={this.handleClickProject(project.repository)}
                                         key={key}
                                     />
                                 )}
@@ -203,18 +210,18 @@ class HomePage extends React.Component<HomePageProps & RouteComponentProps, Home
                             horizontal={false}
                             className={classes.scrollArea}
                         >
-                        <Typography className={classes.title} variant="body2">$ ls posts/</Typography>
+                        <Typography className={classes.title} variant="body2">$ ls posts/{item?item.split(".")[0]+"/":null}</Typography>
                         <Divider />
                         {posts.length?
                             <PaginatedLoader
                                 fetchItem={this.fetchPost}
                                 perPage={8}
                                 itemNames={posts}
-                                renderItem={(item: PostType, key:number)=>(
+                                renderItem={(post: PostType, key:number)=>(
                                     <Post
-                                        {...item}
+                                        {...post}
                                         onTagClick={this.handleClickTagFab}
-                                        onCardClick={this.handleClickPost(item.id)}
+                                        onCardClick={this.handleClickPost(post.id)}
                                         key={key}
                                     />
                                 )}

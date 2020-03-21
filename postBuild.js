@@ -9,12 +9,16 @@ fs.rmdirSync('./build/api',{recursive: true});
 fs.rmdirSync('./build/projects',{recursive: true});
 fs.rmdirSync('./build/blog',{recursive: true});
 fs.rmdirSync('./build/posts',{recursive: true});
+fs.rmdirSync('./build/tag',{recursive: true});
+fs.rmdirSync('./build/lang',{recursive: true});
 
 fs.mkdirSync('./build/api/projects',{recursive: true});
 fs.mkdirSync('./build/api/posts',{recursive: true});
 fs.mkdirSync('./build/api/timeline',{recursive: true});
 fs.mkdirSync('./build/projects/',{recursive: true});
 fs.mkdirSync('./build/blog/',{recursive: true});
+fs.mkdirSync('./build/tag/',{recursive: true});
+fs.mkdirSync('./build/lang/',{recursive: true});
 fs.mkdirSync('./build/posts/',{recursive: true});
 fs.writeFileSync('./build/api/timeline.json',JSON.stringify({
     success: true,
@@ -29,6 +33,28 @@ const categories = [
     {json: "languages",name: "langs"},
     {json: "tags",name: "tags"},
 ];
+
+/**
+ * Make a HTML Page for
+ * @param {string} filename filename without forward slash or `./build/`
+ * @param {object} data Object with `title`,`description`,`image`,`keywords` properties
+ */
+function makeHTMLPage(filename,data){
+    if(fs.existsSync('./build/index.html')){
+        let template = fs.readFileSync('./build/index.html').toString();
+
+        template = template.split("{{ title }}").join( data.title);
+        template = template.split("{{ description }}").join(data.description);
+
+        template = template.split("{{ image }}").join( data.image?data.image:"img/opengraph.png");
+
+        template = template.split("{{ url }}").join(URL + filename);
+
+        template = template.split("{{ keywords }}").join(data.keywords);
+
+        fs.writeFileSync( path.join("./build/"+filename),template);
+    }
+}
 
 glob("data/projects/*.json",(err,matches)=>{
 
@@ -69,25 +95,6 @@ glob("data/projects/*.json",(err,matches)=>{
 
             }
         }
-
-        if(fs.existsSync('./build/index.html')){
-            let template = fs.readFileSync('./build/index.html').toString();
-
-            template = template.split("{{ title }}").join( project.title);
-            template = template.split("{{ description }}").join(project.description);
-            if(project.image){
-                template = template.split("{{ image }}").join(URL+project.image);
-            } else {
-                template = template.split("{{ image }}").join("img/opengraph.png");
-            }
-
-            template = template.split("{{ url }}").join(URL + 'projects/' + projectName + '.html');
-
-            template = template.split("{{ keywords }}").join(project.keywords);
-
-            fs.writeFileSync( path.join("./build/projects/",projectName+".html"),template);
-        }
-
         
     }
 
@@ -181,41 +188,45 @@ glob("data/projects/*.json",(err,matches)=>{
     
             fs.writeFileSync('./build/api/timeline.json',JSON.stringify(timeline));
     
-            if(fs.existsSync('./build/index.html')){
-                let template = fs.readFileSync('./build/index.html').toString();
+            makeHTMLPage("blog/"+postName+".html",{
+                title: post.title,
+                description: post.description,
+                image: post.image,
+                keywords: post.keywords
+            });
+        }
     
-                template = template.split("{{ title }}").join( post.title);
-                template = template.split("{{ description }}").join(post.description);
-                if(post.image){
-                    template = template.split("{{ image }}").join(URL+post.image);
-                } else {
-                    template = template.split("{{ image }}").join("img/opengraph.png");
-                }
-    
-                template = template.split("{{ url }}").join(URL + 'blog/' + postName + '.html');
-    
-                template = template.split("{{ keywords }}").join(post.keywords);
-    
-                fs.writeFileSync( path.join("./build/blog/",postName+".html"),template);
+        glob("build/api/tags/*.json",(err,matches)=>{
+            for(const match of matches){
+                const tagName = path.basename(match,'.json');
+
+                makeHTMLPage("tag/"+tagName+".html",{
+                    title: "WhizSid's blog posts about "+tagName,
+                    description: "Visit to see more trending posts about "+tagName+" written by WhizSid.",
+                    keywords: tagName+",article,Technology,WhizSid,PHP,React,Laravel,Rust"
+                });
             }
-        }
-    
-    
-    
-        if(fs.existsSync('./build/index.html')){
-            let template = fs.readFileSync('./build/index.html').toString();
-    
-            template = template.split("{{ title }}").join( "Portfolio and Blog Of WhizSid");
-            template = template.split("{{ description }}").join("Visit to see WhizSid's projects and blog posts.");
-    
-            template = template.split("{{ image }}").join("img/opengraph.png");
-    
-            template = template.split("{{ url }}").join(URL + 'index.html');
-    
-            template = template.split("{{ keywords }}").join("WhizSid,Technology,IT,Laravel,React,Frontend,JavaScript,NodeJS,Tutorial,Web Design,Web Developing,Sinhala,English");
-    
-            fs.writeFileSync( path.join("./build/index.html"),template);
-        }
+
+           
+            glob("build/api/langs/*.json",(err,matches)=>{
+                for(const match of matches){
+                    const langName = path.basename(match,'.json');
+
+                    makeHTMLPage("lang/"+langName+".html",{
+                        title: "WhizSid's blog posts about "+langName,
+                        description: "Visit to see more trending posts about "+langName+" written by WhizSid.",
+                        keywords: langName+",article,Technology,WhizSid,PHP,React,Laravel,Rust"
+                    });
+                }
+
+                makeHTMLPage('index.html',{
+                    title: "Blog and projects of WhizSid",
+                    description: "Visit to see WhizSid's projects and blog posts.",
+                    keywords: "WhizSid,Technology,IT,Laravel,React,Frontend,JavaScript,NodeJS,Tutorial,Web Design,Web Developing,Sinhala,English"
+                });
+            });
+        });
+
     });
  
 });

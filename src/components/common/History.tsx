@@ -86,7 +86,7 @@ class History extends React.Component<HistoryProps & RouteComponentProps, Histor
 								{
 									year: parseInt(splited[0]),
 									months: [],
-									open: false
+									open: true
 								}
 							];
 						}

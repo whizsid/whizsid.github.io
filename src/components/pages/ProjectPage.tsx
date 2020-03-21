@@ -7,12 +7,12 @@ import {
     FacebookShareButton,
     TwitterShareButton
 } from "react-share";
-import { getPost, getPostContent, getByLanguage, ByCategoryResponse, ErrorResponse, getByTag, getPinned, PinnedResponse } from "../../agent";
-import { Post as PostType } from "../../types";
-import Layout from "../layout/Layout";
+import { ByCategoryResponse, ErrorResponse, getByLanguage, getByTag, getPinned, getPost, getPostContent, PinnedResponse } from "../../agent";
 import { APP_URL } from "../../config";
-import Post from "../common/Post";
+import { Post as PostType } from "../../types";
 import History from "../common/History";
+import Post from "../common/Post";
+import Layout from "../layout/Layout";
 
 const styler = withStyles(theme=>({
     terminal: {
