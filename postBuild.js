@@ -2,6 +2,7 @@ const fs = require("fs");
 const glob = require('glob');
 const path = require('path');
 const ini = require('ini');
+const sizeOf = require('image-size');
 
 const URL = "https://whizsid.github.io/";
 
@@ -45,14 +46,22 @@ function makeHTMLPage(filename,data){
 
         template = template.split("{{ title }}").join( data.title);
         template = template.split("{{ description }}").join(data.description);
+        
+        const image = data.image?data.image:"img/opengraph.png";
 
-        template = template.split("{{ image }}").join( data.image?data.image:"img/opengraph.png");
+        template = template.split("{{ image }}").join( image);
 
         template = template.split("{{ url }}").join(URL + filename);
 
         template = template.split("{{ keywords }}").join(data.keywords);
 
-        fs.writeFileSync( path.join("./build/"+filename),template);
+        sizeOf('public/'+image, function (err, dimensions) {
+
+            template = template.split("{{ image_width }}").join( dimensions.width);
+            template = template.split("{{ image_height }}").join( dimensions.height);
+            fs.writeFileSync( path.join("./build/"+filename),template);
+        });
+
     }
 }
 
