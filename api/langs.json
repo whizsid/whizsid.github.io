@@ -6,7 +6,21 @@
             "name": "Rust",
             "logo": "/img/langs/rust.svg",
             "color": "#ff0000",
-            "description": "Rust is a multi paragram"
+            "description": "Rust is a multi-paradigm system programming language focused on safety, especially safe concurrency. Rust is syntactically similar to C++, but is designed to provide better memory safety while maintaining high performance."
+        },
+        {
+            "id": "react",
+            "name": "ReactJS",
+            "logo": "/img/langs/react.svg",
+            "color": "#61DAFB",
+            "description": "React is a JavaScript library for building user interfaces. It is maintained by Facebook and a community of individual developers and companies. React can be used as a base in the development of single-page or mobile applications."
+        },
+        {
+            "id": "typescript",
+            "name": "Type Script",
+            "logo": "/img/langs/typescript.svg",
+            "color": "#007ACC",
+            "description": "TypeScript is an open-source programming language developed and maintained by Microsoft. It is a strict syntactical superset of JavaScript, and adds optional static typing to the language. TypeScript is designed for development of large applications and transcompiles to JavaScript."
         }
     ]
 }
