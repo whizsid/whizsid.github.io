@@ -49,7 +49,7 @@ function makeHTMLPage(filename,data){
         
         const image = data.image?data.image:"img/opengraph.png";
 
-        template = template.split("{{ image }}").join( image);
+        template = template.split("{{ image }}").join( URL + image);
 
         template = template.split("{{ url }}").join(URL + filename);
 
@@ -228,11 +228,11 @@ glob("data/projects/*.json",(err,matches)=>{
                     });
                 }
 
-                makeHTMLPage('index.html',{
-                    title: "Blog and projects of WhizSid",
-                    description: "Visit to see WhizSid's projects and blog posts.",
-                    keywords: "WhizSid,Technology,IT,Laravel,React,Frontend,JavaScript,NodeJS,Tutorial,Web Design,Web Developing,Sinhala,English"
-                });
+                // makeHTMLPage('index.html',{
+                //     title: "Blog and projects of WhizSid",
+                //     description: "Visit to see WhizSid's projects and blog posts.",
+                //     keywords: "WhizSid,Technology,IT,Laravel,React,Frontend,JavaScript,NodeJS,Tutorial,Web Design,Web Developing,Sinhala,English"
+                // });
             });
         });
 

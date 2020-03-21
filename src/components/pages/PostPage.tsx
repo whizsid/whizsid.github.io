@@ -13,6 +13,7 @@ import { Post as PostType } from "../../types";
 import History from "../common/History";
 import Post from "../common/Post";
 import Layout from "../layout/Layout";
+import CodeBlock from "./PostPage/CodeBlock";
 
 const styler = withStyles(theme=>({
     terminal: {
@@ -236,6 +237,9 @@ class PostPage extends React.Component<PostPageProps & RouteComponentProps, Post
                             <Divider />
                             <Markdown
                                 source={content}
+                                renderers={{
+                                    code: CodeBlock
+                                }}
                             />
                             <Divider/>
                             <Toolbar variant="dense">
