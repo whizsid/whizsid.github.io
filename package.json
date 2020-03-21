@@ -30,7 +30,7 @@
     "postBuild": "node postBuild.js",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "deploy": "gh-pages -b master -d build"
+    "deploy": "yarn build && yarn postBuild && gh-pages -b master -d build"
   },
   "eslintConfig": {
     "extends": "react-app"
