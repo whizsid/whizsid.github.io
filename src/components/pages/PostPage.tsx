@@ -47,6 +47,16 @@ const styler = withStyles(theme=>({
         paddingTop:0,
         paddingBottom: 0,
         minHeight: "unset"
+    },
+    responsiveText: {
+        [theme.breakpoints.down("md")]:{
+            fontSize: 10
+        }
+    },
+    responsiveTitle: {
+        [theme.breakpoints.down("md")]:{
+            fontSize: 12
+        }
     }
 }));
 
@@ -59,6 +69,8 @@ export interface PostPageProps {
         shareButton: string;
         title: string;
         topToolbar: string;
+        responsiveText: string;
+        responsiveTitle: string;
     };
     match: {
         params: {
@@ -213,7 +225,7 @@ class PostPage extends React.Component<PostPageProps & RouteComponentProps, Post
                 <Grid justify="space-around" container={true}>
                     <Grid item={true} md={8}>
                         <div  className={classes.terminal}>
-                            <Typography variant="body2">$ nano ./posts/{postId.split(".")[0]}.md</Typography>
+                            <Typography className={classes.responsiveText} variant="body2">$ nano ./posts/{postId.split(".")[0]}.md</Typography>
                             <Divider/>
                             <Toolbar className={classes.topToolbar} variant="dense">
                                 {post.languages.length?
@@ -235,12 +247,14 @@ class PostPage extends React.Component<PostPageProps & RouteComponentProps, Post
                                 <Typography variant="body2">@ {post.date}</Typography>
                             </Toolbar>
                             <Divider />
-                            <Markdown
-                                source={content}
-                                renderers={{
-                                    code: CodeBlock
-                                }}
-                            />
+                            <div className={classes.responsiveText}>
+                                <Markdown
+                                    source={content}
+                                    renderers={{
+                                        code: CodeBlock
+                                    }}
+                                />
+                            </div>
                             <Divider/>
                             <Toolbar variant="dense">
                                 <Typography variant="body2">Tags:-</Typography>
@@ -281,7 +295,7 @@ class PostPage extends React.Component<PostPageProps & RouteComponentProps, Post
                             </Grid>
                         </div>
                     </Grid>
-                    <Grid className={classes.terminal} item={true} md={3}>
+                    <Grid className={classes.terminal} xs={12} sm={12} item={true} md={3}>
                         <Typography variant="body2">$ history</Typography>
                         <Divider />
                         <History />

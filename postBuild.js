@@ -35,6 +35,10 @@ const categories = [
     {json: "tags",name: "tags"},
 ];
 
+var sitemap = fs.openSync('./build/sitemap.xml','w');
+
+fs.writeSync(sitemap,'<?xml version="1.0" encoding="UTF-8"?><urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">');
+
 /**
  * Make a HTML Page for
  * @param {string} filename filename without forward slash or `./build/`
@@ -61,6 +65,18 @@ function makeHTMLPage(filename,data){
             template = template.split("{{ image_height }}").join( dimensions.height);
             fs.writeFileSync( path.join("./build/"+filename),template);
         });
+
+        if(!data.date){
+            var today = new Date();
+            var dd = String(today.getDate()).padStart(2, '0');
+            var mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
+            var yyyy = today.getFullYear();
+
+            today = yyyy + '-' + mm + '-' + dd;
+        } else {
+            today = data.date;
+        }
+        fs.writeFileSync(sitemap,`<url><loc>${URL + filename}</loc><lastmod>${today}</lastmod><changefreq>${data.freq}</changefreq><priority>${data.priority}</priority></url>`)
 
     }
 }
@@ -201,7 +217,10 @@ glob("data/projects/*.json",(err,matches)=>{
                 title: post.title,
                 description: post.description,
                 image: post.image,
-                keywords: post.keywords
+                keywords: post.keywords,
+                date: post.date,
+                freq: 'monthly',
+                priority: 1.0
             });
         }
     
@@ -212,7 +231,9 @@ glob("data/projects/*.json",(err,matches)=>{
                 makeHTMLPage("tag/"+tagName+".html",{
                     title: "WhizSid's blog posts about "+tagName,
                     description: "Visit to see more trending posts about "+tagName+" written by WhizSid.",
-                    keywords: tagName+",article,Technology,WhizSid,PHP,React,Laravel,Rust"
+                    keywords: tagName+",article,Technology,WhizSid,PHP,React,Laravel,Rust",
+                    freq: 'daily',
+                    priority: 0.5
                 });
             }
 
@@ -224,19 +245,27 @@ glob("data/projects/*.json",(err,matches)=>{
                     makeHTMLPage("lang/"+langName+".html",{
                         title: "WhizSid's blog posts about "+langName,
                         description: "Visit to see more trending posts about "+langName+" written by WhizSid.",
-                        keywords: langName+",article,Technology,WhizSid,PHP,React,Laravel,Rust"
+                        keywords: langName+",article,Technology,WhizSid,PHP,React,Laravel,Rust",
+                        freq: 'daily',
+                        priority: 0.5
                     });
                 }
 
-                // makeHTMLPage('index.html',{
-                //     title: "Blog and projects of WhizSid",
-                //     description: "Visit to see WhizSid's projects and blog posts.",
-                //     keywords: "WhizSid,Technology,IT,Laravel,React,Frontend,JavaScript,NodeJS,Tutorial,Web Design,Web Developing,Sinhala,English"
-                // });
+                makeHTMLPage('index.html',{
+                    title: "Blog and projects of WhizSid",
+                    description: "Visit to see WhizSid's projects and blog posts.",
+                    keywords: "WhizSid,Technology,IT,Laravel,React,Frontend,JavaScript,NodeJS,Tutorial,Web Design,Web Developing,Sinhala,English",
+                    freq: 'daily',
+                    priority: 0.7
+                });
+
+
+
+                fs.writeFileSync(sitemap,'</urlset>');
+                fs.closeSync(sitemap);
             });
         });
 
     });
  
 });
-
