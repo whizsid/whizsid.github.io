@@ -4,6 +4,7 @@
         "jsonapiunit"
     ],
     "posts": [
-        "react-typescript-redux"
+        "react-typescript-redux",
+        "rust-debug-amethyst-with-vscode"
     ]
 }
