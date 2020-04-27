@@ -1,6 +1,6 @@
 # How to debug an Amethyst game with VSCode
 
-First you want to install vscode (lldb)[https://github.com/vadimcn/vscode-lldb] extension.
+First you want to install vscode [lldb](https://github.com/vadimcn/vscode-lldb) extension.
 Then create `.vscode/launch.json` with followin contents.
 
 ```json
