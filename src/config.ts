@@ -1,21 +1,5 @@
-let _API_URL: string;
-let _APP_URL: string;
-let _APP_LOGGER_ON: boolean;
-
-if(process.env.NODE_ENV === "production"){
-    _API_URL = "https://whizsid.github.io/api/";
-
-    _APP_URL = "https://whizsid.github.io/";
-
-    _APP_LOGGER_ON = false;
-} else {
-    _API_URL = "http://127.0.0.1:3000/api/";
-
-    _APP_URL = "http://127.0.0.1:3000/";
-
-    _APP_LOGGER_ON = true;
-}
-
-export const API_URL = _API_URL;
-export const APP_URL = _APP_URL;
-export const APP_LOGGER_ON = _APP_LOGGER_ON;
+export const GITHUB_ACCESS_TOKEN = "a26875a04fa5eea19f9e04e921a0f01981e7b84b";
+export const GITHUB_API_URL = "https://api.github.com/graphql";
+export const GITHUB_REPOSITORY = "whizsid.github.io";
+export const GITHUB_OWNER = "whizsid";
+export const DEFAULT_POST_IMAGE = "images/posts/default.jpg";

@@ -1,40 +1,9 @@
 import createMuiTheme from "@material-ui/core/styles/createMuiTheme";
 
 const theme = createMuiTheme({
-    palette: {
-        primary: {
-            main: "#404040",
-            dark: "#000",
-            light: "#ad1c1d",
-            contrastText: "#149414"
-        },
-        text: {
-            secondary: "#149414",
-            primary: "#21cdea",
-            disabled: "#0e6b0e",
-            hint: "#9ccc9c"
-        },
-        secondary: {
-            main: "#21cdea",
-            dark: "#20cce9",
-            light: "#22ceeb"
-        }
-    },
-    overrides: {
-        MuiFab:{
-            extended: {
-                borderRadius: "0px!important"
-            }
-        },
-        MuiDivider: {
-            root: {
-                background: "unset",
-                borderTop: "dashed 1px",
-                marginTop: 4,
-                marginBottom: 4,
-            }
-        }
-    }
+
 });
+
+export const placeholderColor = "#ddd";
 
 export default theme;
