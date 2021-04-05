@@ -7,7 +7,7 @@ import theme from "./theme";
 
 
 export default class App extends React.Component {
-    public render(){
+    public render() {
         return (
             <MuiThemeProvider theme={theme}>
                 <Helmet
@@ -20,17 +20,17 @@ export default class App extends React.Component {
                     style={[
                         {
                             textCss: `
-                                body {
-                                    margin:0,
-                                    padding:0
-                                }
-                            `,
+								body {
+									margin:0,
+									padding:0
+								}
+							`,
                             type: "text/css"
                         }
                     ]}
                 />
                 <div className="App">
-                    <Router/>
+                    <Router />
                 </div>
             </MuiThemeProvider>
         );

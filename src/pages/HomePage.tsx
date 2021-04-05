@@ -3,14 +3,18 @@ import Header from "../components/Header";
 import Breadcrumb from "../components/HomePage/Breadcrumb";
 import RepositoriesSection from "../components/HomePage/RepositoriesSection";
 import BlogPostsSection from "../components/HomePage/BlogPostsSection";
+import SkillsSection from "../components/HomePage/SkillsSection";
+import Chatbox from "../components/Chatbox";
 
 class HomePage extends React.Component {
-    public render(){
+    public render() {
         return (<div>
-            <Header/>
-            <Breadcrumb/>
-            <RepositoriesSection/>
-            <BlogPostsSection/>
+                <Header homepage={true}/>
+            <Breadcrumb />
+            <RepositoriesSection />
+            <BlogPostsSection />
+            <SkillsSection />
+            <Chatbox messages={[]} />
         </div>);
     }
 }

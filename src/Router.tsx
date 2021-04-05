@@ -2,6 +2,8 @@ import {createBrowserHistory} from "history";
 import * as React from "react";
 import {Route , Router as ReactRouter, Switch} from "react-router-dom";
 import HomePage from "./pages/HomePage";
+import BlogPage from "./pages/BlogPage";
+import NotFoundErrorPage from "./pages/NotFoundErrorPage";
 
 
 const history = createBrowserHistory();
@@ -13,6 +15,8 @@ class Router extends React.Component {
             <ReactRouter history={history}>
                 <Switch>
                     <Route path="/" exact={true} component={HomePage} />
+                    <Route path="/blog/:id/:name" exact={true} component={BlogPage} />
+                    <Route path="/error" exact={true} component={NotFoundErrorPage} />
                 </Switch>
             </ReactRouter>
         );
