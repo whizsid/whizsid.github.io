@@ -6,9 +6,10 @@ import { RouteComponentProps, withRouter, Redirect } from "react-router";
 import { BlogPost, Github } from "../agents/Github";
 import { withStyles, Grid } from "@material-ui/core";
 import Content from "../components/BlogPage/Content";
+import Recommended from "../components/BlogPage/Recommended";
 import "../types/gitalk-pr/dist/react-component.d.ts";
 import GitalkComponent from "gitalk-pr/dist/gitalk-component";
-import {GITHUB_CLIENT_ID, GITHUB_CLIENT_SECRET} from "../config";
+import { GITHUB_CLIENT_ID, GITHUB_CLIENT_SECRET } from "../config";
 
 const styler = withStyles((theme) => ({
     pageWrapper: {
@@ -22,7 +23,7 @@ const styler = withStyles((theme) => ({
         marginBottom: theme.spacing(2)
     },
     commentSection: {
-        margin: theme.spacing(0,4)
+        margin: theme.spacing(0, 4)
     },
 }));
 
@@ -46,11 +47,13 @@ class BlogPage extends React.Component<BlogPageProps, BlogPageState> {
         super(props);
         const postId = this.props.match.params.id;
         this.state = {
-            loading: true
+            loading: true,
         };
 
-        Github.blogPost(parseInt(postId)).then(result=>{
-            if(result.isOk()){
+        this.handleSearch = this.handleSearch.bind(this);
+
+        Github.blogPost(parseInt(postId)).then(result => {
+            if (result.isOk()) {
                 this.setState({
                     blogPost: result.unwrap(),
                     loading: false,
@@ -60,16 +63,23 @@ class BlogPage extends React.Component<BlogPageProps, BlogPageState> {
                     loading: false,
                 });
             }
-            }).catch(()=>this.setState({loading: false}));
+        }).catch(() => this.setState({ loading: false }));
     }
 
     protected handleSearch(labels: string[], keyword?: string) {
-        console.log("Changed")
+        const params = new URLSearchParams();
+        for (let i = 0; i < labels.length; i++) {
+            params.set("label[" + i + "]", labels[i]);
+        }
+        if (keyword) {
+            params.set("query", keyword);
+        }
+        this.props.history.push("/search?" + params.toString());
     }
 
     public render() {
         const { classes } = this.props;
-        const {loading, blogPost} = this.state;
+        const { loading, blogPost } = this.state;
 
         return <div className={classes.pageWrapper}>
             <Header widgets={
@@ -77,10 +87,10 @@ class BlogPage extends React.Component<BlogPageProps, BlogPageState> {
             } />
             <Grid className={classes.container} justify="center" container={true}>
                 <Grid className={classes.contentGrid} item={true} md={8} xs={12}>
-                    {loading&&<ContentPlaceholder />} 
-                    {!loading&&blogPost&&<Content post={blogPost} />}
-                    {!loading&&!blogPost&&<Redirect to="/error" />}
-                    {!loading&&blogPost&&(<div className={classes.commentSection} ><GitalkComponent options={{
+                    {loading && <ContentPlaceholder />}
+                    {!loading && blogPost && <Content post={blogPost} />}
+                    {!loading && !blogPost && <Redirect to="/error" />}
+                    {!loading && blogPost && (<div className={classes.commentSection} ><GitalkComponent options={{
                         number: parseInt(blogPost.id),
                         clientID: GITHUB_CLIENT_ID,
                         clientSecret: GITHUB_CLIENT_SECRET,
@@ -90,7 +100,8 @@ class BlogPage extends React.Component<BlogPageProps, BlogPageState> {
                     }} /></div>)}
                 </Grid>
 
-             <Grid item={true} md={3} xs={12}>
+                <Grid item={true} md={3} xs={12}>
+                    {blogPost && (<Recommended post={blogPost} />)}
                 </Grid>
             </Grid>
         </div>

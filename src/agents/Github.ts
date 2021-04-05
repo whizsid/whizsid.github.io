@@ -1,7 +1,8 @@
-import { Err, isErr, None, Ok, Option, Result, Some } from "@hqoss/monads";
-import axios, { AxiosError } from "axios";
+import {Err, isErr, None, Ok, Option, Result, Some} from "@hqoss/monads";
+import axios, {AxiosError} from "axios";
 import simpleicons from "simple-icons";
-import { DEFAULT_POST_IMAGE, GITHUB_ACCESS_TOKEN, GITHUB_API_URL, GITHUB_REPOSITORY, GITHUB_OWNER } from "../config";
+import {DEFAULT_POST_IMAGE, GITHUB_ACCESS_TOKEN, GITHUB_API_URL, GITHUB_REPOSITORY, GITHUB_OWNER} from "../config";
+import {default as moment, duration} from "moment";
 
 interface UserRepositoryResponse {
     user: {
@@ -127,6 +128,14 @@ interface SearchResponse {
     };
 }
 
+interface RecommendedResponse {
+    search: {
+        edges: {
+            node: PullRequest
+        }[]
+    };
+}
+
 export interface SearchResult {
     posts: BlogPost[];
     tags: string[];
@@ -165,6 +174,40 @@ export interface Label {
     color: string;
 }
 
+export const labelToLang = (label: Label): Language => {
+    const langName = label.name.split(":")[1];
+    return {
+        name: langName,
+        color: label.color,
+        iconPath: getLanguageIcon(langName.toLowerCase())
+    };
+};
+
+export const prToPost = (pr: PullRequest): BlogPost => ({
+    id: pr.number.toString(),
+    title: pr.title,
+    postPath: (pr.files.nodes.find((path) => {
+        if (path.path.split(".").pop() === "md") {
+            return true;
+        }
+        return false;
+    }) as {path: string}).path,
+    imagePath: (pr.files.nodes.find((path) => {
+        if (path.path.split(".").pop() === "jpg" || path.path.split(".").pop() === "png") {
+            return true;
+        }
+        return false;
+    }) || {path: DEFAULT_POST_IMAGE}).path,
+    languages: pr.labels.nodes.filter(label => {
+        return label.name.split(":")[0] === "Language";
+    }).map(labelToLang),
+    description: pr.bodyHTML,
+    createdAt: pr.createdAt,
+    tags: pr.labels.nodes.filter(label => {
+        return label.name.split(":")[0] === "Tag";
+    }).map(tag => tag.name.split(":")[1])
+});
+
 const getLanguageIcon = (langName: string): string => {
     let iconName: string;
 
@@ -196,8 +239,8 @@ const getLanguageIcon = (langName: string): string => {
 };
 
 export class Github {
-    private static async call<T>(query: string): Promise<Result<{ data: T }, AxiosError>> {
-        return axios.post<{ data: T }>(GITHUB_API_URL, {
+    private static async call<T>(query: string): Promise<Result<{data: T}, AxiosError>> {
+        return axios.post<{data: T}>(GITHUB_API_URL, {
             query
         }, {
             headers: {
@@ -227,11 +270,7 @@ export class Github {
                     name: node.name,
                     description: node.description,
                     topics: node.repositoryTopics.nodes.filter(node2 => node2.topic.name !== "pinned").map(node2 => node2.topic.name),
-                    languages: node.languages.nodes.map(node2 => ({
-                        name: node2.name,
-                        color: node2.color,
-                        iconPath: getLanguageIcon(node2.name.toLowerCase())
-                    })),
+                    languages: node.languages.nodes.map(labelToLang),
                     forkCount: node.forkCount,
                     starCount: node.stargazers.totalCount,
                     id: "whizsid/" + node.name
@@ -251,11 +290,7 @@ export class Github {
                     name: node.name,
                     description: node.description,
                     topics: node.repositoryTopics.nodes.filter(node2 => node2.topic.name !== "pinned").map(node2 => node2.topic.name),
-                    languages: node.languages.nodes.map(node2 => ({
-                        name: node2.name,
-                        color: node2.color,
-                        iconPath: getLanguageIcon(node2.name.toLowerCase())
-                    })),
+                    languages: node.languages.nodes.map(labelToLang),
                     forkCount: node.forkCount,
                     starCount: node.stargazers.totalCount,
                     id: "FreeReacts/" + node.name
@@ -274,7 +309,7 @@ export class Github {
      *
      * @param endCursor Cursor id
      */
-    public static async blogPosts(endCursor: Option<string>, filters: string[], limit: number): Promise<Result<{ posts: BlogPost[], cursor: Option<string> }, AxiosError>> {
+    public static async blogPosts(endCursor: Option<string>, filters: string[], limit: number): Promise<Result<{posts: BlogPost[], cursor: Option<string>}, AxiosError>> {
         const afterText = endCursor.isSome() ? `, after:"${endCursor.unwrap()}"` : "";
         filters.push("Post");
 
@@ -308,37 +343,7 @@ export class Github {
         }`);
 
         return Promise.resolve(blogPostResponse.map(data => ({
-            posts: (data.data.repository.pullRequests.nodes.map(pr => ({
-                id: pr.number.toString(),
-                title: pr.title,
-                postPath: (pr.files.nodes.find((path) => {
-                    if (path.path.split(".").pop() === "md") {
-                        return true;
-                    }
-                    return false;
-                }) as { path: string }).path,
-                imagePath: (pr.files.nodes.find((path) => {
-                    if (path.path.split(".").pop() === "jpg" || path.path.split(".").pop() === "png") {
-                        return true;
-                    }
-                    return false;
-                }) || { path: DEFAULT_POST_IMAGE }).path,
-                languages: pr.labels.nodes.filter(label => {
-                    return label.name.split(":")[0] === "Language";
-                }).map(lang => {
-                    const langName = lang.name.split(":")[1];
-                    return {
-                        name: langName,
-                        color: lang.color,
-                        iconPath: getLanguageIcon(langName.toLowerCase())
-                    };
-                }),
-                description: pr.bodyHTML,
-                createdAt: pr.createdAt,
-                tags: pr.labels.nodes.filter(label => {
-                    return label.name.split(":")[0] === "Tag";
-                }).map(tag => tag.name.split(":")[1])
-            }))),
+            posts: (data.data.repository.pullRequests.nodes.map(prToPost)),
             cursor: data.data.repository.pullRequests.pageInfo.hasNextPage ?
                 Some(data.data.repository.pullRequests.pageInfo.endCursor) :
                 None
@@ -374,37 +379,7 @@ export class Github {
             }
         }`);
 
-        return Promise.resolve(blogPostResponse.map(({ data: { repository: { pullRequest } } }) => ({
-            id: pullRequest.number.toString(),
-            title: pullRequest.title,
-            postPath: (pullRequest.files.nodes.find((path) => {
-                if (path.path.split(".").pop() === "md") {
-                    return true;
-                }
-                return false;
-            }) as { path: string }).path,
-            imagePath: (pullRequest.files.nodes.find((path) => {
-                if (path.path.split(".").pop() === "jpg" || path.path.split(".").pop() === "png") {
-                    return true;
-                }
-                return false;
-            }) || { path: DEFAULT_POST_IMAGE }).path,
-            languages: pullRequest.labels.nodes.filter(label => {
-                return label.name.split(":")[0] === "Language";
-            }).map(lang => {
-                const langName = lang.name.split(":")[1];
-                return {
-                    name: langName,
-                    color: lang.color,
-                    iconPath: getLanguageIcon(langName.toLowerCase())
-                };
-            }),
-            description: pullRequest.bodyHTML,
-            createdAt: pullRequest.createdAt,
-            tags: pullRequest.labels.nodes.filter(label => {
-                return label.name.split(":")[0] === "Tag";
-            }).map(tag => tag.name.split(":")[1])
-        })));
+        return Promise.resolve(blogPostResponse.map(({data: {repository: {pullRequest}}}) => prToPost(pullRequest)));
     }
 
     /**
@@ -457,51 +432,70 @@ export class Github {
         }`);
 
         return Promise.resolve(blogPostResponse.map(data => ({
-            posts: (data.data.search.edges.map(pr => ({
-                id: pr.node.number.toString(),
-                title: pr.node.title,
-                postPath: (pr.node.files.nodes.find((path) => {
-                    if (path.path.split(".").pop() === "md") {
-                        return true;
-                    }
-                    return false;
-                }) as { path: string }).path,
-                imagePath: (pr.node.files.nodes.find((path) => {
-                    if (path.path.split(".").pop() === "jpg" || path.path.split(".").pop() === "png") {
-                        return true;
-                    }
-                    return false;
-                }) || { path: DEFAULT_POST_IMAGE }).path,
-                languages: pr.node.labels.nodes.filter(label => {
-                    return label.name.split(":")[0] === "Language";
-                }).map(lang => {
-                    const langName = lang.name.split(":")[1];
-                    return {
-                        name: langName,
-                        color: lang.color,
-                        iconPath: getLanguageIcon(langName.toLowerCase())
-                    };
-                }),
-                description: pr.node.bodyHTML,
-                createdAt: pr.node.createdAt,
-                tags: pr.node.labels.nodes.filter(label => {
-                    return label.name.split(":")[0] === "Tag";
-                }).map(tag => tag.name.split(":")[1])
-            }))),
+            posts: (data.data.search.edges.map(pr => prToPost(pr.node))),
             languages: data.data.repository.labels.nodes.filter(label => {
                 return label.name.split(":")[0] === "Language";
-            }).map(lang => {
-                const langName = lang.name.split(":")[1];
-                return {
-                    name: langName,
-                    color: lang.color,
-                    iconPath: getLanguageIcon(langName.toLowerCase())
-                };
-            }),
+            }).map(labelToLang),
             tags: data.data.repository.labels.nodes.filter(label => {
                 return label.name.split(":")[0] === "Tag";
             }).map(tag => tag.name.split(":")[1])
         })));
+    }
+
+    /**
+     * Returning the recommending posts for a one post viewer
+     *
+     * @param post
+     */
+    public static async getRecommended(post: BlogPost, label?: string): Promise<Result<BlogPost[], AxiosError>> {
+        const prTime = moment(post.createdAt);
+        const now = moment();
+
+        const diff = duration(now.diff(prTime));
+        let to = moment();
+        let from = moment().subtract(1,"year");
+        if(diff.years()>0) {
+            to = prTime.add(6, "month");
+            from = prTime.subtract(6, "month");
+        }
+
+        const formattedLabel = label?" label:"+label:"";
+
+        const response = await Github.call<RecommendedResponse>(`query{
+            search(
+                query: "is:merged is:pr is:public archived:false author:${GITHUB_OWNER} user:${GITHUB_OWNER} label:Post ${formattedLabel} repo:${GITHUB_REPOSITORY} created:>${from.format("YYYY-MM-DD")} created:<${to.format("YYYY-MM-DD")} ",
+                type: ISSUE,
+                first: 20
+            ) {
+                issueCount,
+                edges {
+                    node {
+                        ... on PullRequest {
+                            id,
+                            number,
+                            title,
+                            bodyHTML,
+                            createdAt,
+                            files(last:100){
+                                nodes {
+                                    path
+                                }
+                            },
+                            labels(last:100){
+                                nodes {
+                                    name,
+                                    color
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }`);
+
+        return Promise.resolve(
+            response.map(data=>data.data.search.edges.map(edge=>prToPost(edge.node)))
+        );
     }
 
     /**
@@ -520,7 +514,7 @@ export class Github {
      *
      * @param keyword
      */
-    public static async searchLabels(keyword: Option<string>, endCursor: Option<string>, limit: number): Promise<Result<{ labels: Label[], cursor: Option<string> }, AxiosError>> {
+    public static async searchLabels(keyword: Option<string>, endCursor: Option<string>, limit: number): Promise<Result<{labels: Label[], cursor: Option<string>}, AxiosError>> {
         let afterText = endCursor.isSome() ? `, after:"${endCursor.unwrap()}"` : "";
         if (keyword.isSome()) {
             afterText += `, query: "${keyword.unwrap()}"`;

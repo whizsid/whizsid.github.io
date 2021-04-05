@@ -23,7 +23,11 @@ export default class App extends React.Component {
 								body {
 									margin:0,
 									padding:0
-								}
+                                }
+                                a:link {
+                                    color: inherit!important;
+                                    text-decoration: none!important;
+                                }
 							`,
                             type: "text/css"
                         }
