@@ -1,24 +1,24 @@
-import { Card, CardActionArea, CardActions, CardContent, Divider, Toolbar, withStyles, Icon, SvgIcon, Typography, Chip } from "@material-ui/core";
+import { Card, CardActionArea, CardActions, CardContent, Chip, SvgIcon, Toolbar, Typography, withStyles } from "@material-ui/core";
 import * as React from "react";
-import { BlogPost } from "../../agents/Github";
-import { GITHUB_REPOSITORY, GITHUB_OWNER } from "../../config";
-import { withRouter, RouteComponentProps } from "react-router-dom";
-import { titleToLink } from "../../utils";
+import { RouteComponentProps, withRouter } from "react-router-dom";
+import { BlogPost } from "../agents/Github";
+import { GITHUB_OWNER, GITHUB_REPOSITORY } from "../config";
+import { titleToLink } from "../utils";
 
 
 const styler = withStyles(theme => ({
     root: {
-        width: 540,
+        width: 360,
         margin: 20,
         marginBottom: 20,
-        height: 280,
+        height: 200,
         display: "flex",
         flexDirection: "column",
         [theme.breakpoints.down("md")]: {
             marginLeft: "10vw"
         },
         backgroundSize: "cover",
-        boxShadow: "2px 2px 4px rgba(0,0,0,0.5)"
+        boxShadow: "2px 0px 4px rgba(0,0,0,0.5)"
     },
     grow: {
         flexGrow: 1
@@ -30,9 +30,13 @@ const styler = withStyles(theme => ({
     language: {
         backgroundColor: "#ffffff", borderRadius: "100%", marginRight: 4
     },
+    languages: {
+        marginRight: 8
+    },
     title: {
         color: "#ffffff",
-        textShadow: "2px 2px 4px #000000"
+        textShadow: "2px 2px 4px #000000",
+        fontSize: "1rem"
     },
     tag: {
         marginLeft: 4
@@ -45,6 +49,7 @@ export interface BlogPostCardProps extends BlogPost {
         grow: string;
         divider: string;
         language: string;
+        languages: string;
         title: string;
         tag: string;
     };
@@ -55,25 +60,30 @@ class BlogPostCard extends React.Component<BlogPostCardProps & RouteComponentPro
     public render() {
         const { classes, imagePath, languages, title, tags, id } = this.props;
         return (
-            <Card style={{ backgroundImage: "url(https://github.com/" + GITHUB_OWNER + "/" + GITHUB_REPOSITORY + "/raw/src/" + imagePath + ")" }} className={classes.root}>
+            <Card style={{
+                backgroundImage: "linear-gradient(0deg, rgba(0, 0, 0, 0.3), rgb(255, 255, 255)),"+
+                "url(https://github.com/" + GITHUB_OWNER + "/" + GITHUB_REPOSITORY + "/raw/src/" + imagePath + ")"
+            }} className={classes.root}>
 
                 <CardActionArea onClick={() => this.handleClick(id, title)} >
                     <CardContent>
                         <Toolbar variant="dense">
+                            <div className={classes.languages}>
                             {languages.map((lang, i) => (
                                 <SvgIcon key={i} className={classes.language} >
                                     <path fill={lang.color} d={lang.iconPath} />
                                 </SvgIcon>
-                            ))}
+                                    ))}
+                                    </div>
                             <div className={classes.grow} />
                             <Typography variant="h6" className={classes.title} >{title}</Typography>
                         </Toolbar>
-                        <div style={{ height: 140, width: "100%" }} />
+                        <div style={{ height: 60, width: "100%" }} />
                     </CardContent>
                     <CardActions disableSpacing >
                         <div className={classes.grow} />
                         {tags.map((tag, i) => (
-                            <Chip key={i} className={classes.tag} label={tag} />
+                            <Chip size="small" key={i} className={classes.tag} label={tag} />
                         ))}
                     </CardActions>
 

@@ -7,7 +7,7 @@ class NotFoundErrorPage extends React.Component {
             <div>
                 Something went wrong
             </div>
-        )
+        );
     }
 }
 

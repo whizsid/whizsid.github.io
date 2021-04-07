@@ -1,9 +1,9 @@
+import { None } from "@hqoss/monads";
+import { Grid, Typography, withStyles } from "@material-ui/core";
 import * as React from "react";
-import { withStyles, Typography, Grid } from "@material-ui/core";
-import { Github, BlogPost } from "../../agents/Github";
-import { None, Option } from "@hqoss/monads";
-import BlogPostCardPlaceholder from "./BlogPostCardPlaceholder";
-import BlogPostCard from "./BlogPostCard";
+import { BlogPost, Github } from "../../agents/Github";
+import BlogPostCard from "../BlogPostCard";
+import BlogPostCardPlaceholder from "../BlogPostCardPlaceholder";
 
 const styler = withStyles(theme => ({
     header: {
@@ -22,7 +22,7 @@ interface BlogPostsSectionState {
 interface BlogPostsSectionProps {
     classes: {
         header: string;
-    }
+    };
 }
 
 class BlogPostsSection extends React.Component<BlogPostsSectionProps, BlogPostsSectionState> {

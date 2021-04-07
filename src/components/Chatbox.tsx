@@ -1,7 +1,6 @@
-import * as React from "react";
 import { Fab, makeStyles } from "@material-ui/core";
 import { Message as MessageIcon } from "@material-ui/icons";
-import Message from "./Message";
+import * as React from "react";
 
 const useStyles = makeStyles((theme) => ({
     fab: {

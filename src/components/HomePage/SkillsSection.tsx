@@ -1,9 +1,7 @@
+import {Grid, Theme, Typography, withStyles} from "@material-ui/core";
 import * as React from "react";
-import GaugeChart from 'react-gauge-chart';
-import {Typography, withStyles, Theme, Grid} from "@material-ui/core";
-import {blue} from "@material-ui/core/colors";
-import SkillGauge from "./SkillGauge";
 import {SimpleIcon} from "simple-icons";
+import SkillGauge from "./SkillGauge";
 const simpleicons = require("simple-icons");
 
 const styler = withStyles((theme: Theme) => ({
@@ -85,7 +83,7 @@ class SkillsSection extends React.Component<SkillsSectionProps, SkillsSectionSta
                     ))}
                 </Grid>
             </div>
-        )
+        );
     }
 }
 

@@ -1,10 +1,10 @@
 import * as React from "react";
+import Chatbox from "../components/Chatbox";
 import Header from "../components/Header";
+import BlogPostsSection from "../components/HomePage/BlogPostsSection";
 import Breadcrumb from "../components/HomePage/Breadcrumb";
 import RepositoriesSection from "../components/HomePage/RepositoriesSection";
-import BlogPostsSection from "../components/HomePage/BlogPostsSection";
 import SkillsSection from "../components/HomePage/SkillsSection";
-import Chatbox from "../components/Chatbox";
 
 class HomePage extends React.Component {
     public render() {

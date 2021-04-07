@@ -1,10 +1,7 @@
+import { Chip, Grid, Typography, withStyles } from "@material-ui/core";
 import * as React from "react";
-import { withStyles, Grid, Typography, Chip } from "@material-ui/core";
-import { RectShape, RoundShape, TextRow } from "react-placeholder/lib/placeholders";
-import clsx from "clsx";
-import { placeholderColor } from "../../theme";
-import { BlogPost } from "../../agents/Github";
 import { Link } from "react-router-dom";
+import { BlogPost } from "../../agents/Github";
 import { titleToLink } from "../../utils";
 
 
@@ -44,7 +41,7 @@ interface RecommendedCardProps {
         date: string;
         chipRound: string;
         chip: string;
-    }
+    };
 }
 
 class RecommendedCard extends React.Component<RecommendedCardProps> {
@@ -75,7 +72,7 @@ class RecommendedCard extends React.Component<RecommendedCardProps> {
                     </Grid>
                 </Grid>
             </div>
-        )
+        );
     }
 }
 

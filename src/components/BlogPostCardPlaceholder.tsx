@@ -1,11 +1,11 @@
-import { Card, CardActionArea, CardActions, CardContent, Divider, Toolbar, withStyles } from "@material-ui/core";
+import { Card, CardActionArea, CardActions, CardContent, Toolbar, withStyles } from "@material-ui/core";
 import * as React from "react";
 import { RoundShape, TextRow } from "react-placeholder/lib/placeholders";
-import { placeholderColor } from "../../theme";
+import { placeholderColor } from "../theme";
 
 const styler = withStyles(theme => ({
     root: {
-        minWidth: 540,
+        minWidth: 360,
         margin: 20,
         marginBottom: 20,
         minHeight: 200,
@@ -48,7 +48,7 @@ class BlogPostCardPlaceholder extends React.Component<BlogPostCardProps> {
                             <div className={classes.grow} />
                             <TextRow className="show-loading-animation" style={{ width: "80%" }} color={placeholderColor} />
                         </Toolbar>
-                        <div style={{ height: 140, width: "100%" }} />
+                        <div style={{ height: 60, width: "100%" }} />
                     </CardContent>
                     <CardActions disableSpacing >
                         <div className={classes.grow} />

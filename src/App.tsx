@@ -17,21 +17,6 @@ export default class App extends React.Component {
                             href: "https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap"
                         }
                     ]}
-                    style={[
-                        {
-                            textCss: `
-								body {
-									margin:0,
-									padding:0
-                                }
-                                a:link {
-                                    color: inherit!important;
-                                    text-decoration: none!important;
-                                }
-							`,
-                            type: "text/css"
-                        }
-                    ]}
                 />
                 <div className="App">
                     <Router />

@@ -1,7 +1,7 @@
-import * as React from "react";
-import { withStyles, Grid } from "@material-ui/core";
-import { RectShape, RoundShape, TextRow } from "react-placeholder/lib/placeholders";
+import { Grid, withStyles } from "@material-ui/core";
 import clsx from "clsx";
+import * as React from "react";
+import { RectShape, RoundShape, TextRow } from "react-placeholder/lib/placeholders";
 import { placeholderColor } from "../../theme";
 
 
@@ -38,7 +38,7 @@ interface RecommendedCardProps {
         date: string;
         chipRound: string;
         chip: string;
-    }
+    };
 }
 
 class RecommendedCardPlaceholder extends React.Component<RecommendedCardProps> {
@@ -59,7 +59,7 @@ class RecommendedCardPlaceholder extends React.Component<RecommendedCardProps> {
                     </Grid>
                 </Grid>
             </div>
-        )
+        );
     }
 }
 

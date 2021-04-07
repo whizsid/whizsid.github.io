@@ -1,3 +1,3 @@
 export const titleToLink = (title: string): string => {
-    return title.split(" ").join("-").toLowerCase()
-}
+    return title.split(" ").join("-").toLowerCase();
+};

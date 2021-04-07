@@ -1,10 +1,10 @@
 import * as React from "react";
-import RecommendedCardPlaceholder from "./RecommendedCardPlaceholder";
-import RecommendedCard from "./RecommendedCard";
 import { BlogPost, Github } from "../../agents/Github";
+import RecommendedCard from "./RecommendedCard";
+import RecommendedCardPlaceholder from "./RecommendedCardPlaceholder";
 
 interface RecommendedProps {
-    post: BlogPost
+    post: BlogPost;
 }
 
 interface RecommendedState {
@@ -31,7 +31,7 @@ class Recommended extends React.Component<RecommendedProps, RecommendedState> {
                 this.setState({loading: false});
             }
         }).catch(e=>this.setState({loading: false}));
-    
+
     }
 
     public render() {

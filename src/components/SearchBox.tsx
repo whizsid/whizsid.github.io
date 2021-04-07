@@ -1,17 +1,16 @@
-import * as React from "react";
+import { fade, withStyles } from "@material-ui/core";
 import InputBase from "@material-ui/core/InputBase";
-import SearchIcon from "@material-ui/icons/Search";
 import List from "@material-ui/core/List";
 import ListItem from "@material-ui/core/ListItem";
 import ListItemText from "@material-ui/core/ListItemText";
 import ListSubheader from "@material-ui/core/ListSubheader";
-import { withStyles, fade } from "@material-ui/core";
+import SearchIcon from "@material-ui/icons/Search";
 import clsx from "clsx";
-import { SearchResult, Github, BlogPost } from "../../agents/Github";
 import { debounce } from "debounce";
-import { withRouter } from "react-router";
+import * as React from "react";
 import { Link } from "react-router-dom";
-import { titleToLink } from "../../utils";
+import { Github, SearchResult } from "../agents/Github";
+import { titleToLink } from "../utils";
 
 interface SearchBoxProps {
     onSearch: (labels: string[], keyword?: string) => void;
@@ -52,12 +51,12 @@ const styler = withStyles(theme => ({
     },
     searchIcon: {
         padding: theme.spacing(0, 2),
-        height: '100%',
-        position: 'absolute',
-        pointerEvents: 'none',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
+        height: "100%",
+        position: "absolute",
+        pointerEvents: "none",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
     },
     inputRoot: {
         color: "inherit",

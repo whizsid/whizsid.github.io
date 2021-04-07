@@ -1,8 +1,8 @@
 import {Err, isErr, None, Ok, Option, Result, Some} from "@hqoss/monads";
 import axios, {AxiosError} from "axios";
-import simpleicons from "simple-icons";
-import {DEFAULT_POST_IMAGE, GITHUB_ACCESS_TOKEN, GITHUB_API_URL, GITHUB_REPOSITORY, GITHUB_OWNER} from "../config";
 import {default as moment, duration} from "moment";
+import simpleicons from "simple-icons";
+import {DEFAULT_POST_IMAGE, GITHUB_ACCESS_TOKEN, GITHUB_API_URL, GITHUB_OWNER, GITHUB_REPOSITORY} from "../config";
 
 interface UserRepositoryResponse {
     user: {
@@ -55,18 +55,6 @@ interface PullRequestNumberResponse {
     };
 }
 
-interface LabelResponse {
-    repository: {
-        labels: {
-            nodes: Label[];
-            pageInfo: {
-                hasNextPage: boolean;
-                endCursor: string
-            }
-        }
-    };
-}
-
 interface PullRequest {
     id: string;
     number: number;
@@ -81,6 +69,12 @@ interface PullRequest {
         nodes: {
             path: string;
         }[]
+    };
+}
+
+interface LabelCount extends Label {
+    pullRequests: {
+        totalCount: number;
     };
 }
 
@@ -105,7 +99,7 @@ interface BlogPostResponse {
 interface LabelResponse {
     repository: {
         labels: {
-            nodes: Label[];
+            nodes: LabelCount[];
             pageInfo: {
                 hasNextPage: boolean;
                 endCursor: string
@@ -136,6 +130,19 @@ interface RecommendedResponse {
     };
 }
 
+interface SearchPostsResponse {
+    search: {
+        issueCount: number,
+        edges: {
+            node: PullRequest
+        }[],
+        pageInfo: {
+                hasNextPage: boolean;
+                endCursor: string
+            }
+    };
+}
+
 export interface SearchResult {
     posts: BlogPost[];
     tags: string[];
@@ -146,6 +153,11 @@ export interface Language {
     color: string;
     name: string;
     iconPath: string;
+}
+
+export interface WithCount<T> {
+    item: T;
+    count: number;
 }
 
 export interface Repository {
@@ -175,7 +187,8 @@ export interface Label {
 }
 
 export const labelToLang = (label: Label): Language => {
-    const langName = label.name.split(":")[1];
+    const langName = label.name.split(":").pop() as string;
+
     return {
         name: langName,
         color: label.color,
@@ -443,6 +456,62 @@ export class Github {
     }
 
     /**
+     * Searching for blog posts
+     *
+     * @param keyword
+     * @param limit
+     * @param labels
+     * @param labelJoinMethod "AND"|"OR"
+     */
+    public static async searchPosts( limit: number, labels: string[], keyword: Option<string>,cursor: Option<string>): Promise<Result<{posts: BlogPost[], cursor: Option<string>}, AxiosError>> {
+        const afterText = cursor.isSome() ? `, after:"${cursor.unwrap()}"` : "";
+        const keywordText = keyword?.unwrapOr("");
+        const blogPostResponse = await Github.call<SearchPostsResponse>(`query{
+            search(
+                query: "is:merged is:pr is:public archived:false author:whizsid user:whizsid label:Post ${labels.map(label => "label:" + label).join(" ")} repo:whizsid.github.io ${keywordText}",
+                type: ISSUE,
+                first: ${limit}
+                ${afterText}
+            ) {
+                issueCount,
+                    pageInfo {
+                        hasNextPage,
+                        endCursor
+                    },
+                edges {
+                    node {
+                        ... on PullRequest {
+                            id,
+                            number,
+                            title,
+                            bodyHTML,
+                            createdAt,
+                            files(last:100){
+                                nodes {
+                                    path
+                                }
+                            },
+                            labels(last:100){
+                                nodes {
+                                    name,
+                                    color
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }`);
+
+        return Promise.resolve(blogPostResponse.map(data => ({
+            posts: (data.data.search.edges.map(pr => prToPost(pr.node))),
+            cursor: data.data.search.pageInfo.hasNextPage?
+                Some(data.data.search.pageInfo.endCursor):
+                None
+        })));
+    }
+
+    /**
      * Returning the recommending posts for a one post viewer
      *
      * @param post
@@ -514,7 +583,7 @@ export class Github {
      *
      * @param keyword
      */
-    public static async searchLabels(keyword: Option<string>, endCursor: Option<string>, limit: number): Promise<Result<{labels: Label[], cursor: Option<string>}, AxiosError>> {
+    public static async searchLabels(keyword: Option<string>, endCursor: Option<string>, limit: number): Promise<Result<{labels: LabelCount[], cursor: Option<string>}, AxiosError>> {
         let afterText = endCursor.isSome() ? `, after:"${endCursor.unwrap()}"` : "";
         if (keyword.isSome()) {
             afterText += `, query: "${keyword.unwrap()}"`;
@@ -525,7 +594,10 @@ export class Github {
                 labels ( first:${limit}${afterText}, orderBy:{field:NAME, direction:ASC}){
                     nodes {
                         name,
-                        color
+                        color,
+                        pullRequests(first:0){
+                            totalCount
+                        }
                     },
                     pageInfo {
                         hasNextPage,

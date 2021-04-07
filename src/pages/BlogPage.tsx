@@ -1,15 +1,15 @@
-import * as React from "react";
-import Header from "../components/Header";
-import SearchBox from "../components/Search/SearchBox";
-import ContentPlaceholder from "../components/BlogPage/ContentPlaceholder";
-import { RouteComponentProps, withRouter, Redirect } from "react-router";
-import { BlogPost, Github } from "../agents/Github";
-import { withStyles, Grid } from "@material-ui/core";
-import Content from "../components/BlogPage/Content";
-import Recommended from "../components/BlogPage/Recommended";
-import "../types/gitalk-pr/dist/react-component.d.ts";
+import { Grid, withStyles } from "@material-ui/core";
 import GitalkComponent from "gitalk-pr/dist/gitalk-component";
+import * as React from "react";
+import { Redirect, RouteComponentProps } from "react-router";
+import { BlogPost, Github } from "../agents/Github";
+import Content from "../components/BlogPage/Content";
+import ContentPlaceholder from "../components/BlogPage/ContentPlaceholder";
+import Recommended from "../components/BlogPage/Recommended";
+import Header from "../components/Header";
+import SearchBox from "../components/SearchBox";
 import { GITHUB_CLIENT_ID, GITHUB_CLIENT_SECRET } from "../config";
+import "../types/gitalk-pr/dist/react-component.d.ts";
 
 const styler = withStyles((theme) => ({
     pageWrapper: {
@@ -33,7 +33,7 @@ interface BlogPageProps extends RouteComponentProps<{ id: string }> {
         contentGrid: string;
         container: string;
         commentSection: string;
-    }
+    };
 }
 
 interface BlogPageState {
@@ -104,7 +104,7 @@ class BlogPage extends React.Component<BlogPageProps, BlogPageState> {
                     {blogPost && (<Recommended post={blogPost} />)}
                 </Grid>
             </Grid>
-        </div>
+        </div>;
     }
 
 }

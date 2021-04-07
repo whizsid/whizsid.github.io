@@ -1,10 +1,10 @@
 import {createBrowserHistory} from "history";
 import * as React from "react";
 import {Route , Router as ReactRouter, Switch} from "react-router-dom";
-import HomePage from "./pages/HomePage";
 import BlogPage from "./pages/BlogPage";
-import SearchResultPage from "./pages/SearchResultPage";
+import HomePage from "./pages/HomePage";
 import NotFoundErrorPage from "./pages/NotFoundErrorPage";
+import SearchResultPage from "./pages/SearchResultPage";
 
 
 const history = createBrowserHistory();

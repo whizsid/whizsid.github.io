@@ -1,8 +1,8 @@
-import { makeStyles, Grid, Typography, SvgIcon, IconButton } from "@material-ui/core";
+import { Grid, IconButton, makeStyles, SvgIcon, Typography } from "@material-ui/core";
+import { Info } from "@material-ui/icons";
 import * as React from "react";
 import GaugeChart from "react-gauge-chart";
 import { SimpleIcon } from "simple-icons";
-import { Info } from "@material-ui/icons";
 
 const useStyles = makeStyles(theme => ({
     container: {

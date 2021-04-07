@@ -1,9 +1,9 @@
-import * as React from "react";
+import { Toolbar, withStyles } from "@material-ui/core";
 import Divider from "@material-ui/core/Divider";
-import {RectShape, RoundShape, TextRow, TextBlock} from "react-placeholder/lib/placeholders";
-import { placeholderColor } from "../../theme";
-import { withStyles, Toolbar } from "@material-ui/core";
 import clsx from "clsx";
+import * as React from "react";
+import {RectShape, RoundShape, TextBlock, TextRow} from "react-placeholder/lib/placeholders";
+import { placeholderColor } from "../../theme";
 
 const styler = withStyles(theme=>({
     title: {
@@ -39,7 +39,7 @@ interface ContentPlaceholderProps {
         image: string;
         paragraph: string;
         description: string;
-    }
+    };
 }
 
 class ContentPlaceholder extends React.Component<ContentPlaceholderProps> {
@@ -61,7 +61,7 @@ class ContentPlaceholder extends React.Component<ContentPlaceholderProps> {
                     <TextRow className="show-loading-animation"  style={{marginLeft: 4, marginBottom: 8,width: 60}} color={placeholderColor}/>
                 </Toolbar>
                 <Divider />
-                <RectShape className={clsx("show-loading-animation", classes.image)} color={placeholderColor} /> 
+                <RectShape className={clsx("show-loading-animation", classes.image)} color={placeholderColor} />
                 <TextBlock rows={3} className={clsx("show-loading-animation", classes.description)} color={placeholderColor} />
                 <TextBlock rows={8} className={clsx("show-loading-animation", classes.paragraph)} color={placeholderColor} />
                 <Divider />
