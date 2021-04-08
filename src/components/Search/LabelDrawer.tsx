@@ -7,14 +7,26 @@ import {
     ListItemText,
     ListSubheader,
     withStyles,
+    Toolbar,
+    IconButton,
+    Divider,
 } from "@material-ui/core";
 import Drawer from "@material-ui/core/Drawer";
 import clsx from "clsx";
 import * as React from "react";
 import { TextRow } from "react-placeholder/lib/placeholders";
 import { Link } from "react-router-dom";
-import { Github, Label, labelToLang, Language, WithCount } from "../../agents/Github";
+import {
+    Github,
+    Label,
+    labelToLang,
+    Language,
+    WithCount,
+} from "../../agents/Github";
 import { placeholderColor } from "../../theme";
+import {ChevronRight, ChevronLeft} from "@material-ui/icons";
+
+const isMobile = window.innerWidth<=768;
 
 const styler = withStyles((theme) => ({
     tag: {
@@ -26,25 +38,45 @@ const styler = withStyles((theme) => ({
         marginTop: 2,
     },
     langIcon: {
-        "& .MuiChip-label":{
-            paddingLeft:0,
-            paddingRight:6
-        }
+        "& .MuiChip-label": {
+            paddingLeft: 0,
+            paddingRight: 6,
+        },
     },
     drawer: {
- paddingTop: theme.spacing(8),
+        paddingTop: theme.spacing(8),
         padding: theme.spacing(2, 1),
-    width: 240,
-    flexShrink: 0,
-  },
+        width: 240,
+        flexShrink: 0,
+    },
+    drawerClosed: {
+        paddingTop: theme.spacing(8),
+        padding: theme.spacing(1, 1),
+        paddingLeft: 0,
+        width: 40,
+        flexShrink: 0,
+    },
+    grow: {
+        flexGrow: 1,
+    },
+    drawerToggle: {
+        [theme.breakpoints.up("md")]: {
+            display: "none"
+        }
+    }
 }));
 
 interface LabelDrawerProps {
+    open?: boolean;
+    onToggle?: (toggle: boolean) => void;
     classes: {
         tag: string;
         placeholder: string;
         langIcon: string;
         drawer: string;
+        grow: string;
+        drawerClosed: string;
+        drawerToggle: string;
     };
 }
 
@@ -69,15 +101,19 @@ class LabelDrawer extends React.Component<LabelDrawerProps, LabelDrawerState> {
         };
 
         this.handleClickMoreTags = this.handleClickMoreTags.bind(this);
-        this.handleClickMoreLanguages = this.handleClickMoreLanguages.bind(this);
+        this.handleOpenDrawerButtonClick = this.handleOpenDrawerButtonClick.bind(this);
+        this.handleCloseDrawerButtonClick = this.handleCloseDrawerButtonClick.bind(this);
+        this.handleClickMoreLanguages = this.handleClickMoreLanguages.bind(
+            this
+        );
 
         Github.searchLabels(Some("Language:"), None, 10)
             .then((result) => {
                 if (result.isOk()) {
                     const success = result.unwrap();
-                    const languages = success.labels.map((lbl)=>({
+                    const languages = success.labels.map((lbl) => ({
                         count: lbl.pullRequests.totalCount,
-                        item: labelToLang(lbl)
+                        item: labelToLang(lbl),
                     }));
                     this.setState({
                         loadingLanguages: false,
@@ -96,9 +132,9 @@ class LabelDrawer extends React.Component<LabelDrawerProps, LabelDrawerState> {
             .then((result) => {
                 if (result.isOk()) {
                     const success = result.unwrap();
-                    const tags = success.labels.map(tg=>({
+                    const tags = success.labels.map((tg) => ({
                         count: tg.pullRequests.totalCount,
-                        item: tg
+                        item: tg,
                     }));
                     this.setState({
                         loadingTags: false,
@@ -129,13 +165,13 @@ class LabelDrawer extends React.Component<LabelDrawerProps, LabelDrawerState> {
             .then((result) => {
                 if (result.isOk()) {
                     const success = result.unwrap();
-                    const newTags = success.labels.map(tg=>({
+                    const newTags = success.labels.map((tg) => ({
                         count: tg.pullRequests.totalCount,
-                        item: tg
+                        item: tg,
                     }));
                     this.setState({
                         loadingTags: false,
-                        tags:tags.concat(newTags),
+                        tags: tags.concat(newTags),
                         cursorTags: success.cursor.isSome()
                             ? success.cursor.unwrap()
                             : undefined,
@@ -162,9 +198,9 @@ class LabelDrawer extends React.Component<LabelDrawerProps, LabelDrawerState> {
             .then((result) => {
                 if (result.isOk()) {
                     const success = result.unwrap();
-                    const newLanguages = success.labels.map((lbl)=>({
+                    const newLanguages = success.labels.map((lbl) => ({
                         count: lbl.pullRequests.totalCount,
-                        item: labelToLang(lbl)
+                        item: labelToLang(lbl),
                     }));
                     this.setState({
                         loadingLanguages: false,
@@ -180,8 +216,20 @@ class LabelDrawer extends React.Component<LabelDrawerProps, LabelDrawerState> {
             .catch(() => this.setState({ loadingLanguages: false }));
     }
 
+    protected handleOpenDrawerButtonClick(){
+        if(this.props.onToggle){
+            this.props.onToggle(true);
+        }
+    }
+
+    protected handleCloseDrawerButtonClick(){
+        if(this.props.onToggle){
+            this.props.onToggle(false);
+        } 
+    }
+
     render() {
-        const { classes } = this.props;
+        const { classes , open} = this.props;
         const {
             loadingTags,
             loadingLanguages,
@@ -191,12 +239,37 @@ class LabelDrawer extends React.Component<LabelDrawerProps, LabelDrawerState> {
             cursorLanguages,
         } = this.state;
 
-        return (
-            <Drawer
-                PaperProps={{ className: classes.drawer}}
+        if(!open&&isMobile){
+            return (
+                     <Drawer
+                PaperProps={{ className: classes.drawerClosed }}
                 open={true}
                 variant="persistent"
             >
+                <Toolbar variant="dense">
+                        <IconButton onClick={this.handleOpenDrawerButtonClick} size="small" >
+                            <ChevronRight />
+                            </IconButton>
+                </Toolbar>
+                    </Drawer>
+            )
+        }
+
+        return (
+            <Drawer
+                PaperProps={{ className: classes.drawer }}
+                open={true}
+                variant="persistent"
+                >
+                <div className={classes.drawerToggle}>
+                <Toolbar variant="dense">
+                    <div className={classes.grow} />
+                        <IconButton onClick={this.handleCloseDrawerButtonClick} size="small" >
+                            <ChevronLeft />
+                            </IconButton>
+                </Toolbar>
+                <Divider />
+                    </div>
                 <List>
                     <ListSubheader disableGutters={true}>Tags</ListSubheader>
                     {loadingTags &&
@@ -228,19 +301,27 @@ class LabelDrawer extends React.Component<LabelDrawerProps, LabelDrawerState> {
                         ]}
                     {(!loadingTags || tags.length > 0) &&
                         tags.map((tag, i) => (
-                            <Link key={i} to={"/search?label[0]="+tag.item.name}>
-                            <ListItem divider={true} key={i} dense={true} button>
-                                <ListItemText
-                                    primaryTypographyProps={{
-                                        className: classes.tag,
-                                    }}
-                                    primary={tag.item.name.split(":").pop()}
-                                />
-                            <ListItemIcon>
-                            <Chip size="small" label={tag.count} />
-                                </ListItemIcon>
-                            </ListItem>
-                                </Link>
+                            <Link
+                                key={i}
+                                to={"/search?label[0]=" + tag.item.name}
+                            >
+                                <ListItem
+                                    divider={true}
+                                    key={i}
+                                    dense={true}
+                                    button
+                                >
+                                    <ListItemText
+                                        primaryTypographyProps={{
+                                            className: classes.tag,
+                                        }}
+                                        primary={tag.item.name.split(":").pop()}
+                                    />
+                                    <ListItemIcon>
+                                        <Chip size="small" label={tag.count} />
+                                    </ListItemIcon>
+                                </ListItem>
+                            </Link>
                         ))}
                     {tags.length > 0 && cursorTags && (
                         <ListItem
@@ -287,30 +368,41 @@ class LabelDrawer extends React.Component<LabelDrawerProps, LabelDrawerState> {
                     ]}
                     {!loadingLanguages &&
                         languages.map((lang, i) => (
-                            <Link key={i} to={"/search?label[0]=Language%3A"+lang.item.name}>
-                            <ListItem divider={true} dense={true} button>
-                                <ListItemIcon>
-                    <svg
-                      width="14"
-                      height="14"
-                      xmlns="http://www.w3.org/2000/svg"
-                      role="img"
-                      viewBox="0 0 24 24"
-                    >
-                      <path fill="#000000" d={lang.item.iconPath} />
-                    </svg>
+                            <Link
+                                key={i}
+                                to={
+                                    "/search?label[0]=Language%3A" +
+                                    lang.item.name
+                                }
+                            >
+                                <ListItem divider={true} dense={true} button>
+                                    <ListItemIcon>
+                                        <svg
+                                            width="14"
+                                            height="14"
+                                            xmlns="http://www.w3.org/2000/svg"
+                                            role="img"
+                                            viewBox="0 0 24 24"
+                                        >
+                                            <path
+                                                fill="#000000"
+                                                d={lang.item.iconPath}
+                                            />
+                                        </svg>
                                     </ListItemIcon>
-                                <ListItemText
-                                    primaryTypographyProps={{
-                                        className: classes.tag,
-                                    }}
-                                    primary={lang.item.name.split(":").pop()}
-                                />
-                        <ListItemIcon>
-                            <Chip size="small" label={lang.count} />
-                                </ListItemIcon>
-                                    </ListItem>
-                                        </Link>
+                                    <ListItemText
+                                        primaryTypographyProps={{
+                                            className: classes.tag,
+                                        }}
+                                        primary={lang.item.name
+                                            .split(":")
+                                            .pop()}
+                                    />
+                                    <ListItemIcon>
+                                        <Chip size="small" label={lang.count} />
+                                    </ListItemIcon>
+                                </ListItem>
+                            </Link>
                         ))}
                     {languages.length > 0 && cursorLanguages && (
                         <ListItem

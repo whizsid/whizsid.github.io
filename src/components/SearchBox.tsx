@@ -41,12 +41,12 @@ const styler = withStyles(theme => ({
         "&:hover": {
             backgroundColor: fade(theme.palette.common.white, 0.25),
         },
-        marginLeft: 0,
-        width: "100%",
-        [theme.breakpoints.up("sm")]: {
-            width: "auto",
+        width: "auto",
             minWidth: 300,
             marginLeft: theme.spacing(5),
+        display: "none",
+        [theme.breakpoints.up("sm")]: {
+           display: "block" 
         },
     },
     searchIcon: {

@@ -12,16 +12,26 @@ const styler = withStyles(theme => ({
         display: "flex",
         flexDirection: "column",
         [theme.breakpoints.down("md")]: {
-            marginLeft: "10vw"
+            marginLeft: theme.spacing(1),
+            minWidth: 280,
+            minHeight: 160
         }
     },
     grow: {
         flexGrow: 1
     },
+    verticalSpace: { 
+        height: 60, 
+        width: "100%",
+        [theme.breakpoints.down("md")]: {
+            height: 38
+        }
+    },
     divider: {
         marginTop: 4,
         marginBottom: 4
     }
+   
 }));
 
 export interface BlogPostCardProps {
@@ -29,6 +39,7 @@ export interface BlogPostCardProps {
         root: string;
         grow: string;
         divider: string;
+        verticalSpace: string;
     };
 }
 
@@ -44,11 +55,11 @@ class BlogPostCardPlaceholder extends React.Component<BlogPostCardProps> {
                     <CardContent>
                         <Toolbar variant="dense">
                             <RoundShape className="show-loading-animation" style={{ width: 24, height: 24, marginRight: 4 }} color={placeholderColor} />
-                            <RoundShape className="show-loading-animation" style={{ width: 24, height: 24 }} color={placeholderColor} />
+                            <RoundShape className="show-loading-animation" style={{ width: 24, height: 24, marginRight: 4 }} color={placeholderColor} />
                             <div className={classes.grow} />
                             <TextRow className="show-loading-animation" style={{ width: "80%" }} color={placeholderColor} />
                         </Toolbar>
-                        <div style={{ height: 60, width: "100%" }} />
+                        <div className={classes.verticalSpace} />
                     </CardContent>
                     <CardActions disableSpacing >
                         <div className={classes.grow} />

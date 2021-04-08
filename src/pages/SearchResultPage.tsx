@@ -13,8 +13,11 @@ const styler = withStyles((theme) => ({
     content: {
         paddingTop: theme.spacing(8),
         flexGrow: 1,
-        padding: theme.spacing(3),
+        padding: theme.spacing(1),
         marginLeft: 240,
+        [theme.breakpoints.down("md")]: {
+            marginLeft: 50
+        }
     },
 }));
 
@@ -30,6 +33,7 @@ interface SearchResultPageState {
     posts: BlogPost[];
     labels: string[];
     keyword?: string;
+    drawer: boolean;
 }
 
 class SearchResultPage extends React.Component<SearchResultPageProps, SearchResultPageState> {
@@ -37,6 +41,7 @@ class SearchResultPage extends React.Component<SearchResultPageProps, SearchResu
     constructor(props: SearchResultPageProps){
         super(props);
         this.handleSearch = this.handleSearch.bind(this);
+        this.handleDrawerToggle = this.handleDrawerToggle.bind(this);
          const search = this.props.location.search;
         const params = this.extractValuesFromQuery(search);
 
@@ -45,6 +50,7 @@ class SearchResultPage extends React.Component<SearchResultPageProps, SearchResu
             cursor: None,
             posts: [],
             labels: [],
+            drawer: false,
             ...params
         };
 
@@ -62,6 +68,7 @@ class SearchResultPage extends React.Component<SearchResultPageProps, SearchResu
                 posts: [],
                 loading: true,
                 cursor: None,
+                drawer: false,
                 ...params
             },()=>this.search(params.labels, params.keyword));
         }
@@ -111,9 +118,15 @@ class SearchResultPage extends React.Component<SearchResultPageProps, SearchResu
         }).catch(()=>this.setState({loading: false}));
     }
 
+    protected handleDrawerToggle(open:boolean) {
+        this.setState({
+            drawer: open
+        });
+    }
+
     public render() {
         const { classes } = this.props;
-        const {loading, posts, labels, keyword} = this.state;
+        const {loading, posts, labels, keyword, drawer} = this.state;
         let text = "All Posts";
         const labelsTextPart = labels.map(lbl=>lbl.split(":").pop()).join(", ");
         if(keyword){
@@ -125,7 +138,7 @@ class SearchResultPage extends React.Component<SearchResultPageProps, SearchResu
         return (
             <div>
                 <Header widgets={<SearchBox onSearch={this.handleSearch} />} />
-                    <LabelDrawer />
+                    <LabelDrawer open={drawer} onToggle={this.handleDrawerToggle}/>
                     <main className={classes.content}>
                             <Typography variant="h5">{text}</Typography>
                                 <Divider/>

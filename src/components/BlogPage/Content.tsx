@@ -28,6 +28,10 @@ const styler = withStyles((theme) => ({
     maxWidth: 400,
     maxHeight: 260,
     marginTop: theme.spacing(2),
+      [theme.breakpoints.down("md")]: {
+            maxWidth: 280,
+          maxHeight: 160
+      }
   },
   description: {
     margin: "auto !important",
@@ -57,6 +61,7 @@ const styler = withStyles((theme) => ({
     maxWidth: 400,
     margin: "auto",
     display: "table",
+      textAlign: "center"
   },
   figcaption: {
     display: "table-row",

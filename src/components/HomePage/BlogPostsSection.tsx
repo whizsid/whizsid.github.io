@@ -46,7 +46,7 @@ class BlogPostsSection extends React.Component<BlogPostsSectionProps, BlogPostsS
         const { loading, posts } = this.state;
 
         if (loading) {
-            return Array.from({ length: 2 }).fill(<Grid item={true}>
+            return Array.from({ length: 3 }).fill(<Grid item={true}>
                 <BlogPostCardPlaceholder />
             </Grid>
             ) as JSX.Element[];

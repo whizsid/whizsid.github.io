@@ -15,10 +15,19 @@ const styler = withStyles(theme => ({
         display: "flex",
         flexDirection: "column",
         [theme.breakpoints.down("md")]: {
-            marginLeft: "10vw"
+            marginLeft: theme.spacing(1),
+            width: 280,
+            height: 160
         },
         backgroundSize: "cover",
         boxShadow: "2px 0px 4px rgba(0,0,0,0.5)"
+    },
+    verticalSpace: { 
+        height: 60, 
+        width: "100%",
+        [theme.breakpoints.down("md")]: {
+            height: 38
+        }
     },
     grow: {
         flexGrow: 1
@@ -52,6 +61,7 @@ export interface BlogPostCardProps extends BlogPost {
         languages: string;
         title: string;
         tag: string;
+        verticalSpace: string;
     };
 }
 
@@ -78,7 +88,7 @@ class BlogPostCard extends React.Component<BlogPostCardProps & RouteComponentPro
                             <div className={classes.grow} />
                             <Typography variant="h6" className={classes.title} >{title}</Typography>
                         </Toolbar>
-                        <div style={{ height: 60, width: "100%" }} />
+                        <div className={classes.verticalSpace} />
                     </CardContent>
                     <CardActions disableSpacing >
                         <div className={classes.grow} />
