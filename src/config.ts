@@ -7,3 +7,4 @@ export const GITHUB_OWNER = "whizsid";
 export const DEFAULT_POST_IMAGE = "images/posts/default.jpg";
 export const GITHUB_CLIENT_ID= decode("MzZlZDcxNWI2Y2ZjZDUyOTliY2U=");
 export const GITHUB_CLIENT_SECRET=decode("N2UyMGQxZTM0MDQyNDRjOGM4MmZmZDc2MTg0MzFmMGYzMDgzNzMxNw==");
+export const SITE_URL = "https://whizsid.github.io/";

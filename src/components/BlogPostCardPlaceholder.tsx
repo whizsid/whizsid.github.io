@@ -20,8 +20,8 @@ const styler = withStyles(theme => ({
     grow: {
         flexGrow: 1
     },
-    verticalSpace: { 
-        height: 60, 
+    verticalSpace: {
+        height: 60,
         width: "100%",
         [theme.breakpoints.down("md")]: {
             height: 38
@@ -31,7 +31,7 @@ const styler = withStyles(theme => ({
         marginTop: 4,
         marginBottom: 4
     }
-   
+
 }));
 
 export interface BlogPostCardProps {

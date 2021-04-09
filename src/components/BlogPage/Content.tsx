@@ -135,7 +135,7 @@ class Content extends React.Component<ContentProps, ContentState> {
             <Link
               key={i}
               to={
-                "/search?label[0]=Language%3A" + encodeURIComponent(lang.name)
+                "/search.html?label[0]=Language%3A" + encodeURIComponent(lang.name)
               }
             >
               <Chip
@@ -195,14 +195,14 @@ class Content extends React.Component<ContentProps, ContentState> {
             color={placeholderColor}
           />
         )}
-        {!loading && !content && <Redirect to="/error" />}
+        {!loading && !content && <Redirect to="/error.html" />}
         <Divider />
         <Toolbar>
           <div className={classes.grow} />
           {post.tags.map((tag, i) => (
             <Link
               key={i}
-              to={"/search?label[0]=Tag%3A" + encodeURIComponent(tag)}
+              to={"/search.html?label[0]=Tag%3A" + encodeURIComponent(tag)}
             >
               <Chip className={classes.label} size="small" label={tag} />
             </Link>

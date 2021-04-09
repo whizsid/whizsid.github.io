@@ -22,8 +22,8 @@ const styler = withStyles(theme => ({
         backgroundSize: "cover",
         boxShadow: "2px 0px 4px rgba(0,0,0,0.5)"
     },
-    verticalSpace: { 
-        height: 60, 
+    verticalSpace: {
+        height: 60,
         width: "100%",
         [theme.breakpoints.down("md")]: {
             height: 38

@@ -17,8 +17,8 @@ class Router extends React.Component {
                 <Switch>
                     <Route path="/" exact={true} component={HomePage} />
                     <Route path="/blog/:id/:name" exact={true} component={BlogPage} />
-                    <Route path="/search" exact={true} component={SearchResultPage} />
-                    <Route path="/error" exact={true} component={NotFoundErrorPage} />
+                    <Route path="/search.html" exact={true} component={SearchResultPage} />
+                    <Route path="/error.html" exact={true} component={NotFoundErrorPage} />
                 </Switch>
             </ReactRouter>
         );

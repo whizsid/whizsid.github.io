@@ -1,17 +1,18 @@
 import { None, Some } from "@hqoss/monads";
 import {
     Chip,
+    Divider,
+    IconButton,
     List,
     ListItem,
     ListItemIcon,
     ListItemText,
     ListSubheader,
-    withStyles,
     Toolbar,
-    IconButton,
-    Divider,
+    withStyles,
 } from "@material-ui/core";
 import Drawer from "@material-ui/core/Drawer";
+import {ChevronLeft, ChevronRight} from "@material-ui/icons";
 import clsx from "clsx";
 import * as React from "react";
 import { TextRow } from "react-placeholder/lib/placeholders";
@@ -24,7 +25,6 @@ import {
     WithCount,
 } from "../../agents/Github";
 import { placeholderColor } from "../../theme";
-import {ChevronRight, ChevronLeft} from "@material-ui/icons";
 
 const isMobile = window.innerWidth<=768;
 
@@ -225,7 +225,7 @@ class LabelDrawer extends React.Component<LabelDrawerProps, LabelDrawerState> {
     protected handleCloseDrawerButtonClick(){
         if(this.props.onToggle){
             this.props.onToggle(false);
-        } 
+        }
     }
 
     render() {
@@ -252,7 +252,7 @@ class LabelDrawer extends React.Component<LabelDrawerProps, LabelDrawerState> {
                             </IconButton>
                 </Toolbar>
                     </Drawer>
-            )
+            );
         }
 
         return (
@@ -303,7 +303,7 @@ class LabelDrawer extends React.Component<LabelDrawerProps, LabelDrawerState> {
                         tags.map((tag, i) => (
                             <Link
                                 key={i}
-                                to={"/search?label[0]=" + tag.item.name}
+                                to={"/search.html?label[0]=" + tag.item.name}
                             >
                                 <ListItem
                                     divider={true}
@@ -371,7 +371,7 @@ class LabelDrawer extends React.Component<LabelDrawerProps, LabelDrawerState> {
                             <Link
                                 key={i}
                                 to={
-                                    "/search?label[0]=Language%3A" +
+                                    "/search.html?label[0]=Language%3A" +
                                     lang.item.name
                                 }
                             >

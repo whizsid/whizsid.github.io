@@ -46,7 +46,7 @@ const styler = withStyles(theme => ({
             marginLeft: theme.spacing(5),
         display: "none",
         [theme.breakpoints.up("sm")]: {
-           display: "block" 
+           display: "block"
         },
     },
     searchIcon: {
@@ -188,7 +188,7 @@ class SearchBox extends React.Component<SearchBoxProps, SearchBoxState> {
         window.setTimeout(() =>
             this.setState({
                 focused: false
-            }), 100);
+            }), 600);
     }
 
     protected onChange(el: React.ChangeEvent<HTMLInputElement>) {
@@ -199,7 +199,7 @@ class SearchBox extends React.Component<SearchBoxProps, SearchBoxState> {
 
     public selectLabel(prefix: string, label: string) {
         const { keyword, labels } = this.state;
-        const modifiedKeyword = keyword?.replace(new RegExp(label + "(\\s|)"), "");
+        const modifiedKeyword = keyword?.replace(new RegExp(label + "(\\s|)","i"), "");
         const labelName = prefix + ":" + label;
 
         this.setState({

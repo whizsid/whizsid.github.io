@@ -1,6 +1,7 @@
 import { None, Option, Some } from "@hqoss/monads";
 import { Divider, Grid, Typography, withStyles } from "@material-ui/core";
 import * as React from "react";
+import {Helmet} from "react-helmet";
 import { RouteComponentProps } from "react-router-dom";
 import { BlogPost, Github } from "../agents/Github";
 import BlogPostCard from "../components/BlogPostCard";
@@ -8,13 +9,14 @@ import BlogPostCardPlaceholder from "../components/BlogPostCardPlaceholder";
 import Header from "../components/Header";
 import LabelDrawer from "../components/Search/LabelDrawer";
 import SearchBox from "../components/SearchBox";
+import {SITE_URL} from "../config";
 
 const styler = withStyles((theme) => ({
     content: {
         paddingTop: theme.spacing(8),
         flexGrow: 1,
         padding: theme.spacing(1),
-        marginLeft: 240,
+        marginLeft: 258,
         [theme.breakpoints.down("md")]: {
             marginLeft: 50
         }
@@ -127,20 +129,44 @@ class SearchResultPage extends React.Component<SearchResultPageProps, SearchResu
     public render() {
         const { classes } = this.props;
         const {loading, posts, labels, keyword, drawer} = this.state;
-        let text = "All Posts";
         const labelsTextPart = labels.map(lbl=>lbl.split(":").pop()).join(", ");
+        let text = "";
         if(keyword){
-            text = `Search results for "${keyword}"`;
+            text += "for \""+ keyword + "\"";
         }
         if(labels.length>0){
-            text += " in "+labelsTextPart+" categorie(s)";
+            if(keyword){
+                text += " and ";
+            } else {
+                text += "for ";
+            }
+            text += labelsTextPart;
+        }
+        const textWithPrefix = "Posts "+text;
+        let keywords: string[] = ["blog", "beginner", "advanced", "step by step"];
+        if(keyword){
+            keywords = keywords.concat( keyword.split(" "));
+        }
+        if(labels.length>0){
+            keywords = keywords.concat(labels.map(lbl=>lbl.split(":").pop() as string));
         }
         return (
             <div>
+                <Helmet>
+                    <title>WhizSid | {textWithPrefix}</title>
+                    <meta property="og:title" content="WhizSid | Portfolio & Blog" />
+            <meta name="description" content={"You are lucky today. There are ten posts found "+text+"."}/>
+                <meta name="keywords" content={
+                    keywords.join(", ")
+                } />
+<meta property="og:type" content="website" />
+<meta property="og:url" content={SITE_URL+"search.html"} />
+    <meta property="og:image" content={SITE_URL + "img/opengraph.png"} />
+                </Helmet>
                 <Header widgets={<SearchBox onSearch={this.handleSearch} />} />
                     <LabelDrawer open={drawer} onToggle={this.handleDrawerToggle}/>
                     <main className={classes.content}>
-                            <Typography variant="h5">{text}</Typography>
+                            <Typography variant="h5">{textWithPrefix}</Typography>
                                 <Divider/>
                                     <Grid container={true}>
 
