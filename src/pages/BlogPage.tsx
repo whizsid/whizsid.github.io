@@ -1,7 +1,6 @@
 import { Grid, withStyles } from "@material-ui/core";
 import GitalkComponent from "gitalk-pr/dist/gitalk-component";
 import * as React from "react";
-import { Helmet } from "react-helmet";
 import { Redirect, RouteComponentProps } from "react-router";
 import { BlogPost, Github } from "../agents/Github";
 import Content from "../components/BlogPage/Content";
@@ -9,9 +8,8 @@ import ContentPlaceholder from "../components/BlogPage/ContentPlaceholder";
 import Recommended from "../components/BlogPage/Recommended";
 import Header from "../components/Header";
 import SearchBox from "../components/SearchBox";
-import { GITHUB_CLIENT_ID, GITHUB_CLIENT_SECRET, SITE_URL } from "../config";
+import { GITHUB_CLIENT_ID, GITHUB_CLIENT_SECRET } from "../config";
 import "../types/gitalk-pr/dist/react-component.d.ts";
-import { titleToLink } from "../utils";
 
 const styler = withStyles((theme) => ({
     pageWrapper: {},
@@ -86,62 +84,6 @@ class BlogPage extends React.Component<BlogPageProps, BlogPageState> {
 
         return (
             <div className={classes.pageWrapper}>
-                {blogPost && (
-                    <Helmet>
-                        <title>WhizSid | {blogPost.title}</title>
-                        <meta
-                            property="og:title"
-                            content={"WhizSid | " + blogPost.title}
-                        />
-                        <meta
-                            name="description"
-                            content={blogPost.description}
-                        />
-                        <meta
-                            name="keywords"
-                            content={blogPost.languages
-                                .map((lng) => lng.name)
-                                .concat(blogPost.tags)
-                                .concat([
-                                    "blog",
-                                    "beginner",
-                                    "advanced",
-                                    "step by step",
-                                ])
-                                .join(", ")}
-                        />
-                        <meta property="og:type" content="article" />
-                        <meta property="og:article:published_time" content={blogPost.createdAt} />
-                        <meta property="og:article:author:first_name" content="Ramesh" />
-                        <meta property="og:article:author:last_name" content="Kithsiri" />
-                        <meta property="og:article:author:username" content="whizsid" />
-                            <meta property="og:article:author:section" content="Programming" />
-                                {blogPost.tags.map((tg,i)=>
-                                (<meta property="og:article:tag" key={i} content={tg} />)
-                                    )}
-                            {blogPost.languages.map((lng,i)=>
-                                (<meta property="og:article:tag" key={i} content={lng.name} />)
-                                    )}
-                        <meta
-                            property="og:url"
-                            content={
-                                SITE_URL +
-                                "blog/" +
-                                blogPost.id +
-                                "/" +
-                                titleToLink(blogPost.title) +
-                                ".html"
-                            }
-                        />
-                        <meta
-                            property="og:image"
-                            content={
-                                "https://github.com/whizsid/whizsid.github.io/raw/src/" +
-                                blogPost.imagePath
-                            }
-                        />
-                    </Helmet>
-                )}
                 <Header widgets={<SearchBox onSearch={this.handleSearch} />} />
                 <Grid
                     className={classes.container}

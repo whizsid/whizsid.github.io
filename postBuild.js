@@ -1,271 +1,143 @@
+const { decode } = require("js-base64");
+const axios = require("axios");
 const fs = require("fs");
-const glob = require('glob');
-const path = require('path');
-const ini = require('ini');
-const sizeOf = require('image-size');
 
-const URL = "https://whizsid.github.io/";
+const GITHUB_ACCESS_TOKEN = decode(
+    "Z2hwX1FCTDlnZUJUdDVuaXJuWWNqd29KREVSUGlMZ0xtUzJ6T1I5YQ=="
+);
+const GITHUB_API_URL = "https://api.github.com/graphql";
+const GITHUB_REPOSITORY = "whizsid.github.io";
+const GITHUB_PAGE = "https://whizsid.github.io/";
+const GITHUB_OWNER = "whizsid";
 
-fs.rmdirSync('./build/api',{recursive: true});
-fs.rmdirSync('./build/projects',{recursive: true});
-fs.rmdirSync('./build/blog',{recursive: true});
-fs.rmdirSync('./build/posts',{recursive: true});
-fs.rmdirSync('./build/tag',{recursive: true});
-fs.rmdirSync('./build/lang',{recursive: true});
+const indexContent = fs.readFileSync("./build/index.html").toString();
+const indexHeadEnd = indexContent.search("</head>");
 
-fs.mkdirSync('./build/api/projects',{recursive: true});
-fs.mkdirSync('./build/api/posts',{recursive: true});
-fs.mkdirSync('./build/api/timeline',{recursive: true});
-fs.mkdirSync('./build/projects/',{recursive: true});
-fs.mkdirSync('./build/blog/',{recursive: true});
-fs.mkdirSync('./build/tag/',{recursive: true});
-fs.mkdirSync('./build/lang/',{recursive: true});
-fs.mkdirSync('./build/posts/',{recursive: true});
-fs.writeFileSync('./build/api/timeline.json',JSON.stringify({
-    success: true,
-    dates: []
-}));
-
-fs.copyFileSync('./data/social.json','./build/api/social.json');
-fs.copyFileSync('./data/pinned.json','./build/api/pinned.json');
-fs.copyFileSync('./data/langs.json','./build/api/langs.json');
-
-const categories = [
-    {json: "languages",name: "langs"},
-    {json: "tags",name: "tags"},
-];
-
-var sitemap = fs.openSync('./build/sitemap.xml','w');
-
-fs.writeSync(sitemap,'<?xml version="1.0" encoding="UTF-8"?><urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">');
-
-/**
- * Make a HTML Page for
- * @param {string} filename filename without forward slash or `./build/`
- * @param {object} data Object with `title`,`description`,`image`,`keywords` properties
- */
-function makeHTMLPage(filename,data){
-    if(fs.existsSync('./build/index.html')){
-        let template = fs.readFileSync('./build/index.html').toString();
-
-        template = template.split("{{ title }}").join( data.title);
-        template = template.split("{{ description }}").join(data.description);
-        
-        const image = data.image?data.image:"img/opengraph.png";
-
-        template = template.split("{{ image }}").join( URL + image);
-
-        template = template.split("{{ url }}").join(URL + filename);
-
-        template = template.split("{{ keywords }}").join(data.keywords);
-
-        sizeOf('public/'+image, function (err, dimensions) {
-
-            template = template.split("{{ image_width }}").join( dimensions.width);
-            template = template.split("{{ image_height }}").join( dimensions.height);
-            fs.writeFileSync( path.join("./build/"+filename),template);
-        });
-
-        if(!data.date){
-            var today = new Date();
-            var dd = String(today.getDate()).padStart(2, '0');
-            var mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
-            var yyyy = today.getFullYear();
-
-            today = yyyy + '-' + mm + '-' + dd;
-        } else {
-            today = data.date;
-        }
-        fs.writeFileSync(sitemap,`<url><loc>${URL + filename}</loc><lastmod>${today}</lastmod><changefreq>${data.freq}</changefreq><priority>${data.priority}</priority></url>`)
-
-    }
+if (!fs.existsSync("./build/blog")) {
+    fs.mkdirSync("./build/blog");
 }
 
-glob("data/projects/*.json",(err,matches)=>{
-
-    for(const match of matches){
-
-        const projectName = path.basename(match,'.json');
-
-        const content = fs.readFileSync(match);
-
-        const project = JSON.parse(content);
-
-        fs.writeFileSync(path.join('./build/api/projects',projectName+'.json'), content);
-
-        for (const cat of categories){
-
-            for (const name of project[cat.json]){
-
-                let catBased = {
-                    success: true,
-                    projects: [],
-                    posts: []
-                };
-
-                const catProjectsPath = path.join('./build/api/',cat.name,name+'.json');
-
-                if(fs.existsSync(catProjectsPath)){
-                    const catProjectsContent = fs.readFileSync(catProjectsPath);
-
-                    catBased = JSON.parse(catProjectsContent);
-                }
-
-                if(!catBased.projects.includes(projectName))
-                    catBased.projects.push(projectName);
-
-                fs.mkdirSync('./build/api/'+cat.name,{recursive: true});
-
-                fs.writeFileSync(catProjectsPath,JSON.stringify(catBased));
-
+async function fetchNextPage(page, cursor) {
+    if (page != 1 && !cursor) {
+        return;
+    }
+    return axios
+        .post(
+            GITHUB_API_URL,
+            {
+                query: `query {
+                      repository(name:"${GITHUB_REPOSITORY}",owner:"${GITHUB_OWNER}"){
+                         pullRequests(labels:"Post", first:100){
+                          nodes {
+                            title,
+                            number,
+                            createdAt,
+                            updatedAt,
+                            labels(first:100){
+                              nodes {
+                                name
+                              }
+                            }
+                            bodyText,
+                            files(first:5){
+                              nodes {
+                                path
+                              }
+                            }
+                          },
+                          pageInfo {
+                            hasNextPage,
+                            endCursor
+                          }
+                        }
+                      }
+                    }`,
+            },
+            {
+                headers: {
+                    Authorization: `bearer ${GITHUB_ACCESS_TOKEN}`,
+                },
             }
-        }
-        
+        )
+        .then((res) => {
+            const pullRequests = res.data.data.repository.pullRequests;
+            const endCursor = pullRequests.pageInfo.hasNextPage
+                ? pullRequests.pageInfo.endCursor
+                : null;
+
+            for (let i = 0; i < pullRequests.nodes.length; i++) {
+                createPage(pullRequests.nodes[i]);
+            }
+
+            return fetchNextPage(page + 1, endCursor);
+        })
+        .catch((res) => {
+            throw res;
+        });
+}
+
+fetchNextPage(1, null);
+
+async function createPage(node) {
+    if (!fs.existsSync("./build/blog/" + node.number)) {
+        fs.mkdirSync("./build/blog/" + node.number);
     }
 
-    glob("data/blog/**/*.md",(err,matches)=>{
+    const path =
+        "./build/blog/" + node.number + "/" + titleToLink(node.title) + ".html";
 
-        for( const match of matches){
-            const content = fs.readFileSync(match).toString();
-    
-            let exploded = content.split('```');
-    
-            exploded.pop();
-    
-            let config = exploded.pop();
-            if(config.startsWith('ini')){
-                config = config.substr(4);
-            }
-    
-            const postContent = exploded.join('```');
-    
-            const parsedConfig = ini.parse(config);
-    
-            const postName = match.substr(10,match.length-13).split('/').join('-');
-    
-            const post = {
-                title: parsedConfig.title,
-                description: parsedConfig.description,
-                image: parsedConfig.image,
-                languages: parsedConfig.languages.split(','),
-                tags:parsedConfig.tags.split(','),
-                keywords: parsedConfig.keywords,
-                success: true,
-                date: parsedConfig.date
-            }
-    
-            fs.writeFileSync(path.join('./build/api/posts',postName+'.json'), JSON.stringify(post));
-    
-            for (const cat of categories){
-    
-                for (const name of post[cat.json]){
-    
-                    let catBased = {
-                        success: true,
-                        projects: [],
-                        posts: []
-                    };
-    
-                    const catPostsPath = path.join('./build/api/',cat.name,name+'.json');
-    
-                    if(fs.existsSync(catPostsPath)){
-                        const catPostsContent = fs.readFileSync(catPostsPath);
-    
-                        catBased = JSON.parse(catPostsContent);
-                    }
-    
-                    if(!catBased.posts.includes(postName))
-                        catBased.posts.push(postName);
-    
-                    fs.mkdirSync('./build/api/'+cat.name,{recursive: true});
-    
-                    fs.writeFileSync(catPostsPath,JSON.stringify(catBased));
-    
-                }
-            }
-    
-            fs.writeFileSync(path.join('./build/posts',postName+'.md'),postContent);
-    
-            const date = post.date.split('-');
-    
-            fs.mkdirSync(path.join('./build/api/timeline/',date[0]),{recursive: true});
-    
-            let datePosts = {
-                success: true,
-                posts: []
-            };
-    
-            const jsonPath = path.join('./build/api/timeline',date[0],date[1]+'.json');
-    
-            if(fs.existsSync(jsonPath)){
-                datePosts = JSON.parse(fs.readFileSync(jsonPath).toString());
-            }
-    
-            datePosts.posts.push(postName);
-    
-            fs.writeFileSync(jsonPath,JSON.stringify(datePosts));
-    
-            const timeline = JSON.parse(fs.readFileSync('./build/api/timeline.json').toString());
-    
-            if(!timeline.dates.includes(post.date)){
-                timeline.dates.push(post.date);
-            }
-    
-            fs.writeFileSync('./build/api/timeline.json',JSON.stringify(timeline));
-    
-            makeHTMLPage("blog/"+postName+".html",{
-                title: post.title,
-                description: post.description,
-                image: post.image,
-                keywords: post.keywords,
-                date: post.date,
-                freq: 'monthly',
-                priority: 1.0
-            });
-        }
-    
-        glob("build/api/tags/*.json",(err,matches)=>{
-            for(const match of matches){
-                const tagName = path.basename(match,'.json');
+    let opengraphContents = `<meta property="og:title" content="WhizSid| ${node.title}"/>`;
+    opengraphContents += `<meta name="description" property="og:description" content="${node.bodyText}" />`;
+    opengraphContents += `<meta property="keywords" content="${node.labels.nodes
+        .map((nd) => nd.name.split(":").pop())
+        .concat(["blog", "beginner", "advanced", "step by step"])
+        .join(", ")}" />`;
+    opengraphContents += '<meta property="og:type" content="article"/>';
+    opengraphContents += `<meta property="og:article:published_time" content="${node.createdAt}"/>`;
+    opengraphContents += `<meta property="og:article:modified_time" content="${node.updatedAt}"/>`;
+    opengraphContents += `<meta name="author" content="Ramesh Kithsiri"/>`;
+    opengraphContents += `<meta property="og:article:author:first_name" content="Ramesh"/>`;
+    opengraphContents += `<meta property="og:article:author:last_name" content="Kithsiri"/>`;
+    opengraphContents += `<meta property="og:article:author:username" content="whizsid"/>`;
+    opengraphContents += `<meta property="fb:app_id" content="129537969147552"/>`;
+    opengraphContents += `<meta property="og:article:section" content="Software Engineering"/>`;
+    for (let i = 0; i < node.labels.nodes.length; i++) {
+        opengraphContents += `<meta property="og:article:tag" content="${node.labels.nodes[
+            i
+        ].name
+            .split(":")
+            .pop()}"/>`;
+    }
+    let imagePath = node.files.nodes.filter(
+        (f) => f.path.endsWith(".png") || f.path.endsWith(".jpg")
+    )[0];
+    if (!imagePath) {
+        imagePath = GITHUB_PAGE + "img/opengraph.png";
+    } else {
+        imagePath = `https://github.com/${GITHUB_OWNER}/${GITHUB_REPOSITORY}/raw/src/${imagePath.path}`;
+    }
+    opengraphContents += `<meta property="og:image" content="${imagePath}"/>`;
+    opengraphContents += `<meta property="og:url" content="${
+        GITHUB_PAGE +
+        "blog/" +
+        node.number +
+        "/" +
+        titleToLink(node.title) +
+        ".html"
+    }"/>`;
 
-                makeHTMLPage("tag/"+tagName+".html",{
-                    title: "WhizSid's blog posts about "+tagName,
-                    description: "Visit to see more trending posts about "+tagName+" written by WhizSid.",
-                    keywords: tagName+",article,Technology,WhizSid,PHP,React,Laravel,Rust",
-                    freq: 'daily',
-                    priority: 0.5
-                });
-            }
+    if (fs.existsSync(path)) {
+        fs.rmSync(path);
+    }
 
-           
-            glob("build/api/langs/*.json",(err,matches)=>{
-                for(const match of matches){
-                    const langName = path.basename(match,'.json');
+    fs.writeFileSync(
+        path,
+        indexContent.substr(0, indexHeadEnd) +
+            opengraphContents +
+            indexContent.substr(indexHeadEnd + 7, indexContent.length)
+    );
+}
 
-                    makeHTMLPage("lang/"+langName+".html",{
-                        title: "WhizSid's blog posts about "+langName,
-                        description: "Visit to see more trending posts about "+langName+" written by WhizSid.",
-                        keywords: langName+",article,Technology,WhizSid,PHP,React,Laravel,Rust",
-                        freq: 'daily',
-                        priority: 0.5
-                    });
-                }
-
-                makeHTMLPage('index.html',{
-                    title: "Blog and projects of WhizSid",
-                    description: "Visit to see WhizSid's projects and blog posts.",
-                    keywords: "WhizSid,Technology,IT,Laravel,React,Frontend,JavaScript,NodeJS,Tutorial,Web Design,Web Developing,Sinhala,English",
-                    freq: 'daily',
-                    priority: 0.7
-                });
-
-
-
-                fs.writeFileSync(sitemap,'</urlset>');
-                fs.closeSync(sitemap);
-            });
-        });
-
-    });
- 
-});
+function titleToLink(title) {
+    return title.split(" ").join("-").toLowerCase();
+}
