@@ -20,7 +20,7 @@ if (!fs.existsSync("./build/blog")) {
 // Search Page
 const path = "./build/search.html";
 
-let opengraphContents = `<meta property="og:title" content="WhizSid| Blog"/>`;
+let opengraphContents = `<meta property="og:title" content="WhizSid | Blog"/>`;
 opengraphContents += `<meta name="description" property="og:description" content="Visit my blog site to search all blog posts related to programming" />`;
 opengraphContents += `<meta property="keywords" content="${[
     "blog",
@@ -51,6 +51,38 @@ fs.writeFileSync(
         opengraphContents +
         indexContent.substr(indexHeadEnd + 7, indexContent.length)
 );
+
+// Index Page
+const indexPath = "./build/index.html";
+
+let indexOpengraphContents = `<meta property="og:title" content="WhizSid | Portfolio & Blog"/>`;
+indexOpengraphContents += `<meta name="description" property="og:description" content="I am working as a software\
+            engineer at Arimac. And also I am an undergraduate at SLIIT.\
+            This is my personal website and the blog site.\
+            You can check my latest blog posts and statuses with this website." />`;
+indexOpengraphContents += `<meta property="keywords" content="whizsid, rust, typescript, php, github,\
+            laravel, rust, sri lanka, sliit, arimac, ceylon linux, nvision, masterbrand\
+            matugama, colombo, meegahathanna, experienced, developer, software engineer,\
+            salesforce, iot, docker" />`;
+indexOpengraphContents += '<meta property="og:type" content="website"/>';
+indexOpengraphContents += `<meta property="fb:app_id" content="129537969147552"/>`;
+imagePath = GITHUB_PAGE + "img/opengraph.png";
+indexOpengraphContents += `<meta property="og:image" content="${imagePath}"/>`;
+indexOpengraphContents += `<meta property="og:url" content="${
+    GITHUB_PAGE
+}"/>`;
+
+if (fs.existsSync(indexPath)) {
+    fs.rmSync(indexPath);
+}
+
+fs.writeFileSync(
+    indexPath,
+    indexContent.substr(0, indexHeadEnd) +
+        indexOpengraphContents +
+        indexContent.substr(indexHeadEnd + 7, indexContent.length)
+);
+
 
 async function fetchNextPage(page, cursor) {
     if (page != 1 && !cursor) {
