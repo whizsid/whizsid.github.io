@@ -9,6 +9,10 @@ import SearchResultPage from "./pages/SearchResultPage";
 
 const history = createBrowserHistory();
 
+history.listen(_ => {
+    window.scrollTo(0, 0);
+});
+
 class Router extends React.Component {
 
     public render(){
