@@ -51,7 +51,6 @@ class SearchResultPage extends React.Component<SearchResultPageProps, SearchResu
             loading: true,
             cursor: None,
             posts: [],
-            labels: [],
             drawer: false,
             ...params
         };

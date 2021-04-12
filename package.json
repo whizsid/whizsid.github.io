@@ -19,12 +19,14 @@
     "debounce": "^1.2.1",
     "gitalk-pr": "^1.7.3",
     "js-base64": "^3.6.0",
+    "leaflet": "^1.7.1",
     "react": "^16.13.0",
     "react-dom": "^16.13.0",
     "react-gauge-chart": "^0.3.0",
     "react-github-calendar": "^2.0.2",
     "react-helmet": "^6.1.0",
     "react-html-parser": "^2.0.2",
+    "react-leaflet": "^3.1.0",
     "react-markdown": "^5.0.3",
     "react-placeholder": "^4.0.3",
     "react-router-dom": "^5.1.2",
@@ -36,7 +38,7 @@
     "simple-icons": "^4.3.0",
     "slick-carousel": "^1.8.1",
     "tslint": "^6.1.0",
-    "typescript": "~3.7.2"
+    "typescript": "^4.2.4"
   },
   "scripts": {
     "start": "react-scripts start",
@@ -63,6 +65,7 @@
   },
   "devDependencies": {
     "@hqoss/monads": "^0.4.0",
+    "@types/leaflet": "^1.7.0",
     "@types/react-gauge-chart": "^0.2.0",
     "@types/react-helmet": "^6.1.0",
     "@types/react-router-dom": "^5.1.3",
