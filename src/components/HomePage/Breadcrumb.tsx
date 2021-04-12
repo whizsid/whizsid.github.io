@@ -85,6 +85,9 @@ const styler = withStyles(theme=>({
         [theme.breakpoints.down("md")]:{
             display: "block"
         }
+    },
+    githubCalendarTitle: {
+        color: theme.palette.common.white
     }
 }));
 
@@ -108,6 +111,7 @@ interface BreadcrumbProps {
         whizsid: string;
         mySelf: string;
         githubCalendar: string;
+        githubCalendarTitle: string;
     };
 }
 
@@ -141,9 +145,9 @@ class Breadcrumb extends React.Component<BreadcrumbProps> {
                 </Grid>
                 <Grid className={classes.breadcrumbRight} item xs={12} md={6}>
                     <Typography className={classes.sid} variant="h2">Sid</Typography>
-                    <Typography className={classes.mySelf} variant="caption">"I am a self-taught software engineer and currently working on Nvision IT Solutions (PVT) LTD. And I am also an undergraduate at SLIIT."</Typography>
+                    <Typography className={classes.mySelf} variant="caption">"I am a self-taught software engineer and currently working at Arimac. And I am also an undergraduate at SLIIT."</Typography>
                     <a href="https://github.com/whizsid" className={classes.githubCalendar}>
-                        <Typography>Opensource Contributions</Typography>
+                        <Typography className={classes.githubCalendarTitle} >Opensource Contributions</Typography>
                         <Calendar theme={githubCalendarTheme} username="whizsid" />
                     </a>
                 </Grid>

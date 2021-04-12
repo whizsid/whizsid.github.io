@@ -17,6 +17,41 @@ if (!fs.existsSync("./build/blog")) {
     fs.mkdirSync("./build/blog");
 }
 
+// Search Page
+const path = "./build/search.html";
+
+let opengraphContents = `<meta property="og:title" content="WhizSid| Blog"/>`;
+opengraphContents += `<meta name="description" property="og:description" content="Visit my blog site to search all blog posts related to programming" />`;
+opengraphContents += `<meta property="keywords" content="${[
+    "blog",
+    "beginner",
+    "advanced",
+    "step by step",
+    "php",
+    "react",
+    "laravel",
+    "symfony",
+    "rust",
+].join(", ")}" />`;
+opengraphContents += '<meta property="og:type" content="website"/>';
+opengraphContents += `<meta property="fb:app_id" content="129537969147552"/>`;
+imagePath = GITHUB_PAGE + "img/opengraph.png";
+opengraphContents += `<meta property="og:image" content="${imagePath}"/>`;
+opengraphContents += `<meta property="og:url" content="${
+    GITHUB_PAGE + "search.html"
+}"/>`;
+
+if (fs.existsSync(path)) {
+    fs.rmSync(path);
+}
+
+fs.writeFileSync(
+    path,
+    indexContent.substr(0, indexHeadEnd) +
+        opengraphContents +
+        indexContent.substr(indexHeadEnd + 7, indexContent.length)
+);
+
 async function fetchNextPage(page, cursor) {
     if (page != 1 && !cursor) {
         return;

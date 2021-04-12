@@ -9539,10 +9539,10 @@ react-gauge-chart@^0.3.0:
   dependencies:
     d3 "^5.12.0"
 
-react-github-calendar@^2.0.1:
-  version "2.0.1"
-  resolved "https://registry.yarnpkg.com/react-github-calendar/-/react-github-calendar-2.0.1.tgz#34ad3e3fef3d30e721b199923829e8db26b0b8f4"
-  integrity sha512-65LzFz3RqBvVwfaJaiZK9B3EhCqtVfRmwtqMtFXc0GluLArEgP9V6LAputbTAtlojrsNdLjYdaUDp096r8DL/A==
+react-github-calendar@^2.0.2:
+  version "2.0.2"
+  resolved "https://registry.yarnpkg.com/react-github-calendar/-/react-github-calendar-2.0.2.tgz#a8cd23a80575f2d50ccf6b237734e4e628e22e19"
+  integrity sha512-SkW4qWRGvNxzsAeukdbrIRWyEHSwkbnr+YdfHaXg/jE6KOHmZL0lxTty1kY0l62f9naeVHsmNxeLCPC748Fmtw==
   dependencies:
     date-fns "^2.14.0"
     tinycolor2 "^1.4.0"

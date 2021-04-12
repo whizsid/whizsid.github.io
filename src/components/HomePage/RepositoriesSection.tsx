@@ -11,7 +11,7 @@ import RepositoryCardPlaceholder from "./RepositoryCardPlaceholder";
 const styler = withStyles(theme=>({
     root: {
         background: "#f6f8fa",
-        borderBottom: "solid 32px #8956ff"
+        borderBottom: "solid 32px #f0f0f0"
     },
     header: {
         background: "#b0b0b0",
@@ -19,7 +19,9 @@ const styler = withStyles(theme=>({
         borderBottom: "2px solid #f0f0f0",
         position: "relative",
         height: 42,
-        textAlign: "center"
+        fontWeight: "bold",
+        paddingTop: theme.spacing(1),
+        paddingLeft: theme.spacing(1)
     }
 
 }));
@@ -129,7 +131,7 @@ class RepositoriesSection extends React.Component <RepositoriesSectionProps, Rep
                     ]}
                 />
                 <div className={classes.header}>
-                    <Typography color="inherit" variant="h4">Opensource Projects</Typography>
+                    <Typography color="inherit" variant="h6">Opensource Projects</Typography>
                 </div>
                 {loading?(
                 <Slider {...slickSettings}>

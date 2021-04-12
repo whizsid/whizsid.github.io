@@ -7,9 +7,7 @@ const simpleicons = require("simple-icons");
 const styler = withStyles((theme: Theme) => ({
     header: {
         background: "#606060",
-        paddingTop: "8px",
-        paddingBottom: "8px",
-        textAlign: "center",
+        padding: theme.spacing(1),
         color: theme.palette.common.white
     },
     container: {
@@ -30,6 +28,7 @@ interface Icons {
     react?: SimpleIcon;
     symfony?: SimpleIcon;
     rust?: SimpleIcon;
+    "node-dot-js"?: SimpleIcon;
 }
 
 interface SkillsSectionState {
@@ -47,7 +46,32 @@ const skills: Skill[] = [
         title: "Laravel",
         iconName: "laravel",
         percent: 0.8
-    }
+    },
+    {
+        title: "PHP",
+        iconName: "php",
+        percent: 0.9
+    },
+    {
+        title: "React",
+        iconName: "react",
+        percent: 0.8
+    },
+    {
+        title: "Symfony",
+        iconName: "symfony",
+        percent: 0.7
+    },
+    {
+        title: "Rust",
+        iconName: "rust",
+        percent: 0.6
+    },
+    {
+        title: "NodeJS",
+        iconName: "node-dot-js",
+        percent: 0.5
+    },
 ];
 
 class SkillsSection extends React.Component<SkillsSectionProps, SkillsSectionState> {
@@ -76,8 +100,8 @@ class SkillsSection extends React.Component<SkillsSectionProps, SkillsSectionSta
 
         return (
             <div className={classes.container} >
-                <Typography className={classes.header} variant="h5"> Skills </Typography>
-                <Grid container={true}>
+                <Typography className={classes.header} variant="h6"> Skills </Typography>
+                <Grid container={true} justify="center" >
                     {skills.map((skill, i) => (
                         icons[skill.iconName] && (<SkillGauge key={i} percent={skill.percent} language={skill.title} icon={icons[skill.iconName] as SimpleIcon} />)
                     ))}

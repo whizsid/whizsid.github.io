@@ -6,7 +6,8 @@ import { SimpleIcon } from "simple-icons";
 
 const useStyles = makeStyles(theme => ({
     container: {
-        position: "relative"
+        position: "relative",
+        marginLeft: theme.spacing(2)
     },
     gauge: {
         marginTop: "20px",
@@ -45,7 +46,7 @@ const SkillGauge: React.FunctionComponent<SkillGaugeProps> = (props: SkillGaugeP
                 className={styles.gauge}
                 style={{ width: "180px" }}
                 nrOfLevels={30}
-                colors={["#FF5F6D", "#FFC371"]}
+                colors={["#404040", "#"+props.icon.hex]}
                 arcWidth={0.3}
                 id="laravel"
                 percent={props.percent}

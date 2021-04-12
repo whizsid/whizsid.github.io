@@ -7,6 +7,8 @@ import Breadcrumb from "../components/HomePage/Breadcrumb";
 import RepositoriesSection from "../components/HomePage/RepositoriesSection";
 import SkillsSection from "../components/HomePage/SkillsSection";
 import {SITE_URL} from "../config";
+import {Button} from "@material-ui/core";
+import {Link} from "react-router-dom";
 
 class HomePage extends React.Component {
     public render() {
@@ -26,7 +28,9 @@ class HomePage extends React.Component {
 <meta property="og:url" content={SITE_URL} />
     <meta property="og:image" content={SITE_URL + "img/opengraph.png"} />
                 </Helmet>
-                <Header homepage={true}/>
+                    <Header widgets={
+                            <Button style={{marginLeft: 16, borderColor: "#fff"}} variant="outlined" size="small" component={Link} to="/search.html" >Visit Blog</Button>
+                    } homepage={true}/>
             <Breadcrumb />
             <RepositoriesSection />
             <BlogPostsSection />
