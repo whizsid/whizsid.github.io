@@ -67,6 +67,10 @@ const styler = withStyles((theme) => ({
     display: "table-row",
     textAlign: "justify",
     fontStyle: "italic",
+    [theme.breakpoints.down("sm")]: {
+        padding: theme.spacing(0,2),
+        display: "block"
+    }
   },
 }));
 

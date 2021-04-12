@@ -1,4 +1,10 @@
-import { Grid, withStyles } from "@material-ui/core";
+import {
+    Grid,
+    withStyles,
+    Divider,
+    Typography,
+    Button,
+} from "@material-ui/core";
 import GitalkComponent from "gitalk-pr/dist/gitalk-component";
 import * as React from "react";
 import { Redirect, RouteComponentProps } from "react-router";
@@ -10,8 +16,10 @@ import Header from "../components/Header";
 import SearchBox from "../components/SearchBox";
 import { GITHUB_CLIENT_ID, GITHUB_CLIENT_SECRET, SITE_URL } from "../config";
 import "../types/gitalk-pr/dist/react-component.d.ts";
-import {Helmet} from "react-helmet";
-import {titleToLink} from "../utils";
+import { Helmet } from "react-helmet";
+import { FacebookShareButton, TwitterShareButton, LinkedinShareButton, RedditShareButton } from "react-share";
+import { titleToLink } from "../utils";
+import { Facebook, Twitter, LinkedIn, Reddit } from "@material-ui/icons";
 
 const styler = withStyles((theme) => ({
     pageWrapper: {},
@@ -27,6 +35,28 @@ const styler = withStyles((theme) => ({
     commentSection: {
         margin: theme.spacing(0, 4),
     },
+    recommended: {
+        padding: theme.spacing(1),
+    },
+    socialIcon: {
+        marginRight: theme.spacing(1),
+    },
+    socialButton: {
+        display: "flex",
+        paddingRight: 40,
+        marginTop: theme.spacing(1),
+    },
+    shareText: {
+        flexGrow: 1,
+        width: "15.3vw",
+        textAlign: "center",
+        [theme.breakpoints.down("sm")]: {
+            width: "65vw"
+        }
+    },
+    shareDiv: {
+        textAlign: "center"
+    }
 }));
 
 interface BlogPageProps extends RouteComponentProps<{ id: string }> {
@@ -35,6 +65,11 @@ interface BlogPageProps extends RouteComponentProps<{ id: string }> {
         contentGrid: string;
         container: string;
         commentSection: string;
+        recommended: string;
+        socialIcon: string;
+        socialButton: string;
+        shareText: string;
+        shareDiv: string;
     };
 }
 
@@ -86,7 +121,7 @@ class BlogPage extends React.Component<BlogPageProps, BlogPageState> {
 
         return (
             <div className={classes.pageWrapper}>
-                                {blogPost && (
+                {blogPost && (
                     <Helmet>
                         <title>WhizSid | {blogPost.title}</title>
                         <meta
@@ -111,17 +146,40 @@ class BlogPage extends React.Component<BlogPageProps, BlogPageState> {
                                 .join(", ")}
                         />
                         <meta property="og:type" content="article" />
-                        <meta property="og:article:published_time" content={blogPost.createdAt} />
-                        <meta property="og:article:author:first_name" content="Ramesh" />
-                        <meta property="og:article:author:last_name" content="Kithsiri" />
-                        <meta property="og:article:author:username" content="whizsid" />
-                            <meta property="og:article:author:section" content="Programming" />
-                                {blogPost.tags.map((tg,i)=>
-                                (<meta property="og:article:tag" key={i} content={tg} />)
-                                    )}
-                            {blogPost.languages.map((lng,i)=>
-                                (<meta property="og:article:tag" key={i} content={lng.name} />)
-                                    )}
+                        <meta
+                            property="og:article:published_time"
+                            content={blogPost.createdAt}
+                        />
+                        <meta
+                            property="og:article:author:first_name"
+                            content="Ramesh"
+                        />
+                        <meta
+                            property="og:article:author:last_name"
+                            content="Kithsiri"
+                        />
+                        <meta
+                            property="og:article:author:username"
+                            content="whizsid"
+                        />
+                        <meta
+                            property="og:article:author:section"
+                            content="Programming"
+                        />
+                        {blogPost.tags.map((tg, i) => (
+                            <meta
+                                property="og:article:tag"
+                                key={i}
+                                content={tg}
+                            />
+                        ))}
+                        {blogPost.languages.map((lng, i) => (
+                            <meta
+                                property="og:article:tag"
+                                key={i}
+                                content={lng.name}
+                            />
+                        ))}
                         <meta
                             property="og:url"
                             content={
@@ -173,7 +231,120 @@ class BlogPage extends React.Component<BlogPageProps, BlogPageState> {
                         )}
                     </Grid>
 
-                    <Grid item={true} md={3} xs={12}>
+                    <Grid
+                        item={true}
+                        className={classes.recommended}
+                        md={3}
+                        xs={12}
+                    >
+                        <Typography variant="h6">Share</Typography>
+                        <Divider />
+                            <div className={classes.shareDiv}>
+                        {blogPost && [
+                            <FacebookShareButton
+                                key={0}
+                                url={
+                                    SITE_URL +
+                                    "blog/" +
+                                    blogPost.id +
+                                    "/" +
+                                    titleToLink(blogPost.title) +
+                                    ".html"
+                                }
+                                quote={
+                                    blogPost
+                                        ? blogPost.title
+                                        : "WhizSid | Blog & Portfolio"
+                                }
+                                hashtag="#whizsid"
+                            >
+                                <Button style={{backgroundColor: "#1877F2", color: "#FFFFFF"}} className={classes.socialButton}>
+                                    <Facebook
+                                        className={classes.socialIcon}
+                                        color="inherit"
+                                    />
+                                            <div className={classes.shareText}> Share on Facebook </div>
+                                </Button>
+                            </FacebookShareButton>,
+                            <TwitterShareButton
+                                key={0}
+                                url={
+                                    SITE_URL +
+                                    "blog/" +
+                                    blogPost.id +
+                                    "/" +
+                                    titleToLink(blogPost.title) +
+                                    ".html"
+                                }
+                                title={
+                                    blogPost
+                                        ? blogPost.title
+                                        : "WhizSid | Blog & Portfolio"
+                                }
+                                hashtags={["whizsid"]}
+                            >
+                                <Button style={{backgroundColor: "#1DA1F2", color: "#FFFFFF"}} className={classes.socialButton}>
+                                    <Twitter
+                                        className={classes.socialIcon}
+                                        color="inherit"
+                                    />
+                                            <div className={classes.shareText}> Retweet On Twitter </div>
+                                </Button>
+                            </TwitterShareButton>,
+                            <LinkedinShareButton
+                                key={0}
+                                url={
+                                    SITE_URL +
+                                    "blog/" +
+                                    blogPost.id +
+                                    "/" +
+                                    titleToLink(blogPost.title) +
+                                    ".html"
+                                }
+                                title={
+                                    blogPost
+                                        ? blogPost.title
+                                        : "WhizSid | Blog & Portfolio"
+                                }
+                            >
+                                <Button style={{backgroundColor: "#0A66C2", color: "#FFFFFF"}} className={classes.socialButton}>
+                                    <LinkedIn
+                                        className={classes.socialIcon}
+                                        color="inherit"
+                                    />
+                                            <div className={classes.shareText}> Share On LinkedIn </div>
+                                </Button>
+                            </LinkedinShareButton>,
+                            <RedditShareButton
+                                key={0}
+                                url={
+                                    SITE_URL +
+                                    "blog/" +
+                                    blogPost.id +
+                                    "/" +
+                                    titleToLink(blogPost.title) +
+                                    ".html"
+                                }
+                                title={
+                                    blogPost
+                                        ? blogPost.title
+                                        : "WhizSid | Blog & Portfolio"
+                                }
+                            >
+                                <Button style={{backgroundColor: "#FF4500", color: "#FFFFFF"}} className={classes.socialButton}>
+                                    <Reddit
+                                        className={classes.socialIcon}
+                                        color="inherit"
+                                    />
+                                            <div className={classes.shareText}> Share On Reddit </div>
+                                </Button>
+                            </RedditShareButton>,
+                                ]}
+                                </div>
+                        <br />
+                        <br />
+                        <Typography variant="h6">Recommended</Typography>
+                        <Divider />
                         {blogPost && <Recommended post={blogPost} />}
                     </Grid>
                 </Grid>
