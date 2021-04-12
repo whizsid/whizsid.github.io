@@ -101,7 +101,7 @@ class SearchResultPage extends React.Component<SearchResultPageProps, SearchResu
         for(let i = 0; i<labels.length; i++){
             params.set("label["+i+"]", labels[i]);
         }
-        this.props.history.push("/search?"+params.toString());
+        this.props.history.push("/search.html?"+params.toString());
     }
 
     protected search(labels: string[], keyword?: string) {
