@@ -60,7 +60,7 @@ Because it is a very up-to-date and stable project.
 
 ## Starting The Project
 
-First of all crrete a github repository and clone it. Then create a 
+First of all create a github repository and clone it. Then create a 
 gitignore file with these contents:-
 
 ```
@@ -73,6 +73,8 @@ composer.lock
 
 ### Folder Structure
 
+Make folders as in below structure.
+
 ```
 /gencode
 ----/src # Contains the source codes of the code generator
@@ -80,7 +82,7 @@ composer.lock
 ```
 
 ### Install dependencies
-Initial `composer.json` file in the root folder and the `gencode` folder.
+Create `composer.json` file in the root folder and the `gencode` folder.
 
 ```
 $ composer init
@@ -89,9 +91,10 @@ $ composer init
 $ cd ../
 ```
 
-`composer init` commands will ask you for project details.
+`composer init` commands will ask you for project details. Provide
+details as you want.
 
- Install the `nikic/PHP-Parser` in the `gencode` folder as the next step.
+Install the `nikic/PHP-Parser` in the `gencode` folder as the next step.
 
 ```
 $ cd gencode
@@ -159,9 +162,9 @@ works. Because our whole client is depending on
 this file. And we have to access it very often through
 our code generator. So we should store it in our local storage. At this
 project I am storing the specification file in a directory named `tmp`
-and using the Sigfox API specification file. Because my company is using
-this Sigfox API frequently and I am planning to move to a high level
-API client insteed of calling the API directly.
+and using the Sigfox API specification file. Because my company is
+frequently using this Sigfox API and I am planning to move to a high
+level API client insteed of calling the API directly.
 
 ```php
 # gencode/bin/gencode
@@ -186,8 +189,8 @@ if (!file_exists($openapiFileLocation)) {
 $openapi = json_decode( file_get_contents($openapiFileLocation) , true);
 ```
 
-And we do not need this file in our VCS. Because this file will always
-live in their site. So I am ignoring the file for VCS.
+And we do not need this specification file in our VCS. Because this file
+is always live in their site. So I am ignoring the file for VCS.
 
 ```
 # .gitignore
