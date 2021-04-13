@@ -1,0 +1,14 @@
+{
+    "name": "arimac/sigfox",
+    "description": "Full featured Sigfox API Client",
+    "type": "library",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "WhizSid",
+            "email": "whizsid@aol.com"
+        }
+    ],
+    "minimum-stability": "dev",
+    "require": {}
+}
