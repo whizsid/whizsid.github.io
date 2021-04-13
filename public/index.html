@@ -47,9 +47,101 @@
                 color: inherit !important;
                 text-decoration: none !important;
             }
+            /* Loading animation */
+            .loading-fixed {
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100vw;
+                height: 100vh;
+                display: block;
+                background: #fff;
+                z-index: 10000;
+            }
+            .loading-flex {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+                min-height: 100vh;
+                padding: 1rem 1rem 2rem 1rem;
+                box-sizing: border-box;
+                overflow: hidden;
+            }
+
+            .loader-wrapper {
+                width: 10em;
+                height: 10em;
+                font-size: 25px;
+                box-sizing: border-box;
+                border-top: 0.3em solid hotpink;
+                border-radius: 50%;
+                position: relative;
+                animation: rotating 2s ease-in-out infinite;
+                --direction: 1;
+            }
+
+            .loader-wrapper::before,
+            .loader-wrapper::after {
+                content: "";
+                position: absolute;
+                width: inherit;
+                height: inherit;
+                border-radius: 50%;
+                box-sizing: border-box;
+                top: -0.2em;
+            }
+
+            .loader-wrapper::before {
+                border-top: 0.3em solid dodgerblue;
+                transform: rotate(120deg);
+            }
+
+            .loader-wrapper::after {
+                border-top: 0.3em solid gold;
+                transform: rotate(240deg);
+            }
+
+            @keyframes rotating {
+                50% {
+                    transform: rotate(calc(180deg * var(--direction)));
+                }
+
+                100% {
+                    transform: rotate(calc(360deg * var(--direction)));
+                }
+            }
+            .loader {
+                position: relative;
+            }
+
+            .loader span {
+                position: absolute;
+                color: black;
+                width: inherit;
+                height: inherit;
+                top: 40px;
+                left: 80px;
+                text-align: center;
+                line-height: 10em;
+                font-family: sans-serif;
+            }
         </style>
+        <script>
+            window.onload = function () {
+                document.getElementsByClassName("loading-fixed")[0].remove();
+            };
+        </script>
     </head>
     <body style="margin: 0; background: #e8eaed">
+        <div class="loading-fixed">
+            <div class="loading-flex">
+                <div class="loader">
+                    <div class="loader-wrapper"></div>
+                    <span>Loading...</span>
+                </div>
+            </div>
+        </div>
         <noscript>You need to enable JavaScript to run this app.</noscript>
         <div id="root"></div>
     </body>
