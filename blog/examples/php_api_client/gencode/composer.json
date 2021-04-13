@@ -1,0 +1,21 @@
+{
+    "name": "arimac/sigfox-gencode",
+    "description": "Code generator for Sigfox API Client",
+    "type": "library",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "WhizSid",
+            "email": "whizsid@aol.com"
+        }
+    ],
+    "minimum-stability": "dev",
+    "require": {
+        "nikic/php-parser": "^4.10"
+    },
+    "autoload": {
+        "psr-4": {
+            "Arimac\\Sigfox\\Gencode\\": "src/"
+        }
+    }
+}

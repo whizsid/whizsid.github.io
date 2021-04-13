@@ -1,0 +1,5 @@
+/vendor/
+composer.lock
+/gencode/vendor/
+/gencode/composer.lock
+/gencode/tmp/
