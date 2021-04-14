@@ -10,15 +10,15 @@ const GITHUB_REPOSITORY = "whizsid.github.io";
 const GITHUB_PAGE = "https://whizsid.github.io/";
 const GITHUB_OWNER = "whizsid";
 
-const indexContent = fs.readFileSync("./build/index.html").toString();
+const indexContent = fs.readFileSync("../build/index.html").toString();
 const indexHeadEnd = indexContent.search("</head>");
 
-if (!fs.existsSync("./build/blog")) {
-    fs.mkdirSync("./build/blog");
+if (!fs.existsSync("../build/blog")) {
+    fs.mkdirSync("../build/blog");
 }
 
 // Search Page
-const path = "./build/search.html";
+const path = "../build/search.html";
 
 let opengraphContents = `<meta property="og:title" content="WhizSid | Blog"/>`;
 opengraphContents += `<meta name="description" property="og:description" content="Visit my blog site to search all blog posts related to programming" />`;
@@ -53,7 +53,7 @@ fs.writeFileSync(
 );
 
 // Index Page
-const indexPath = "./build/index.html";
+const indexPath = "../build/index.html";
 
 let indexOpengraphContents = `<meta property="og:title" content="WhizSid | Portfolio & Blog"/>`;
 indexOpengraphContents += `<meta name="description" property="og:description" content="I am working as a software\
@@ -106,7 +106,7 @@ async function fetchNextPage(page, cursor) {
                               }
                             }
                             bodyText,
-                            files(first:5){
+                            files(first:100){
                               nodes {
                                 path
                               }
@@ -146,12 +146,12 @@ async function fetchNextPage(page, cursor) {
 fetchNextPage(1, null);
 
 async function createPage(node) {
-    if (!fs.existsSync("./build/blog/" + node.number)) {
-        fs.mkdirSync("./build/blog/" + node.number);
+    if (!fs.existsSync("../build/blog/" + node.number)) {
+        fs.mkdirSync("../build/blog/" + node.number);
     }
 
     const path =
-        "./build/blog/" + node.number + "/" + titleToLink(node.title) + ".html";
+        "../build/blog/" + node.number + "/" + titleToLink(node.title) + ".html";
 
     let opengraphContents = `<meta property="og:title" content="WhizSid| ${node.title}"/>`;
     opengraphContents += `<meta name="description" property="og:description" content="${node.bodyText}" />`;

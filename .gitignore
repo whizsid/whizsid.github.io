@@ -11,6 +11,9 @@
 # production
 /build
 
+# releases
+/release
+
 public/api
 public/projects
 public/blog

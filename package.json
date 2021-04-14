@@ -19,8 +19,10 @@
     "debounce": "^1.2.1",
     "gitalk-pr": "^1.7.3",
     "js-base64": "^3.6.0",
+    "lang-map": "^0.4.0",
     "leaflet": "^1.7.1",
     "react": "^16.13.0",
+    "react-copy-to-clipboard": "^5.0.3",
     "react-dom": "^16.13.0",
     "react-gauge-chart": "^0.3.0",
     "react-github-calendar": "^2.0.2",
@@ -43,7 +45,8 @@
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
-    "postBuild": "node postBuild.js",
+    "postBuild": "node scripts/postBuild.js",
+    "preRelease": "./scripts/preRelease.sh",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "deploy": "yarn build && yarn postBuild && gh-pages -b master -d build"
@@ -66,6 +69,7 @@
   "devDependencies": {
     "@hqoss/monads": "^0.4.0",
     "@types/leaflet": "^1.7.0",
+    "@types/react-copy-to-clipboard": "^5.0.0",
     "@types/react-gauge-chart": "^0.2.0",
     "@types/react-helmet": "^6.1.0",
     "@types/react-router-dom": "^5.1.3",

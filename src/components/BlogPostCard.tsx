@@ -22,13 +22,6 @@ const styler = withStyles(theme => ({
         backgroundSize: "cover",
         boxShadow: "2px 0px 4px rgba(0,0,0,0.5)"
     },
-    verticalSpace: {
-        height: 60,
-        width: "100%",
-        [theme.breakpoints.down("md")]: {
-            height: 38
-        }
-    },
     grow: {
         flexGrow: 1
     },
@@ -49,6 +42,14 @@ const styler = withStyles(theme => ({
     },
     tag: {
         marginLeft: 4
+    },
+    cardActionArea: {
+        display: "flex",
+        flexGrow: 1,
+        alignItems: "start"
+    },
+    toolbar: {
+        alignItems: "start"
     }
 }));
 
@@ -61,10 +62,10 @@ export interface BlogPostCardProps extends BlogPost {
         languages: string;
         title: string;
         tag: string;
-        verticalSpace: string;
+        cardActionArea: string;
+        toolbar: string;
     };
 }
-
 
 class BlogPostCard extends React.Component<BlogPostCardProps & RouteComponentProps> {
     public render() {
@@ -75,9 +76,9 @@ class BlogPostCard extends React.Component<BlogPostCardProps & RouteComponentPro
                 "url(https://github.com/" + GITHUB_OWNER + "/" + GITHUB_REPOSITORY + "/raw/src/" + imagePath + ")"
             }} className={classes.root}>
 
-                <CardActionArea onClick={() => this.handleClick(id, title)} >
+                <CardActionArea className={classes.cardActionArea} onClick={() => this.handleClick(id, title)} >
                     <CardContent>
-                        <Toolbar variant="dense">
+                        <Toolbar className={classes.toolbar} variant="dense">
                             <div className={classes.languages}>
                             {languages.map((lang, i) => (
                                 <SvgIcon key={i} className={classes.language} >
@@ -88,16 +89,15 @@ class BlogPostCard extends React.Component<BlogPostCardProps & RouteComponentPro
                             <div className={classes.grow} />
                             <Typography variant="h6" className={classes.title} >{title}</Typography>
                         </Toolbar>
-                        <div className={classes.verticalSpace} />
                     </CardContent>
-                    <CardActions disableSpacing >
+                </CardActionArea>
+                    <CardActions>
                         <div className={classes.grow} />
                         {tags.map((tag, i) => (
                             <Chip size="small" key={i} className={classes.tag} label={tag} />
                         ))}
                     </CardActions>
 
-                </CardActionArea>
             </Card>
         );
     }

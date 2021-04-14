@@ -4,7 +4,7 @@ import axios, { AxiosError, AxiosResponse } from "axios";
 export class Http {
     public static getContent(url: string):  Promise<Result<string, AxiosError>> {
         return axios
-        .get(url)
+        .get(url, {transformResponse: [(data) => { return data; }]})
         .then(
             (response: AxiosResponse) => Ok(response.data)
         )

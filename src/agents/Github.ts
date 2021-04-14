@@ -70,6 +70,9 @@ interface PullRequest {
             path: string;
         }[]
     };
+    mergeCommit: {
+        oid: string;
+    };
 }
 
 interface LabelCount extends Label {
@@ -179,6 +182,13 @@ export interface BlogPost {
     createdAt: string;
     tags: string[];
     id: string;
+    example?: Example;
+}
+
+export interface Example {
+    files: string[];
+    name: string;
+    commit: string;
 }
 
 export interface Label {
@@ -196,7 +206,18 @@ export const labelToLang = (label: Label): Language => {
     };
 };
 
-export const prToPost = (pr: PullRequest): BlogPost => ({
+export const prToPost = (pr: PullRequest): BlogPost => {
+    const exampleFiles = pr.files.nodes.filter(file=>file.path.startsWith("blog/examples/"));
+
+    let example;
+    if(exampleFiles.length>0){
+        const name = exampleFiles[0].path.split("/")[2];
+        const files = exampleFiles.map(file=>file.path.substr(15+name.length));
+        const commit = pr.mergeCommit.oid;
+        example = {name, files, commit};
+    }
+
+    return {
     id: pr.number.toString(),
     title: pr.title,
     postPath: (pr.files.nodes.find((path) => {
@@ -218,8 +239,9 @@ export const prToPost = (pr: PullRequest): BlogPost => ({
     createdAt: pr.createdAt,
     tags: pr.labels.nodes.filter(label => {
         return label.name.split(":")[0] === "Tag";
-    }).map(tag => tag.name.split(":")[1])
-});
+    }).map(tag => tag.name.split(":")[1]),
+    example
+};};
 
 const getLanguageIcon = (langName: string): string => {
     let iconName: string;
@@ -335,6 +357,9 @@ export class Github {
                         title,
                         bodyHTML,
                         createdAt,
+                        mergeCommit{
+                            oid
+                        },
                         files(last:100){
                             nodes {
                                 path
@@ -377,6 +402,9 @@ export class Github {
                     title,
                     bodyHTML,
                     createdAt,
+                    mergeCommit{
+                        oid
+                    },
                     files(last:100){
                         nodes {
                             path
@@ -423,6 +451,9 @@ export class Github {
                                 nodes {
                                     path
                                 }
+                            },
+                            mergeCommit{
+                                oid
                             },
                             labels(last:100){
                                 nodes {
@@ -491,6 +522,9 @@ export class Github {
                                     path
                                 }
                             },
+                            mergeCommit{
+                                oid
+                            },
                             labels(last:100){
                                 nodes {
                                     name,
@@ -549,6 +583,9 @@ export class Github {
                                 nodes {
                                     path
                                 }
+                            },
+                            mergeCommit{
+                                oid
                             },
                             labels(last:100){
                                 nodes {
