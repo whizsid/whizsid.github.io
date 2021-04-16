@@ -210,6 +210,10 @@ paths.
 ```tsx
 # src/FileBrowser.tsx
 
+import ListItem from "@material-ui/core/ListItem";
+import ListItemText from "@material-ui/core/ListItemText";
+
+// ...
 const listItems: JSX.Element[] = [];
 
 paths.forEach((path) => {
@@ -223,6 +227,7 @@ paths.forEach((path) => {
 });
 
 return listItems;
+// ...
 ```
 
 Now you can see a list of folder names on the browser. But it has
@@ -290,6 +295,9 @@ both places.
 
 ```tsx
 # src/FileBrowser.tsx
+
+import Collapse from "@material-ui/core/Collapse";
+// ...
 
 /**
  * @param pwd The current path location
@@ -473,7 +481,7 @@ After that all lists rendered. But we can not identify that each
 items rendered from which list. Add an extra margin for the list to
 resolve this.
 
-```
+```tsx
 # src/FileBrowser.tsx
 
 const styler = withStyles((theme) => ({
@@ -594,3 +602,194 @@ import Folder from "@material-ui/icons/Folder";
 </ListItem>
 // ...
 ```
+
+## Folding and unfolding
+
+To manage folding and unfolding we have to implement some state
+controls. Store all unfolded paths in an array as a state. So we can
+check this state when rendering.
+
+```tsx
+# src/FileBrowser.tsx
+
+// ...
+interface FileBrowserState {
+    unfolded: string[];
+}
+
+class FileBrowser extends React.Component<FileBrowserProps, FileBrowserState> {
+    constructor(props: FileBrowserProps) {
+        super(props);
+
+        this.state = {
+            unfolded: [],
+        };
+    }
+}
+```
+
+As in the [Material UI Documentation](https://material-ui.com/components/lists/#nested-list)
+Check the folding state when rendering.
+
+```tsx
+# src/FileBrowser.tsx
+
+protected renderItem(
+    pwd: string,
+    path: string,
+    isDir: boolean,
+    childrens: string[] = []
+): JSX.Element {
+    const { classes } = this.props;
+    const { unfolded } = this.state;
+
+    const name = path.substr(pwd.length);
+    const unfold = unfolded.includes(path);
+
+    return (
+        <React.Fragment>
+            <ListItem>
+                <ListItemIcon>
+                    {isDir ? <Folder /> : <Description />}
+                </ListItemIcon>
+                <ListItemText primary={name} />
+                    {isDir&&(unfold? <ExpandLess /> : <ExpandMore/>)}
+            </ListItem>
+            {isDir && (
+                <Collapse in={unfold}>
+                    <List className={classes.list}>
+                        {this.renderList(childrens, pwd.concat(name))}
+                    </List>
+                </Collapse>
+            )}
+        </React.Fragment>
+    );
+}
+```
+
+Quickly all sub items has folded. Now we have to add an event to
+manually fold and unfold them by my mouse clicks. 
+
+define a function to remove and add paths for the `unfolded` array. This
+function should remove a certain path from the array when folding. And
+insert the path when unfolding. 
+
+```tsx
+# src/FileBrowser.tsx
+
+protected handleToggleList(path: string, fold: boolean){
+    const {unfolded} = this.state;
+
+    if(fold){
+        this.setState({
+            unfolded: unfolded.filter(p=>!p.startsWith(path))
+        });
+    } else {
+        this.setState({
+            unfolded: [...unfolded, path]
+        });
+    }
+}
+
+protected renderItem(
+    pwd: string,
+    path: string,
+    isDir: boolean,
+    childrens: string[] = []
+): JSX.Element {
+    // ...
+    <ListItem
+        button
+        divider
+        dense={true}
+        onClick={() =>
+            isDir ? this.handleToggleList(path, unfold) : undefined
+        }
+    >
+    // ...
+}
+
+```
+
+## Sending file click events
+
+We use prop as a callback to send events to an outer component. define a
+callback prop in the `FileBrowser` component and make it optional.
+
+```tsx
+# src/FileBrowser.tsx
+
+interface FileBrowserProps {
+    // ...
+    onPreview?: (path: string)=> void;
+}
+```
+
+And call this event when after clicked on a file. change  `renderItem`
+function as in below snippet.
+
+```tsx
+# src/FileBrowser.tsx
+
+protected renderItem(
+    pwd: string,
+    path: string,
+    isDir: boolean,
+    childrens: string[] = []
+): JSX.Element {
+    const { classes, onPreview } = this.props;
+
+    // ...
+        <ListItem
+            button
+            divider
+            dense={true}
+            onClick={() =>
+                isDir
+                    ? this.handleToggleList(path, unfold)
+                    : onPreview && onPreview(path)
+            }
+        >
+    // ...
+}
+```
+
+And add a sample callback for `onPreview` prop from the `App` component.
+
+```tsx
+# src/App.tsx
+
+function onPreview(path: string) {
+    console.log(`File:- ${path}`);
+}
+
+// ...
+<FileBrowser
+    onPreview={onPreview}
+    paths={[
+        "abc/def",
+        "abc/ghi/jkl",
+        "abc/ghi/yz/",
+        "pqr",
+        "abc/ghi/mno",
+        "stu/vwx",
+    ]}
+/>
+// ...
+
+```
+
+You can see file names on the console when you click on them. Also you
+can see an error `Each child in a list should have a unique "key"
+prop.`. Add a unique key to all items to fix this issue. I am adding the
+path as a key. Because path is unique for all items.
+
+```tsx
+# src/FileBrowser.tsx
+
+// ...
+<React.Fragment key={path} >
+// ...
+```
+
+Now we finished our file browser component.

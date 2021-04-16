@@ -5,6 +5,8 @@ import ListItemIcon from "@material-ui/core/ListItemIcon";
 import ListItemText from "@material-ui/core/ListItemText";
 import withStyles from "@material-ui/core/styles/withStyles";
 import Description from "@material-ui/icons/Description";
+import ExpandLess from "@material-ui/icons/ExpandLess";
+import ExpandMore from "@material-ui/icons/ExpandMore";
 import Folder from "@material-ui/icons/Folder";
 import * as React from "react";
 
@@ -23,9 +25,36 @@ interface FileBrowserProps {
         list: string;
     };
     paths: string[];
+    onPreview?: (path: string) => void;
 }
 
-class FileBrowser extends React.Component<FileBrowserProps> {
+interface FileBrowserState {
+    unfolded: string[];
+}
+
+class FileBrowser extends React.Component<FileBrowserProps, FileBrowserState> {
+    constructor(props: FileBrowserProps) {
+        super(props);
+
+        this.state = {
+            unfolded: [],
+        };
+    }
+
+    protected handleToggleList(path: string, fold: boolean) {
+        const { unfolded } = this.state;
+
+        if (fold) {
+            this.setState({
+                unfolded: unfolded.filter((p) => !p.startsWith(path)),
+            });
+        } else {
+            this.setState({
+                unfolded: [...unfolded, path],
+            });
+        }
+    }
+
     /**
      * @param pwd The current path location
      * @param path The path to render
@@ -38,19 +67,32 @@ class FileBrowser extends React.Component<FileBrowserProps> {
         isDir: boolean,
         childrens: string[] = []
     ): JSX.Element {
-        const { classes } = this.props;
+        const { classes, onPreview } = this.props;
+        const { unfolded } = this.state;
+
         const name = path.substr(pwd.length);
+        const unfold = unfolded.includes(path);
 
         return (
-            <React.Fragment>
-                <ListItem>
+            <React.Fragment key={path}>
+                <ListItem
+                    button
+                    divider
+                    dense={true}
+                    onClick={() =>
+                        isDir
+                            ? this.handleToggleList(path, unfold)
+                            : onPreview && onPreview(path)
+                    }
+                >
                     <ListItemIcon>
                         {isDir ? <Folder /> : <Description />}
                     </ListItemIcon>
                     <ListItemText primary={name} />
+                    {isDir && (unfold ? <ExpandLess /> : <ExpandMore />)}
                 </ListItem>
                 {isDir && (
-                    <Collapse in={true}>
+                    <Collapse in={unfold}>
                         <List className={classes.list}>
                             {this.renderList(childrens, pwd.concat(name))}
                         </List>

@@ -4,6 +4,10 @@ import Typography from "@material-ui/core/Typography";
 import React from "react";
 import FileBrowser from "./FileBrowser";
 
+function onPreview(path: string) {
+    console.log(`File:- ${path}`);
+}
+
 export default function App() {
     return (
         <Container maxWidth="sm">
@@ -12,6 +16,7 @@ export default function App() {
                     File Browser
                 </Typography>
                 <FileBrowser
+                    onPreview={onPreview}
                     paths={[
                         "abc/def",
                         "abc/ghi/jkl",
