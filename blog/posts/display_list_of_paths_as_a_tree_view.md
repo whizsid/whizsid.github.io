@@ -1,7 +1,7 @@
 # Display list of paths as a material UI tree view
 
 Material UI is a popular frontend react framework. And it has very
-useful and easy to use built in components. But when you developing a
+useful and easy to use components. But when you developing a
 react tree viewer for browsing files, it will mess you up. Because
 Material UI has a different approach to make nested lists.
 
@@ -40,7 +40,7 @@ list of paths first.
 
 ## Initializing the project
 
-As a quick start copy the [Material UI React
+As a quick start download the [Material UI React
 Example] (https://github.com/mui-org/material-ui/tree/master/examples/create-react-app-with-typescript) to your local folder.
 
 ```
@@ -108,7 +108,7 @@ class FileBrowser extends React.Component<FileBrowserProps> {
 export default styler(FileBrowser);
 ```
 
-At the moment this component contains only a text. Also include it to 
+Also include it to 
 the `App.tsx` to display on the browser.
 
 ```tsx
@@ -120,6 +120,8 @@ import FileBrowser from "./FileBrowser";
 // Inside render function
 <FileBrowser/>
 ```
+
+At the moment this component contains only a text.
 
 ## Taking paths to the component
 
@@ -155,15 +157,13 @@ And also pass paths as a prop from the `App` component.
 
 ## Rendering the tree view
 
-When rendering tree views, we have to use nested functions. Because we
-can not estimate the nested level and rendering process should do in a
-dynamic way.
+When rendering tree views, we have to use nested functions. Because
+rendering process must do in a dynamic way.
 
 Define a function named `renderList` in the `FileBrowser` component to
-render the root file list and nested file lists. This function should take
-all paths as an array of strings. And it should return an array of
-`ListItem` elements and `Collapse` elements. So I am using the return
-type as `JSX.Element`.
+render file lists. This function should take all paths as an array of
+strings. And it should return an array of `ListItem | Collapse`
+elements. So I am using the return type as a generic `JSX.Element`.
 
 ```tsx
 # src/FileBrowser.tsx
@@ -192,7 +192,7 @@ class FileBrowser extends React.Component<FileBrowserProps> {
 Now typescript compiler will returning an error that saying "A function
 whose declared type is neither 'void' nor 'any' must return a value.".
 It means we should return an array of elements. So define an
-empty array and returning it.
+empty array and return it to temporarily resolve this error.
 
 ```tsx
 # src/FileBrowser.tsx
@@ -205,7 +205,7 @@ protected renderList(paths: string[]): JSX.Element[]{
 ```
 
 As the next step we should render the root elements by iterating over
-paths.
+paths once.
 
 ```tsx
 # src/FileBrowser.tsx
@@ -233,9 +233,9 @@ return listItems;
 Now you can see a list of folder names on the browser. But it has
 duplicated folder names. To avoid these duplicates, we should push those
 elements to the array once all child nodes iterated. So we need to 
-define another variable to store the previous folder name to compare
-with the current folder name. We can push items to the array if current
-folder name and previous folder names are different.
+define another variable to store the previous folder name. After that we
+can compare it with the current folder name and push items to the array
+if current folder name and previous folder names are different.
 
 ```tsx
 # src/FileBrowser.tsx
@@ -268,10 +268,10 @@ protected renderList(paths: string[]): JSX.Element[] {
 }
 ```
 
-Now the first two duplicated items rendered as a one item. But there is
+Now the first duplicated item rendered as a one item. But there is
 one more duplicated item after the second item. This duplicated item was
-happened because of we did not used any sorting algorithm to our paths
-list. We have to sort all paths by the nested level and the name.
+happened because we did not used any sorting algorithm. We have to sort
+all paths by the nested level and the name.
 
 ```tsx
 # src/FileBrowser.tsx
@@ -288,10 +288,9 @@ sortedPaths.forEach((path) => {
 ```
 
 All items of the root list has rendered without any issue. Now we have
-to render sub lists. We should store all child nodes in an
-array till rendering the folder name. Before that there is a small nit
-to fix. We can define a new function to render an item and reuse it in
-both places.
+to render sub lists. Before that there is a small nit
+to fix. We can define a new function to render items and later we can 
+reuse it in both places.
 
 ```tsx
 # src/FileBrowser.tsx
@@ -356,10 +355,9 @@ By default `pwd` is an empty string. So in the root directory it
 considering as an empty value. When rendering a sub directory we have to
 pass the next path as `pwd`.
 
-At the moment in `renderList` function the folder name is not depending
-on the `pwd`. So it will always provide the name of the root folder,
-even in sub directories. So we have to change the folder names to change
-according to the `pwd`.
+At the moment `renderList` function is not depending on the `pwd`. So it
+will always provide names of the root folder, even in sub directories.
+So we have to use `pwd` to stay away from this issue.
 
 ```tsx
 # src/FileBrowser.tsx
@@ -375,7 +373,7 @@ sortedPaths.forEach((path) => {
 ```
 
 Next we have to store all child nodes in an array and render it with the
-folder. After rendered the folder the array should be empty to reuse it
+folder. After rendered the folder, the array should be empty to reuse it
 for the next folder.
 
 ```tsx
@@ -433,11 +431,14 @@ protected renderList(paths: string[], pwd: string = ""): JSX.Element[] {
 
 ```
 
-But you can not see any sub lists for the moment. Because we always
-passed `false` for the `isDir` parameter.
+But you can see all sublists were hidden. Because we always passed `false`
+for the `isDir` parameter.
 
-Always a directory contains a trailing back slash (`/`). So 
-`relativePath.split('/')` should be more than one if it a directory.
+Always a directory contains a trailing back slash (`/`). So the value of 
+`relativePath.split('/')` always should be more than one if it a directory.
+
+We can use this logic to determine the weather if the item is a
+directory or not.
 
 ```tsx
 # src/FileBrowser.tsx
@@ -477,9 +478,8 @@ protected renderList(paths: string[], pwd: string = ""): JSX.Element[] {
 }
 ```
 
-After that all lists rendered. But we can not identify that each
-items rendered from which list. Add an extra margin for the list to
-resolve this.
+Now all lists were rendered. But in a same line. So we have to add a 
+margin for sub lists to separate them from root list.
 
 ```tsx
 # src/FileBrowser.tsx
@@ -513,8 +513,8 @@ interface FileBrowserProps {
     }
 ```
 
-You can see there are trailing backslashes in also file names. We should
-avoid these backslashes from concatenating.
+You can see there are trailing backslashes in file names. We should
+avoid these backslashes when concatenating.
 
 ```tsx
 # src/FileBrowser.tsx
@@ -545,9 +545,9 @@ protected renderList(paths: string[], pwd: string = ""): JSX.Element[] {
 ```
 
 You can see an empty item after the `yz` folder. It caused because `yz`
-is an empty folder. When we splitting empty directory paths by 
-backslashes, An extra empty string will remain as the last nested folder
-name. We should skip these empty folder names to resolve this issue.
+is an empty folder. When we splitting empty directories by 
+backslashes, An extra empty string will remain as the last item. We
+should skip these empty folder names to resolve this issue.
 
 ```tsx
 # src/FileBrowser.tsx
@@ -576,8 +576,8 @@ if (previous) {
 
 ```
 
-Next add icons to identify folders and files. To add icons install the
-`@material-ui/icons` package.
+Next add icons to identify folders and files separately. To add icons
+install the `@material-ui/icons` package.
 
 ```
 $ yarn add @material-ui/icons@latest
@@ -606,8 +606,8 @@ import Folder from "@material-ui/icons/Folder";
 ## Folding and unfolding
 
 To manage folding and unfolding we have to implement some state
-controls. Store all unfolded paths in an array as a state. So we can
-check this state when rendering.
+controllers. We can add all unfolded items in one array and check it
+when rendering.
 
 ```tsx
 # src/FileBrowser.tsx
@@ -667,10 +667,10 @@ protected renderItem(
 }
 ```
 
-Quickly all sub items has folded. Now we have to add an event to
+All sub lists are displaying as folded. Now we have to add an event to
 manually fold and unfold them by my mouse clicks. 
 
-define a function to remove and add paths for the `unfolded` array. This
+define a function to handle the fold and unfold events. This
 function should remove a certain path from the array when folding. And
 insert the path when unfolding. 
 
@@ -713,8 +713,9 @@ protected renderItem(
 
 ## Sending file click events
 
-We use prop as a callback to send events to an outer component. define a
-callback prop in the `FileBrowser` component and make it optional.
+The only way to send click events is taking a callback as a prop and
+call the callback prop. define a callback prop in the `FileBrowser`
+component and make it optional.
 
 ```tsx
 # src/FileBrowser.tsx
@@ -754,7 +755,8 @@ protected renderItem(
 }
 ```
 
-And add a sample callback for `onPreview` prop from the `App` component.
+And pass a sample callback for `onPreview` prop from the `App` component.
+So we can test the callback.
 
 ```tsx
 # src/App.tsx
@@ -779,7 +781,7 @@ function onPreview(path: string) {
 
 ```
 
-You can see file names on the console when you click on them. Also you
+Every time you click on the items, console will notify you. Also you
 can see an error `Each child in a list should have a unique "key"
 prop.`. Add a unique key to all items to fix this issue. I am adding the
 path as a key. Because path is unique for all items.
@@ -792,4 +794,6 @@ path as a key. Because path is unique for all items.
 // ...
 ```
 
-Now we finished our file browser component.
+Now we successfully completed our `FileBrowser` component. You can
+download the final `FileBrowser` component from the file section and
+customize it as you want.
