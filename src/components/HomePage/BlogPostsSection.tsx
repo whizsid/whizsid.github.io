@@ -81,7 +81,7 @@ class BlogPostsSection extends React.Component<
                         <div className={classes.grow} />
                             <Button variant="outlined" size="small" component={Link} to="/search.html" className={classes.blogLink} >Visit Blog</Button>
                 </div>
-                <Grid container={true}>{this.renderCards()}</Grid>
+                <Grid justify="center" container={true}>{this.renderCards()}</Grid>
             </div>
         );
     }
