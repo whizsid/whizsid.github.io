@@ -176,7 +176,7 @@ async function createPage(node) {
             .pop()}"/>`;
     }
     let imagePath = node.files.nodes.filter(
-        (f) => f.path.endsWith(".png") || f.path.endsWith(".jpg")
+        (f) => (f.path.endsWith(".png") || f.path.endsWith(".jpg"))&&f.path.substr(0,12)=="blog/images/"
     )[0];
     if (!imagePath) {
         imagePath = GITHUB_PAGE + "img/opengraph.png";
