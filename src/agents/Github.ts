@@ -9,6 +9,7 @@ import {
     GITHUB_OWNER,
     GITHUB_REPOSITORY,
 } from "../config";
+import {MATLAB_ICON} from "../icons";
 
 interface UserRepositoryResponse {
     user: {
@@ -282,6 +283,11 @@ const getLanguageIcon = (langName: string): string => {
         case "shell":
             iconName = "gnubash";
             break;
+        case "c++":
+            iconName = "cplusplus";
+            break;
+        case "matlab":
+            return MATLAB_ICON;
         default:
             iconName = langName;
             break;
