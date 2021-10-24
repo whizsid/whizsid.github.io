@@ -1,148 +1,422 @@
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <meta charset="utf-8" />
-        <link rel="icon" href="%PUBLIC_URL%/favicon.ico" />
-        <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <link rel="apple-touch-icon" href="%PUBLIC_URL%/logo.png" />
-        <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
-        <link
-            href="https://fonts.googleapis.com/css?family=Source+Code+Pro&display=swap"
-            rel="stylesheet"
-        />
-        <link
-            rel="stylesheet"
-            href="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.css"
-        />
 
-        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-        <meta
-            name="viewport"
-            content="width=device-width, initial-scale=1, shrink-to-fit=no"
-        />
-        <meta
-            http-equiv="content-type"
-            content="text/html; charset=UTF-8;charset=utf-8"
-        />
+<head>
+    <meta charset="utf-8" />
+    <link rel="icon" href="%PUBLIC_URL%/favicon.ico" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="apple-touch-icon" href="%PUBLIC_URL%/logo.png" />
+    <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
+    <link href="https://fonts.googleapis.com/css?family=Source+Code+Pro&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.css" />
 
-        <!-- SEO And Open Graph Meta Data-->
-        <link rel="fluid-icon" href="%PUBLIC_URL%/logo.png" title="WhizSid" />
-        <meta name="page-subject" content="WhizSid" />
-        <meta name="theme-color" content="#151853" />
-        <meta name="HandheldFriendly" content="true" />
-        <title>WhizSid - Portfolio And Blog Posts</title>
-        <style type="text/css">
-            code,
-            pre {
-                white-space: pre-wrap !important;
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8;charset=utf-8" />
+
+    <!-- SEO And Open Graph Meta Data-->
+    <link rel="fluid-icon" href="%PUBLIC_URL%/logo.png" title="WhizSid" />
+    <meta name="page-subject" content="WhizSid" />
+    <meta name="theme-color" content="#151853" />
+    <meta name="HandheldFriendly" content="true" />
+    <title>WhizSid - Portfolio And Blog Posts</title>
+    <style type="text/css">
+        code,
+        pre {
+            white-space: pre-wrap !important;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+        }
+
+        a:link,
+        a:visited,
+        a:active,
+        a:visited {
+            color: inherit !important;
+            text-decoration: none !important;
+        }
+
+        /* Loading animation */
+        .loading-fixed {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            display: block;
+            background: #fff;
+            z-index: 10000;
+        }
+
+        .loading-flex {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            padding: 1rem 1rem 2rem 1rem;
+            box-sizing: border-box;
+            overflow: hidden;
+        }
+
+        .loader-wrapper {
+            width: 10em;
+            height: 10em;
+            font-size: 25px;
+            box-sizing: border-box;
+            border-top: 0.3em solid hotpink;
+            border-radius: 50%;
+            position: relative;
+            animation: rotating 2s ease-in-out infinite;
+            --direction: 1;
+        }
+
+        .loader-wrapper::before,
+        .loader-wrapper::after {
+            content: "";
+            position: absolute;
+            width: inherit;
+            height: inherit;
+            border-radius: 50%;
+            box-sizing: border-box;
+            top: -0.2em;
+        }
+
+        .loader-wrapper::before {
+            border-top: 0.3em solid dodgerblue;
+            transform: rotate(120deg);
+        }
+
+        .loader-wrapper::after {
+            border-top: 0.3em solid gold;
+            transform: rotate(240deg);
+        }
+
+        @keyframes rotating {
+            50% {
+                transform: rotate(calc(180deg * var(--direction)));
             }
-            body {
-                margin: 0;
-                padding: 0;
+
+            100% {
+                transform: rotate(calc(360deg * var(--direction)));
             }
-            a:link,
-            a:visited,
-            a:active,
-            a:visited {
-                color: inherit !important;
-                text-decoration: none !important;
-            }
-            /* Loading animation */
-            .loading-fixed {
-                position: fixed;
-                top: 0;
+        }
+
+        .loader {
+            position: relative;
+        }
+
+        .loader span {
+            position: absolute;
+            color: black;
+            width: inherit;
+            height: inherit;
+            top: 40px;
+            left: 80px;
+            text-align: center;
+            line-height: 10em;
+            font-family: sans-serif;
+        }
+
+        @-webkit-keyframes moveXL {
+            from {
                 left: 0;
-                width: 100vw;
-                height: 100vh;
-                display: block;
-                background: #fff;
-                z-index: 10000;
-            }
-            .loading-flex {
-                display: flex;
-                flex-direction: column;
-                align-items: center;
-                justify-content: center;
-                min-height: 100vh;
-                padding: 1rem 1rem 2rem 1rem;
-                box-sizing: border-box;
-                overflow: hidden;
             }
 
-            .loader-wrapper {
-                width: 10em;
-                height: 10em;
-                font-size: 25px;
-                box-sizing: border-box;
-                border-top: 0.3em solid hotpink;
-                border-radius: 50%;
-                position: relative;
-                animation: rotating 2s ease-in-out infinite;
-                --direction: 1;
+            to {
+                left: 220px;
+            }
+        }
+
+        @-moz-keyframes moveXL {
+            from {
+                left: 0;
             }
 
-            .loader-wrapper::before,
-            .loader-wrapper::after {
-                content: "";
-                position: absolute;
-                width: inherit;
-                height: inherit;
-                border-radius: 50%;
-                box-sizing: border-box;
-                top: -0.2em;
+            to {
+                left: 220px;
+            }
+        }
+
+        @-o-keyframes moveXL {
+            from {
+                left: 0;
             }
 
-            .loader-wrapper::before {
-                border-top: 0.3em solid dodgerblue;
-                transform: rotate(120deg);
+            to {
+                left: 220px;
+            }
+        }
+
+        @keyframes moveXL {
+            from {
+                left: 0;
             }
 
-            .loader-wrapper::after {
-                border-top: 0.3em solid gold;
-                transform: rotate(240deg);
+            to {
+                left: 220px;
+            }
+        }
+
+
+        @-webkit-keyframes moveXR {
+            from {
+                left: 220px;
             }
 
-            @keyframes rotating {
-                50% {
-                    transform: rotate(calc(180deg * var(--direction)));
-                }
-
-                100% {
-                    transform: rotate(calc(360deg * var(--direction)));
-                }
+            to {
+                left: 0;
             }
-            .loader {
-                position: relative;
+        }
+
+        @-moz-keyframes moveXR {
+            from {
+                left: 220px;
             }
 
-            .loader span {
-                position: absolute;
-                color: black;
-                width: inherit;
-                height: inherit;
-                top: 40px;
-                left: 80px;
-                text-align: center;
-                line-height: 10em;
-                font-family: sans-serif;
+            to {
+                left: 0;
             }
-        </style>
-        <script>
-            window.onload = function () {
-                document.getElementsByClassName("loading-fixed")[0].remove();
-            };
-        </script>
-    </head>
-    <body style="margin: 0; background: #e8eaed">
-        <div class="loading-fixed">
-            <div class="loading-flex">
-                <div class="loader">
-                    <div class="loader-wrapper"></div>
-                    <span>Loading...</span>
-                </div>
+        }
+
+        @-o-keyframes moveXR {
+            from {
+                left: 220px;
+            }
+
+            to {
+                left: 0;
+            }
+        }
+
+        @keyframes moveXR {
+            from {
+                left: 220px;
+            }
+
+            to {
+                left: 0;
+            }
+        }
+
+        @-webkit-keyframes moveYT {
+            from {
+                top: 0;
+            }
+
+            to {
+                top: 220px;
+            }
+        }
+
+        @-moz-keyframes moveYT {
+            from {
+                top: 0;
+            }
+
+            to {
+                top: 220px;
+            }
+        }
+
+        @-o-keyframes moveYT {
+            from {
+                top: 0;
+            }
+
+            to {
+                top: 220px;
+            }
+        }
+
+        @keyframes moveYT {
+            from {
+                top: 0;
+            }
+
+            to {
+                top: 220px;
+            }
+        }
+
+        @-webkit-keyframes moveYB {
+            from {
+                top: 220px;
+            }
+
+            to {
+                top: 0;
+            }
+        }
+
+        @-moz-keyframes moveYB {
+            from {
+                top: 220px;
+            }
+
+            to {
+                top: 0;
+            }
+        }
+
+        @-o-keyframes moveYB {
+            from {
+                top: 220px;
+            }
+
+            to {
+                top: 0;
+            }
+        }
+
+        @keyframes moveYB {
+            from {
+                top: 220px;
+            }
+
+            to {
+                top: 0;
+            }
+        }
+
+
+        @-webkit-keyframes sizeI {
+            from {
+                width: 40px;
+                height: 40px;
+                opacity: 0.5;
+            }
+
+            to {
+                width: 80px;
+                height: 80px;
+                opacity: 1;
+            }
+        }
+
+        @-moz-keyframes sizeI {
+            from {
+                width: 40px;
+                height: 40px;
+                opacity: 0.5;
+            }
+
+            to {
+                width: 80px;
+                height: 80px;
+                opacity: 1;
+            }
+        }
+
+        @-o-keyframes sizeI {
+            from {
+                width: 40px;
+                height: 40px;
+                opacity: 0.5;
+            }
+
+            to {
+                width: 80px;
+                height: 80px;
+                opacity: 1;
+            }
+        }
+
+        @keyframes sizeI {
+            from {
+                width: 40px;
+                height: 40px;
+                opacity: 0.5;
+            }
+
+            to {
+                width: 80px;
+                height: 80px;
+                opacity: 1;
+            }
+        }
+
+        @-webkit-keyframes sizeI {
+            from {
+                width: 40px;
+                height: 40px;
+                opacity: 0.5;
+            }
+
+            to {
+                width: 80px;
+                height: 80px;
+                opacity: 1;
+            }
+        }
+
+        canvas {
+            display: block;
+            position:absolute;
+            left:0;
+            top: 48px;
+            z-index:-1;
+        }
+    </style>
+    <script>
+        window.onload = function () {
+            document.getElementsByClassName("loading-fixed")[0].remove();
+        };
+    </script>
+
+    <script id="vertex-shader" type="x-shader/x-vertex">
+    varying vec2 vUv;
+    
+    void main(){  
+        vUv = uv; 
+        //modelViewMatrix: es la posición y orientación de la cámara dentro de la escena
+        //projectionMatrix: la proyección para la escena de la cámara incluyendo el campo de visión
+        vec4 modelViewPosition = modelViewMatrix * vec4(position, 1.0);
+        gl_Position = projectionMatrix * modelViewPosition;
+    }
+    </script>
+
+    <script id="fragment-shader" type="x-shader/x-fragment">
+    uniform float time;
+    uniform vec2 resolution;
+    uniform sampler2D texture1;
+    
+    varying vec2 vUv;
+    
+    void main() {  
+        vec2 uv1 = vUv;
+        // variable que contiene el eje de coordenadas
+        vec2 uv = gl_FragCoord.xy/resolution.xy;
+        
+        float frequency = 15.;
+        float amplitude = 0.015;
+        
+        float x = uv1.y * frequency + time * .7; 
+        float y = uv1.x * frequency + time * .3;
+        
+        uv1.x += cos(x+y) * amplitude * cos(y);
+        uv1.y += sin(x-y) * amplitude * cos(y);
+
+        vec4 rgba = texture2D(texture1, uv1);
+        gl_FragColor = rgba;
+    }
+    </script>
+</head>
+
+<body style="margin: 0; background: #e8eaed">
+    <div class="loading-fixed">
+        <div class="loading-flex">
+            <div class="loader">
+                <div class="loader-wrapper"></div>
+                <span>Loading...</span>
             </div>
         </div>
-        <noscript>You need to enable JavaScript to run this app.</noscript>
-        <div id="root"></div>
-    </body>
+    </div>
+    <noscript>You need to enable JavaScript to run this app.</noscript>
+    <div id="root"></div>
+</body>
+
 </html>
