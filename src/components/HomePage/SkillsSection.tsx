@@ -96,6 +96,10 @@ const frameworks: Skill[] = [
     {
         title: "AngularJS",
         iconName: "angular"
+    },
+    {
+        title: "Spring",
+        iconName: "spring"
     }
 ];
 
