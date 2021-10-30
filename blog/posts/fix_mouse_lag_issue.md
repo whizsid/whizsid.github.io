@@ -1,6 +1,6 @@
 # Fixing the Linux optical mouse lag issue after idle for a while
 
-Some optical mouses are becoming unresponsive after idle for a while on Linux. It caused by the Linux built-in power management configurations. Linux power management system will suspend your USB devices if not used for a while. So it effecting badly for some devices. To fix this issue you have to disable the autosuspend rules for our specific devices.
+Some optical mouses are becoming unresponsive after idle for a while on Linux. It caused by the Linux built-in power management configurations. Linux power management system will suspend your USB devices if not used for a while. So it effecting badly for some devices. To fix this issue you have to disable the autosuspend rules for your specific device.
 
 ## Disabling autosuspend rule
 
