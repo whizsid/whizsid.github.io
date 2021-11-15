@@ -48,6 +48,43 @@ class HomePage extends React.Component {
                     <script
                         src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"
                     ></script>
+                    <script id="vertex-shader" type="x-shader/x-vertex">
+                        varying vec2 vUv;
+
+                        void main(){"{"}
+                            vUv = uv;
+                            //modelViewMatrix: es la posición y orientación de la cámara dentro de la escena
+                            //projectionMatrix: la proyección para la escena de la cámara incluyendo el campo de visión
+                            vec4 modelViewPosition = modelViewMatrix * vec4(position, 1.0);
+                            gl_Position = projectionMatrix * modelViewPosition;
+                        {"}"}
+                    </script>
+
+                    <script id="fragment-shader" type="x-shader/x-fragment">
+                        uniform float time;
+                        uniform vec2 resolution;
+                        uniform sampler2D texture1;
+
+                        varying vec2 vUv;
+
+                        void main() {"{"}
+                            vec2 uv1 = vUv;
+                            // variable que contiene el eje de coordenadas
+                            vec2 uv = gl_FragCoord.xy/resolution.xy;
+
+                            float frequency = 15.;
+                            float amplitude = 0.015;
+
+                            float x = uv1.y * frequency + time * .7;
+                            float y = uv1.x * frequency + time * .3;
+
+                            uv1.x += cos(x+y) * amplitude * cos(y);
+                            uv1.y += sin(x-y) * amplitude * cos(y);
+
+                            vec4 rgba = texture2D(texture1, uv1);
+                            gl_FragColor = rgba;
+                        {"}"}
+                    </script>
                 </Helmet>
                 <Header
                     widgets={

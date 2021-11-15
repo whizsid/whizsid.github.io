@@ -47,7 +47,7 @@
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
-    "postBuild": "node scripts/postBuild.js",
+    "postBuild": "node postbuild/dist/index.js",
     "preRelease": "./scripts/preRelease.sh",
     "test": "react-scripts test",
     "eject": "react-scripts eject",

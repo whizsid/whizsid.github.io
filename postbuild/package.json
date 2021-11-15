@@ -1,0 +1,23 @@
+{
+  "name": "postbuild",
+  "version": "1.0.0",
+  "description": "Generating Sitemap, Opengraph Details, RSS Feed",
+  "main": "dist/index.js",
+  "author": "WhizSid <whizsid@aol.com>",
+  "license": "MIT",
+  "devDependencies": {
+    "@types/showdown": "^1.9.4",
+    "typescript": "^4.4.4"
+  },
+  "dependencies": {
+    "axios": "^0.24.0",
+    "js-base64": "^3.7.2",
+    "moment": "^2.29.1",
+    "showdown": "^1.9.1",
+    "xmlbuilder2": "^3.0.2"
+  },
+  "scripts": {
+    "build": "tsc",
+    "execute": "node ./dist/index.js"
+  }
+}
