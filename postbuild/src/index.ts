@@ -19,6 +19,7 @@ let sitemapContent =
 let rssContent = `<?xml version="1.0" encoding="utf-8"?>
         <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
         <channel>
+        <atom:link href="${GITHUB_PAGE}rss.xml" rel="self" type="application/rss+xml" />
         <title>WhizSid</title>
         <link>https://whizsid.github.io/</link>
         <description>Linux, Programming Blog (Typescript, React, C++, C, Matlab, PHP)</description>
