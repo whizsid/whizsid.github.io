@@ -1,5 +1,5 @@
 import * as React from "react";
-import { Helmet } from "react-helmet";
+import { Helmet, HelmetTags } from "react-helmet";
 import Chatbox from "../components/Chatbox";
 import Header from "../components/Header";
 import BlogPostsSection from "../components/HomePage/BlogPostsSection";
@@ -45,29 +45,28 @@ class HomePage extends React.Component {
                         rel="stylesheet"
                         href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"
                     />
+                    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
                     <script
-                        src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"
-                    ></script>
-                    <script id="vertex-shader" type="x-shader/x-vertex">
-                        varying vec2 vUv;
-
-                        void main(){"{"}
+                        id="vertex-shader"
+                        type="x-shader/x-vertex"
+                    >{`varying vec2 vUv;
+                        void main(){
                             vUv = uv;
                             //modelViewMatrix: es la posición y orientación de la cámara dentro de la escena
                             //projectionMatrix: la proyección para la escena de la cámara incluyendo el campo de visión
                             vec4 modelViewPosition = modelViewMatrix * vec4(position, 1.0);
                             gl_Position = projectionMatrix * modelViewPosition;
-                        {"}"}
-                    </script>
-
-                    <script id="fragment-shader" type="x-shader/x-fragment">
-                        uniform float time;
+                        }`}</script>
+                    <script
+                        id="fragment-shader"
+                        type="x-shader/x-fragment"
+                    >{`uniform float time;
                         uniform vec2 resolution;
                         uniform sampler2D texture1;
 
                         varying vec2 vUv;
 
-                        void main() {"{"}
+                        void main() {
                             vec2 uv1 = vUv;
                             // variable que contiene el eje de coordenadas
                             vec2 uv = gl_FragCoord.xy/resolution.xy;
@@ -83,8 +82,8 @@ class HomePage extends React.Component {
 
                             vec4 rgba = texture2D(texture1, uv1);
                             gl_FragColor = rgba;
-                        {"}"}
-                    </script>
+                        }`}</script>
+                    <script>{`window.initSkills()`}</script>
                 </Helmet>
                 <Header
                     widgets={

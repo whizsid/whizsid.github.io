@@ -1,6 +1,6 @@
-import {Grid, Theme, Typography, withStyles} from "@material-ui/core";
+import { Grid, Theme, Typography, withStyles } from "@material-ui/core";
 import * as React from "react";
-import {SimpleIcon} from "simple-icons";
+import { SimpleIcon } from "simple-icons";
 import * as THREE from "three";
 import SkillBox from "./SkillBox";
 const simpleicons = require("simple-icons");
@@ -9,11 +9,11 @@ const styler = withStyles((theme: Theme) => ({
     header: {
         background: "#606060",
         padding: theme.spacing(1),
-        color: theme.palette.common.white
+        color: theme.palette.common.white,
     },
     container: {
-        position: 'relative',
-    }
+        position: "relative",
+    },
 }));
 
 interface SkillsSectionProps {
@@ -23,7 +23,7 @@ interface SkillsSectionProps {
     };
 }
 
-type Icons  = Record<string, SimpleIcon>;
+type Icons = Record<string, SimpleIcon>;
 
 interface SkillsSectionState {
     icons: Icons;
@@ -45,7 +45,7 @@ const languages: Skill[] = [
     },
     {
         title: "C++",
-        iconName: "cplusplus"
+        iconName: "cplusplus",
     },
     {
         title: "Rust",
@@ -53,64 +53,64 @@ const languages: Skill[] = [
     },
     {
         title: "CSS",
-        iconName: "css3"
+        iconName: "css3",
     },
     {
         title: "HTML",
-        iconName: "html5"
+        iconName: "html5",
     },
     {
         title: "Bash",
-        iconName: "gnubash"
+        iconName: "gnubash",
     },
     {
         title: "Java",
-        iconName: "java"
+        iconName: "java",
     },
     {
         title: "TypeScript",
-        iconName: "typescript"
+        iconName: "typescript",
     },
     {
         title: "Python",
-        iconName: "python"
-    }
+        iconName: "python",
+    },
 ];
 const frameworks: Skill[] = [
     {
         title: "Laravel",
-        iconName: "laravel"
+        iconName: "laravel",
     },
     {
         title: "Symfony",
-        iconName: "symfony"
+        iconName: "symfony",
     },
     {
         title: "NestJS",
-        iconName: "nestjs"
+        iconName: "nestjs",
     },
     {
         title: "ReactJS",
-        iconName: "react"
+        iconName: "react",
     },
     {
         title: "AngularJS",
-        iconName: "angular"
+        iconName: "angular",
     },
     {
         title: "Spring",
-        iconName: "spring"
-    }
+        iconName: "spring",
+    },
 ];
 
 const techs: Skill[] = [
     {
         title: "AWS",
-        iconName: "amazonaws"
+        iconName: "amazonaws",
     },
     {
         title: "Git",
-        iconName: "git"
+        iconName: "git",
     },
     {
         title: "Docker",
@@ -126,11 +126,11 @@ const techs: Skill[] = [
     },
     {
         title: "MySQL",
-        iconName: "mysql"
+        iconName: "mysql",
     },
     {
         title: "PostgreSQL",
-        iconName: "postgresql"
+        iconName: "postgresql",
     },
     {
         title: "Electron",
@@ -142,143 +142,184 @@ const techs: Skill[] = [
     },
 ];
 
-class SkillsSection extends React.Component<SkillsSectionProps, SkillsSectionState> {
-
+class SkillsSection extends React.Component<
+    SkillsSectionProps,
+    SkillsSectionState
+> {
     constructor(props: SkillsSectionProps) {
         super(props);
 
         this.state = {
-            icons: {}
+            icons: {},
         };
         for (const skill of [...languages, ...frameworks, ...techs]) {
             this.state = {
                 ...this.state,
                 icons: {
                     ...this.state.icons,
-                    [skill.iconName]: simpleicons.get(skill.iconName)
-                }
+                    [skill.iconName]: simpleicons.get(skill.iconName),
+                },
             };
         }
-
     }
 
-    componentDidMount(){
-        const init = () => {
-            const content = document.querySelector(".content-canvas") as Element;
-            const s = {
-            w: document.getElementById("skillSection")?.clientWidth || window.innerWidth,
-            h: document.getElementById("skillSection")?.clientHeight || 500,
-            };
+    componentDidMount() {
+        (window as any).initSkills = () => {
+            try {
+                const content = document.querySelector(
+                    ".content-canvas"
+                ) as Element;
+                const s = {
+                    w:
+                        document.getElementById("skillSection")?.clientWidth ||
+                        window.innerWidth,
+                    h:
+                        document.getElementById("skillSection")?.clientHeight ||
+                        500,
+                };
 
-            const gl = {
-            renderer: new THREE.WebGLRenderer({ antialias: true }),
-            camera: new THREE.PerspectiveCamera(75, s.w / s.h, 0.1, 100),
-            scene: new THREE.Scene(),
-            loader: new THREE.TextureLoader()
-            } as Record<string, any>;
+                const gl = {
+                    renderer: new THREE.WebGLRenderer({ antialias: true }),
+                    camera: new THREE.PerspectiveCamera(
+                        75,
+                        s.w / s.h,
+                        0.1,
+                        100
+                    ),
+                    scene: new THREE.Scene(),
+                    loader: new THREE.TextureLoader(),
+                } as Record<string, any>;
 
-            let time = 0;
+                let time = 0;
 
-            const addScene = () => {
-            gl.camera.position.set(0, 0, 1);
-            gl.scene.add(gl.camera);
+                const addScene = () => {
+                    gl.camera.position.set(0, 0, 1);
+                    gl.scene.add(gl.camera);
 
-            gl.renderer.setSize(s.w, s.h);
-            gl.renderer.setPixelRatio(devicePixelRatio);
-            content.appendChild(gl.renderer.domElement);
+                    gl.renderer.setSize(s.w, s.h);
+                    gl.renderer.setPixelRatio(devicePixelRatio);
+                    content.appendChild(gl.renderer.domElement);
 
-            mesh();
-            };
+                    mesh();
+                };
 
-            const uniforms = {
-            time: { type: "f", value: 0 },
-            resolution: {
-                type: "v2",
-                value: new THREE.Vector2(s.w, s.h)
-            },
-            mouse: { type: "v2", value: new THREE.Vector2(0, 0) },
-            waveLength: { type: "f", value: 1.2 },
-            texture1: {
-                value: gl.loader.load("https://images.unsplash.com/photo-1513343041531-f73bffeed81b?ixlib=rb-1.2.1&q=85&fm=jpg&crop=entropy&cs=srgb&ixid=eyJhcHBfaWQiOjE0NTg5fQ")
+                const uniforms = {
+                    time: { type: "f", value: 0 },
+                    resolution: {
+                        type: "v2",
+                        value: new THREE.Vector2(s.w, s.h),
+                    },
+                    mouse: { type: "v2", value: new THREE.Vector2(0, 0) },
+                    waveLength: { type: "f", value: 1.2 },
+                    texture1: {
+                        value: gl.loader.load(
+                            "https://images.unsplash.com/photo-1513343041531-f73bffeed81b?ixlib=rb-1.2.1&q=85&fm=jpg&crop=entropy&cs=srgb&ixid=eyJhcHBfaWQiOjE0NTg5fQ"
+                        ),
+                    },
+                };
+
+                const getGeom = () => new THREE.PlaneGeometry(1, 1, 64, 64);
+
+                const getMaterial = () => {
+                    return new THREE.ShaderMaterial({
+                        side: THREE.DoubleSide,
+                        uniforms,
+                        vertexShader: document.querySelector("#vertex-shader")!
+                            .textContent as string,
+                        fragmentShader: document.querySelector(
+                            "#fragment-shader"
+                        )!.textContent as string,
+                    });
+                };
+
+                const mesh = () => {
+                    gl.geometry = getGeom();
+                    gl.material = getMaterial();
+
+                    gl.mesh = new THREE.Mesh(gl.geometry, gl.material);
+
+                    gl.scene.add(gl.mesh);
+                };
+
+                const update = () => {
+                    time += 0.05;
+                    gl.material.uniforms.time.value = time;
+
+                    render();
+                    requestAnimationFrame(update);
+                };
+
+                const render = () => gl.renderer.render(gl.scene, gl.camera);
+
+                const resize = () => {
+                    const w = s.w;
+                    const h = s.h;
+
+                    gl.camera.aspect = w / h;
+                    gl.renderer.setSize(w, h);
+
+                    const dist = gl.camera.position.z - gl.mesh.position.z;
+                    const height = 1;
+
+                    gl.camera.fov =
+                        2 * (180 / Math.PI) * Math.atan(height / (2 * dist));
+
+                    if (w / h > 1)
+                        gl.mesh.scale.x = gl.mesh.scale.y = (1.05 * w) / h;
+
+                    gl.camera.updateProjectionMatrix();
+                };
+
+                addScene();
+                update();
+                resize();
+                window.addEventListener("resize", resize);
+            } catch (e) {
+                console.error(e);
             }
-            };
-
-            const getGeom = () => new THREE.PlaneGeometry(1, 1, 64, 64);
-
-            const getMaterial = () => {
-            return new THREE.ShaderMaterial({
-                side: THREE.DoubleSide,
-                uniforms,
-                vertexShader: document.querySelector("#vertex-shader")!.textContent as string,
-                fragmentShader: document.querySelector("#fragment-shader")!.textContent as string
-            });
-            };
-
-            const mesh = () => {
-            gl.geometry = getGeom();
-            gl.material = getMaterial();
-
-            gl.mesh = new THREE.Mesh(gl.geometry, gl.material);
-
-            gl.scene.add(gl.mesh);
-            };
-
-            const update = () => {
-            time += 0.05;
-            gl.material.uniforms.time.value = time;
-
-            render();
-            requestAnimationFrame(update);
-            };
-
-            const render = () => gl.renderer.render(gl.scene, gl.camera);
-
-            const resize = () => {
-            const w = s.w;
-            const h = s.h;
-
-            gl.camera.aspect = w / h;
-            gl.renderer.setSize(w, h);
-
-            const dist = gl.camera.position.z - gl.mesh.position.z;
-            const height = 1;
-
-            gl.camera.fov = 2 * (180 / Math.PI) * Math.atan(height / (2 * dist));
-
-            if (w / h > 1) gl.mesh.scale.x = gl.mesh.scale.y = 1.05 * w / h;
-
-            gl.camera.updateProjectionMatrix();
-            };
-
-            addScene();
-            update();
-            resize();
-            window.addEventListener("resize", resize);
         };
-
-        init();
     }
 
     public render() {
-
-        const {classes} = this.props;
-        const {icons} = this.state;
+        const { classes } = this.props;
+        const { icons } = this.state;
 
         return (
-            <div id="skillSection" className={classes.container} >
-                <Typography className={classes.header} variant="h6"> Skills </Typography>
+            <div id="skillSection" className={classes.container}>
+                <Typography className={classes.header} variant="h6">
+                    {" "}
+                    Skills{" "}
+                </Typography>
                 <Grid container justify="center">
                     <Grid xs={12} md={4} item>
-                        <SkillBox skills={languages.map(s=>({icon: icons[s.iconName] as any, title: s.title}))} title="Languages" />
+                        <SkillBox
+                            skills={languages.map((s) => ({
+                                icon: icons[s.iconName] as any,
+                                title: s.title,
+                            }))}
+                            title="Languages"
+                        />
                     </Grid>
                     <Grid xs={12} md={4} item>
-                        <SkillBox skills={frameworks.map(s=>({icon: icons[s.iconName] as any, title: s.title}))} title="Frameworks" />
+                        <SkillBox
+                            skills={frameworks.map((s) => ({
+                                icon: icons[s.iconName] as any,
+                                title: s.title,
+                            }))}
+                            title="Frameworks"
+                        />
                     </Grid>
                     <Grid xs={12} md={4} item>
-                        <SkillBox skills={techs.map(s=>({icon: icons[s.iconName] as any, title: s.title}))} title="Techs" />
+                        <SkillBox
+                            skills={techs.map((s) => ({
+                                icon: icons[s.iconName] as any,
+                                title: s.title,
+                            }))}
+                            title="Techs"
+                        />
                     </Grid>
                 </Grid>
-                <div className="content-canvas"/>
+                <div className="content-canvas" />
             </div>
         );
     }
