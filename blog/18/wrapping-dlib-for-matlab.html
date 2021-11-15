@@ -1,31 +1,452 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"/><link rel="icon" href="/favicon.ico"/><meta name="viewport" content="width=device-width,initial-scale=1"/><link rel="apple-touch-icon" href="/logo.png"/><link rel="manifest" href="/manifest.json"/><link href="https://fonts.googleapis.com/css?family=Source+Code+Pro&display=swap" rel="stylesheet"/><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.css"/><meta http-equiv="X-UA-Compatible" content="IE=edge"/><meta name="viewport" content="width=device-width,initial-scale=1,shrink-to-fit=no"/><meta http-equiv="content-type" content="text/html; charset=UTF-8;charset=utf-8"/><link rel="fluid-icon" href="/logo.png" title="WhizSid"/><meta name="page-subject" content="WhizSid"/><meta name="theme-color" content="#151853"/><meta name="HandheldFriendly" content="true"/><title>WhizSid - Portfolio And Blog Posts</title><style>code,pre{white-space:pre-wrap!important}body{margin:0;padding:0}a:active,a:link,a:visited{color:inherit!important;text-decoration:none!important}.loading-fixed{position:fixed;top:0;left:0;width:100vw;height:100vh;display:block;background:#fff;z-index:10000}.loading-flex{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100vh;padding:1rem 1rem 2rem 1rem;box-sizing:border-box;overflow:hidden}.loader-wrapper{width:10em;height:10em;font-size:25px;box-sizing:border-box;border-top:.3em solid #ff69b4;border-radius:50%;position:relative;animation:rotating 2s ease-in-out infinite;--direction:1}.loader-wrapper::after,.loader-wrapper::before{content:"";position:absolute;width:inherit;height:inherit;border-radius:50%;box-sizing:border-box;top:-.2em}.loader-wrapper::before{border-top:.3em solid #1e90ff;transform:rotate(120deg)}.loader-wrapper::after{border-top:.3em solid gold;transform:rotate(240deg)}@keyframes rotating{50%{transform:rotate(calc(180deg * var(--direction)))}100%{transform:rotate(calc(360deg * var(--direction)))}}.loader{position:relative}.loader span{position:absolute;color:#000;width:inherit;height:inherit;top:40px;left:80px;text-align:center;line-height:10em;font-family:sans-serif}@-webkit-keyframes moveXL{from{left:0}to{left:220px}}@-moz-keyframes moveXL{from{left:0}to{left:220px}}@-o-keyframes moveXL{from{left:0}to{left:220px}}@keyframes moveXL{from{left:0}to{left:220px}}@-webkit-keyframes moveXR{from{left:220px}to{left:0}}@-moz-keyframes moveXR{from{left:220px}to{left:0}}@-o-keyframes moveXR{from{left:220px}to{left:0}}@keyframes moveXR{from{left:220px}to{left:0}}@-webkit-keyframes moveYT{from{top:0}to{top:220px}}@-moz-keyframes moveYT{from{top:0}to{top:220px}}@-o-keyframes moveYT{from{top:0}to{top:220px}}@keyframes moveYT{from{top:0}to{top:220px}}@-webkit-keyframes moveYB{from{top:220px}to{top:0}}@-moz-keyframes moveYB{from{top:220px}to{top:0}}@-o-keyframes moveYB{from{top:220px}to{top:0}}@keyframes moveYB{from{top:220px}to{top:0}}@-webkit-keyframes sizeI{from{width:40px;height:40px;opacity:.5}to{width:80px;height:80px;opacity:1}}@-moz-keyframes sizeI{from{width:40px;height:40px;opacity:.5}to{width:80px;height:80px;opacity:1}}@-o-keyframes sizeI{from{width:40px;height:40px;opacity:.5}to{width:80px;height:80px;opacity:1}}@keyframes sizeI{from{width:40px;height:40px;opacity:.5}to{width:80px;height:80px;opacity:1}}@-webkit-keyframes sizeI{from{width:40px;height:40px;opacity:.5}to{width:80px;height:80px;opacity:1}}canvas{display:block;position:absolute;left:0;top:48px;z-index:-1}</style><script>window.onload=function(){document.getElementsByClassName("loading-fixed")[0].remove()}</script><script id="vertex-shader" type="x-shader/x-vertex">varying vec2 vUv;
-    
-    void main(){  
-        vUv = uv; 
-        //modelViewMatrix: es la posición y orientación de la cámara dentro de la escena
-        //projectionMatrix: la proyección para la escena de la cámara incluyendo el campo de visión
-        vec4 modelViewPosition = modelViewMatrix * vec4(position, 1.0);
-        gl_Position = projectionMatrix * modelViewPosition;
-    }</script><script id="fragment-shader" type="x-shader/x-fragment">uniform float time;
-    uniform vec2 resolution;
-    uniform sampler2D texture1;
-    
-    varying vec2 vUv;
-    
-    void main() {  
-        vec2 uv1 = vUv;
-        // variable que contiene el eje de coordenadas
-        vec2 uv = gl_FragCoord.xy/resolution.xy;
-        
-        float frequency = 15.;
-        float amplitude = 0.015;
-        
-        float x = uv1.y * frequency + time * .7; 
-        float y = uv1.x * frequency + time * .3;
-        
-        uv1.x += cos(x+y) * amplitude * cos(y);
-        uv1.y += sin(x-y) * amplitude * cos(y);
+<!doctype html><html lang="en"><head><meta charset="utf-8"/><link rel="icon" href="/favicon.ico"/><meta name="viewport" content="width=device-width,initial-scale=1"/><link rel="apple-touch-icon" href="/logo.png"/><link rel="manifest" href="/manifest.json"/><link href="https://fonts.googleapis.com/css?family=Source+Code+Pro&display=swap" rel="stylesheet"/><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.css"/><meta http-equiv="X-UA-Compatible" content="IE=edge"/><meta name="viewport" content="width=device-width,initial-scale=1,shrink-to-fit=no"/><meta http-equiv="content-type" content="text/html; charset=UTF-8;charset=utf-8"/><link rel="fluid-icon" href="/logo.png" title="WhizSid"/><meta name="page-subject" content="WhizSid"/><meta name="theme-color" content="#151853"/><meta name="HandheldFriendly" content="true"/><title>WhizSid - Portfolio And Blog Posts</title><style>code,pre{white-space:pre-wrap!important}body{margin:0;padding:0}a:active,a:link,a:visited{color:inherit!important;text-decoration:none!important}.loading-fixed{position:fixed;top:0;left:0;width:100vw;height:100vh;display:block;background:#fff;z-index:10000}.loading-flex{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100vh;padding:1rem 1rem 2rem 1rem;box-sizing:border-box;overflow:hidden}.loader-wrapper{width:10em;height:10em;font-size:25px;box-sizing:border-box;border-top:.3em solid #ff69b4;border-radius:50%;position:relative;animation:rotating 2s ease-in-out infinite;--direction:1}.loader-wrapper::after,.loader-wrapper::before{content:"";position:absolute;width:inherit;height:inherit;border-radius:50%;box-sizing:border-box;top:-.2em}.loader-wrapper::before{border-top:.3em solid #1e90ff;transform:rotate(120deg)}.loader-wrapper::after{border-top:.3em solid gold;transform:rotate(240deg)}@keyframes rotating{50%{transform:rotate(calc(180deg * var(--direction)))}100%{transform:rotate(calc(360deg * var(--direction)))}}.loader{position:relative}.loader span{position:absolute;color:#000;width:inherit;height:inherit;top:40px;left:80px;text-align:center;line-height:10em;font-family:sans-serif}@-webkit-keyframes moveXL{from{left:0}to{left:220px}}@-moz-keyframes moveXL{from{left:0}to{left:220px}}@-o-keyframes moveXL{from{left:0}to{left:220px}}@keyframes moveXL{from{left:0}to{left:220px}}@-webkit-keyframes moveXR{from{left:220px}to{left:0}}@-moz-keyframes moveXR{from{left:220px}to{left:0}}@-o-keyframes moveXR{from{left:220px}to{left:0}}@keyframes moveXR{from{left:220px}to{left:0}}@-webkit-keyframes moveYT{from{top:0}to{top:220px}}@-moz-keyframes moveYT{from{top:0}to{top:220px}}@-o-keyframes moveYT{from{top:0}to{top:220px}}@keyframes moveYT{from{top:0}to{top:220px}}@-webkit-keyframes moveYB{from{top:220px}to{top:0}}@-moz-keyframes moveYB{from{top:220px}to{top:0}}@-o-keyframes moveYB{from{top:220px}to{top:0}}@keyframes moveYB{from{top:220px}to{top:0}}@-webkit-keyframes sizeI{from{width:40px;height:40px;opacity:.5}to{width:80px;height:80px;opacity:1}}@-moz-keyframes sizeI{from{width:40px;height:40px;opacity:.5}to{width:80px;height:80px;opacity:1}}@-o-keyframes sizeI{from{width:40px;height:40px;opacity:.5}to{width:80px;height:80px;opacity:1}}@keyframes sizeI{from{width:40px;height:40px;opacity:.5}to{width:80px;height:80px;opacity:1}}@-webkit-keyframes sizeI{from{width:40px;height:40px;opacity:.5}to{width:80px;height:80px;opacity:1}}canvas{display:block;position:absolute;left:0;top:48px;z-index:-1}</style><script>window.onload=function(){document.getElementsByClassName("loading-fixed")[0].remove()}</script><link href="/static/css/2.957bb6f1.chunk.css" rel="stylesheet"><meta property="og:title" content="WhizSid| Wrapping dlib for Matlab"/><meta name="description" property="og:description" content="dlib is a famous c++ machine learning library and Matlab is a numeric computing platform that provide many algorithms and tools to do researches. There are lot of ML algorithms in dlib that Matlab doesn't have. But still we can use the dlib algorithms in Matlab by compiling the dlib functions as Mex files In this post I am discussing about the official approach to make a dlib wrapper to matlab." /><meta property="keywords" content="Post, C++, Matlab, dlib, face-detect, face-alignment, machine-learning, blog, beginner, advanced, step by step" /><meta property="og:type" content="article"/><meta property="og:article:published_time" content="2021-09-21T23:04:55Z"/><meta property="og:article:modified_time" content="2021-09-21T23:22:48Z"/><meta name="author" content="Ramesh Kithsiri"/><meta property="og:article:author:first_name" content="Ramesh"/><meta property="og:article:author:last_name" content="Kithsiri"/><meta property="og:article:author:username" content="whizsid"/><meta property="fb:app_id" content="129537969147552"/><meta property="og:article:section" content="Software Engineering"/><meta property="og:article:tag" content="Post"/><meta property="og:article:tag" content="C++"/><meta property="og:article:tag" content="Matlab"/><meta property="og:article:tag" content="dlib"/><meta property="og:article:tag" content="face-detect"/><meta property="og:article:tag" content="face-alignment"/><meta property="og:article:tag" content="machine-learning"/><meta property="og:image" content="https://github.com/whizsid/whizsid.github.io/raw/src/blog/images/dlib_matlab.png"/><meta property="og:url" content="https://whizsid.github.io/blog/18/wrapping-dlib-for-matlab.html"/><body style="margin:0;background:#e8eaed"><div class="loading-fixed"><div class="loading-flex"><div class="loader"><div class="loader-wrapper"></div><span>Loading...</span></div></div></div><noscript>You need to enable JavaScript to run this app.</noscript><div id="root"><h1 id="wrappingdlibformatlab">Wrapping dlib for Matlab</h1>
+<p><a href="http://dlib.net/">dlib</a> is a famous c++ machine learning library and
+<a href="https://in.mathworks.com/products/matlab.html">Matlab</a> is a numeric
+computing platform that provide many algorithms and tools to do
+researches. There are lot of ML algorithms in dlib that Matlab doesn't
+have. But still we can use the dlib algorithms in Matlab by compiling
+the dlib functions as <a href="https://en.wikipedia.org/wiki/MEX_file">Mex
+files</a>. In this post I am
+discussing about the official approach to make a dlib wrapper to matlab.</p>
+<h2 id="requirements">Requirements</h2>
+<ul>
+<li>Matlab</li>
+<li>dlib (dlib should be installed in the computer and the path to dlib
+header files should be in the include path)</li>
+</ul>
+<h2 id="folderstructure">Folder Structure</h2>
+<pre><code>- +dlib/
+- -- private/       # C++ source files
+- -- build/         # Makefiles that generated by cmake
+- -- .gitignore     # List of ignored file names and folder names.
+- -- *.m            # Matlab classes linked to Mex files
+- -- *.mexa64       # Built mex files
+- demo.m            # Matlab file to test the wrapper
+</code></pre>
+<h2 id="gettingstarted">Getting Started</h2>
+<p>You can find an example dlib wrapper in
+<a href="https://github.com/davisking/dlib/tree/master/dlib/matlab">dlib/matlab</a>
+folder of the dlib Github repository. Copy the following files from this
+folder to the <code>+dlib/private</code> folder of your workspace.</p>
+<pre><code>CMakeLists.txt
+cmake_mex_wrapper
+mex_wrapper.cpp
+call_matlab.h
+</code></pre>
+<p>Change the <code>CMakeLists.txt</code> to find dlib from the include path instead
+from an absolute path.</p>
+<pre><code class="cmake language-cmake"># +dlib/private/CMakeLists.txt
 
-        vec4 rgba = texture2D(texture1, uv1);
-        gl_FragColor = rgba;
-    }</script><link href="/static/css/2.957bb6f1.chunk.css" rel="stylesheet"><meta property="og:title" content="WhizSid| Wrapping dlib for Matlab"/><meta name="description" property="og:description" content="dlib is a famous c++ machine learning library and Matlab is a numeric computing platform that provide many algorithms and tools to do researches. There are lot of ML algorithms in dlib that Matlab doesn't have. But still we can use the dlib algorithms in Matlab by compiling the dlib functions as Mex files In this post I am discussing about the official approach to make a dlib wrapper to matlab." /><meta property="keywords" content="Post, C++, Matlab, dlib, face-detect, face-alignment, machine-learning, blog, beginner, advanced, step by step" /><meta property="og:type" content="article"/><meta property="og:article:published_time" content="2021-09-21T23:04:55Z"/><meta property="og:article:modified_time" content="2021-09-21T23:22:48Z"/><meta name="author" content="Ramesh Kithsiri"/><meta property="og:article:author:first_name" content="Ramesh"/><meta property="og:article:author:last_name" content="Kithsiri"/><meta property="og:article:author:username" content="whizsid"/><meta property="fb:app_id" content="129537969147552"/><meta property="og:article:section" content="Software Engineering"/><meta property="og:article:tag" content="Post"/><meta property="og:article:tag" content="C++"/><meta property="og:article:tag" content="Matlab"/><meta property="og:article:tag" content="dlib"/><meta property="og:article:tag" content="face-detect"/><meta property="og:article:tag" content="face-alignment"/><meta property="og:article:tag" content="machine-learning"/><meta property="og:image" content="https://github.com/whizsid/whizsid.github.io/raw/src/blog/images/dlib_matlab.png"/><meta property="og:url" content="https://whizsid.github.io/blog/18/wrapping-dlib-for-matlab.html"/><body style="margin:0;background:#e8eaed"><div class="loading-fixed"><div class="loading-flex"><div class="loader"><div class="loader-wrapper"></div><span>Loading...</span></div></div></div><noscript>You need to enable JavaScript to run this app.</noscript><div id="root"></div><script>!function(e){function r(r){for(var n,l,f=r[0],i=r[1],p=r[2],c=0,s=[];c<f.length;c++)l=f[c],Object.prototype.hasOwnProperty.call(o,l)&&o[l]&&s.push(o[l][0]),o[l]=0;for(n in i)Object.prototype.hasOwnProperty.call(i,n)&&(e[n]=i[n]);for(a&&a(r);s.length;)s.shift()();return u.push.apply(u,p||[]),t()}function t(){for(var e,r=0;r<u.length;r++){for(var t=u[r],n=!0,f=1;f<t.length;f++){var i=t[f];0!==o[i]&&(n=!1)}n&&(u.splice(r--,1),e=l(l.s=t[0]))}return e}var n={},o={1:0},u=[];function l(r){if(n[r])return n[r].exports;var t=n[r]={i:r,l:!1,exports:{}};return e[r].call(t.exports,t,t.exports,l),t.l=!0,t.exports}l.m=e,l.c=n,l.d=function(e,r,t){l.o(e,r)||Object.defineProperty(e,r,{enumerable:!0,get:t})},l.r=function(e){"undefined"!=typeof Symbol&&Symbol.toStringTag&&Object.defineProperty(e,Symbol.toStringTag,{value:"Module"}),Object.defineProperty(e,"__esModule",{value:!0})},l.t=function(e,r){if(1&r&&(e=l(e)),8&r)return e;if(4&r&&"object"==typeof e&&e&&e.__esModule)return e;var t=Object.create(null);if(l.r(t),Object.defineProperty(t,"default",{enumerable:!0,value:e}),2&r&&"string"!=typeof e)for(var n in e)l.d(t,n,function(r){return e[r]}.bind(null,n));return t},l.n=function(e){var r=e&&e.__esModule?function(){return e.default}:function(){return e};return l.d(r,"a",r),r},l.o=function(e,r){return Object.prototype.hasOwnProperty.call(e,r)},l.p="/";var f=this.webpackJsonpportfolio=this.webpackJsonpportfolio||[],i=f.push.bind(f);f.push=r,f=f.slice();for(var p=0;p<f.length;p++)r(f[p]);var a=i;t()}([])</script><script src="/static/js/2.9180cce6.chunk.js"></script><script src="/static/js/main.8538a06f.chunk.js"></script></body></html>
+# Remove the following line
+add_subdirectory(.. dlib_build)
+# And add the following line
+find_package(dlib REQUIRED)
+</code></pre>
+<p>And remove following lines from the <code>CMakeLists.txt</code> to start our
+project as a new one.</p>
+<pre><code class="cmake language-cmake"># +dlib/private/CMakeLists.txt
+
+add_mex_function(example_mex_function dlib::dlib)
+add_mex_function(example_mex_callback dlib::dlib)
+add_mex_function(example_mex_struct dlib::dlib)
+add_mex_function(example_mex_class dlib::dlib)
+</code></pre>
+<p>By default the built Mex file is saving to the source directory. But our
+source directory is a separate folder named <code>private</code>. So we need to save the
+Mex file to the parent directory of the <code>private</code> folder. Change
+<code>CMakeLists.txt</code> as following to change it.</p>
+<pre><code class="cmake language-cmake"># +dlib/private/CMakeLists.txt
+
+// ...
+# You can tell cmake where to put the mex files when you run 'make install' by
+# setting this variable.  The path is relative to this CMakeLists.txt file.
+get_filename_component(MEX_INSTALL_PATH "${CMAKE_CURRENT_SOURCE_DIR}/../" ABSOLUTE)
+set(install_target_output_folder ${MEX_INSTALL_PATH})
+</code></pre>
+<p>If you are using linux, change the value of <code>MATLAB_EXECUTABLE</code> in the
+<code>cmake_mex_wrapper</code> file.</p>
+<pre><code class="cmake language-cmake"># +dlib/private/cmake_mex_wrapper
+
+find_program(MATLAB_EXECUTABLE matlab PATHS
+        "/usr/local/MATLAB/*/bin"
+        )
+</code></pre>
+<p>We are going to build the dlib example project as a standalone project.
+But it made to compile as a component in dlib project. So there are some
+relative includes in the <code>mex_wrapper.cpp</code> file. Change all of these
+relative includes as the following.</p>
+<pre><code class="cpp language-cpp"># +dlib/private/mex_wrapper.cpp
+
+// ...
+
+// Change following lines
+#include "../matrix.h"
+#include "../array2d.h"
+#include "../array.h"
+#include "../image_transforms.h"
+#include "../is_kind.h"
+#include "../string.h"
+#include "../any.h" // for sig_traits
+#include "../hash.h"
+
+// As in the following
+#include &lt;dlib/matrix.h&gt;
+#include &lt;dlib/array2d.h&gt;
+#include &lt;dlib/array.h&gt;
+#include &lt;dlib/image_transforms.h&gt;
+#include &lt;dlib/is_kind.h&gt;
+#include &lt;dlib/string.h&gt;
+#include &lt;dlib/any.h&gt; // for sig_traits
+#include &lt;dlib/hash.h&gt;
+</code></pre>
+<p>And add the <code>dlib</code> namespace to the <code>mex_wrapper.cpp</code> file.</p>
+<pre><code class="cpp language-cpp"># +dlib/private/mex_wrapper.cpp
+
+// All includes goes here
+//..
+
+using namespace dlib;
+</code></pre>
+<h2 id="creatingacclassandcompile">Creating a C++ class and compile</h2>
+<p>As the start create a C++ file to implement the wrapper to your dlib
+function. In this example I am implementing a wrapper to the dlib CNN
+face detector. Because it is more accurate than the Matlab built-in face
+detector. I am creating a C++ class file and copying the contents
+of the
+<a href="https://github.com/davisking/dlib/blob/master/dlib/matlab/example_mex_class.cpp">dlib/matlab/example<em>mex</em>class.cpp</a>
+file to my new class file. And I am removing the inner contents and
+comments from the file.</p>
+<pre><code class="cpp language-cpp"># +dlib/private/CNNFaceDetectorMex.cpp
+
+#include &lt;iostream&gt;
+
+using namespace std;
+
+class CNNFaceDetector 
+{
+public:
+
+    CNNFaceDetector()
+    {
+    }
+
+    void test(){
+      cout &lt;&lt; "Yeah! It worked";
+    }
+};
+
+#define MEX_CLASS_NAME CNNFaceDetector 
+#define MEX_CLASS_METHODS test
+
+
+#include "mex_wrapper.cpp"
+</code></pre>
+<p>I am including it to the <code>CMakeLists.txt</code> to compile as a Mex file.</p>
+<pre><code># +dlib/private/CMakeLists.txt
+
+# ...
+
+add_mex_function(CNNFaceDetectorMex dlib::dlib)
+</code></pre>
+<p>Create an another <code>CMakeLists.txt</code> file in the root folder to tell cmake
+to compile the <code>+dlib/private</code> folder.</p>
+<pre><code># CMakeLists.txt
+
+add_subdirectory(+dlib/private)
+</code></pre>
+<p>Now compile the project using following  commands.</p>
+<pre><code class="bash language-bash">$ mkdir build
+$ cd build
+$ cmake .. -DCMAKE_INSTALL_PREFIX=../
+$ make
+$ make install
+</code></pre>
+<p>You can find the compiled Mex file in the <code>+dlib</code> folder.</p>
+<h2 id="creatingamatlabclasstowrapmexfile">Creating A Matlab class to wrap Mex file</h2>
+<p>The Mex files are not classes. These files are acting like functions.
+But we can convert Mex files to classes by wrapping the Mex file in a
+Matlab class.</p>
+<p>Run the Mex file as a function in the Matlab command line to generate
+the contents of the Matlab class file.</p>
+<pre><code>&gt;&gt; dlib.CNNFaceDetectorMex()
+</code></pre>
+<p>This command is generating the contents that should be in the Matlab
+class file. Copy this contents to your matlab class file.</p>
+<pre><code class="matlab language-matlab"># +dlib/CNNFaceDetector.m
+
+classdef CNNFaceDetector &lt; handle
+    properties (Access = private)
+        cpp_ptr
+    end
+
+    methods
+        function this = CNNFaceDetector()
+            this.cpp_ptr = CNNFaceDetectorMex('construct');
+        end
+
+        function copied_obj = clone(this)
+            %Returns a new independent object that is a copy of this.
+            copied_obj = CNNFaceDetector();
+            copied_obj.cpp_ptr = CNNFaceDetectorMex(this.cpp_ptr,'clone');
+        end
+
+        function varargout = test(this, varargin) 
+            [varargout{1:nargout}] = CNNFaceDetectorMex(this.cpp_ptr, 1, varargin{:}); 
+        end 
+
+    end
+
+    methods(Access=private) 
+        function delete(this) 
+            CNNFaceDetectorMex(this.cpp_ptr); 
+        end         
+    end 
+
+end
+</code></pre>
+<p>Now create an instance of this class in the <code>demo.m</code> file and try to run
+it.</p>
+<pre><code class="matlab language-matlab"># demo.m
+
+detector = dlib.CNNFaceDetector();
+detector.test()
+</code></pre>
+<p>I got the following error by running the script.</p>
+<pre><code>&gt;&gt; demo
+Warning: The following error was caught while executing 'dlib.CNNFaceDetector' class destructor:
+Undefined function 'CNNFaceDetectorMex' for input arguments of type 'double'.
+
+Error in dlib.CNNFaceDetector/delete (line 25)
+            CNNFaceDetectorMex(this.cpp_ptr);
+
+Error in demo (line 1)
+detector = dlib.CNNFaceDetector(); 
+&gt; In demo (line 1) 
+'CNNFaceDetectorMex' is not found in the current folder or on the MATLAB path, but exists in:
+    /home/ramesh/Researches/EyeTouch/facetrack/+dlib
+
+Change the MATLAB current folder or add its folder to the MATLAB path.
+
+Error in dlib.CNNFaceDetector (line 8)
+            this.cpp_ptr = CNNFaceDetectorMex('construct');
+
+Error in demo (line 1)
+detector = dlib.CNNFaceDetector();
+</code></pre>
+<p>This error means the <code>CNNFaceDetectorMex</code> function is not in the current
+namespace. But it is available in the <code>dlib</code> namespace. So I changed the
+all <code>CNNFaceDetectorMex</code> words to <code>dlib.CNNFaceDetectorMex</code> in the
+<code>CNNFaceDetector.m</code> file.</p>
+<pre><code class="matlab language-matlab"># +dlib/CNNFaceDetector.m
+
+classdef CNNFaceDetector &lt; handle
+    properties (Access = private)
+        cpp_ptr
+    end
+
+    methods
+        function this = CNNFaceDetector()
+            this.cpp_ptr = dlib.CNNFaceDetectorMex('construct');
+        end
+
+        function copied_obj = clone(this)
+            %Returns a new independent object that is a copy of this.
+            copied_obj = CNNFaceDetector();
+            copied_obj.cpp_ptr = dlib.CNNFaceDetectorMex(this.cpp_ptr,'clone');
+        end
+
+        function varargout = test(this, varargin) 
+            [varargout{1:nargout}] = dlib.CNNFaceDetectorMex(this.cpp_ptr, 1, varargin{:}); 
+        end 
+
+    end
+
+    methods(Access=private) 
+        function delete(this) 
+            dlib.CNNFaceDetectorMex(this.cpp_ptr); 
+        end         
+    end 
+
+end
+</code></pre>
+<p>Finally I could successfully run the <code>demo.m</code>.</p>
+<pre><code>&gt;&gt; demo
+Yeah! It worked&gt;&gt;
+</code></pre>
+<p>Do not forget to repeat this step in each time you changed the Mex class
+methods.</p>
+<h2 id="puttingdlibalgorithm">Putting dlib algorithm</h2>
+<p>As in <a href="http://dlib.net/dnn_mmod_face_detection_ex.cpp.html">this</a>
+example I downloaded the <a href="http://dlib.net/files/data/dlib_face_detection_dataset-2016-09-30.tar.gz">trained
+dataset</a>
+and extracted the <code>.dat</code> file to <code>data</code> folder.</p>
+<p>After I created a network in the <code>CNNFaceDetectorMex.cpp</code> file as in the
+above example.</p>
+<pre><code class="cpp language-cpp"># +dlib/private/CNNFaceDetectorMex.cpp
+
+// ...
+#include &lt;dlib/dnn.h&gt;
+// ...
+using namespace dlib;
+
+template &lt;long num_filters, typename SUBNET&gt;
+using con5d = con&lt;num_filters, 5, 5, 2, 2, SUBNET&gt;;
+template &lt;long num_filters, typename SUBNET&gt;
+using con5 = con&lt;num_filters, 5, 5, 1, 1, SUBNET&gt;;
+
+template &lt;typename SUBNET&gt;
+using downsampler = relu&lt;affine&lt;
+    con5d&lt;32, relu&lt;affine&lt;con5d&lt;32, relu&lt;affine&lt;con5d&lt;16, SUBNET&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;;
+template &lt;typename SUBNET&gt; using rcon5 = relu&lt;affine&lt;con5&lt;45, SUBNET&gt;&gt;&gt;;
+
+using net_type = loss_mmod&lt;
+    con&lt;1, 9, 9, 1, 1,
+        rcon5&lt;rcon5&lt;
+            rcon5&lt;downsampler&lt;input_rgb_image_pyramid&lt;pyramid_down&lt;6&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;;
+
+class CNNFaceDetector 
+{
+// ...
+private:
+  net_type _net;
+}
+</code></pre>
+<p>Next implemented a new method to train the detector and initialize it.
+deleted the old method <code>train</code></p>
+<pre><code class="cpp language-cpp"># +dlib/private/CNNFaceDetector.cpp
+
+// ...
+
+#include &lt;dlib/image_processing/full_object_detection.h&gt;
+
+// ...
+
+class CNNFaceDetector
+{
+public:
+// ...
+  void train(string fd_file_name) { deserialize(fd_file_name) &gt;&gt; _net; }
+}
+
+// ...
+#define MEX_CLASS_METHODS train
+</code></pre>
+<p>I compiled these changes again and repeated the Mex class creating step.
+Then I edited the <code>demo.m</code> as following.</p>
+<pre><code class="matlab language-matlab"># demo.m
+
+detector = dlib.CNNFaceDetector();
+detector.train('./data/mmod_human_face_detector.dat');
+</code></pre>
+<p>It executed without any error.</p>
+<p>Next I implemented a method to do the facial detection. This method is
+taking a RGB picture as an input and Returning a list of bounding boxes
+of detected faces.</p>
+<pre><code class="cpp language-cpp"># +dlib/private/CNNFaceDetectorMex.cpp
+
+// ...
+
+#include &lt;dlib/matrix/matrix.h&gt;
+#include &lt;dlib/pixel.h&gt;
+
+// ...
+
+class CNNFaceDetector
+{
+public:
+// ...
+
+  void detect(const matrix&lt;rgb_pixel&gt; &amp;img,
+              std::vector&lt;matrix_colmajor&gt; &amp;bboxes) {
+
+    std::vector&lt;mmod_rect&gt; rects = _net(img);
+
+    if (rects.size() &gt; 0) {
+      matrix_colmajor bbox = matrix_colmajor();
+      bbox.set_size(1, 4);
+      for (int i = 0; i &lt; rects.size(); i++) {
+        mmod_rect rect = rects[i];
+        long t = rect.rect.top();
+        long l = rect.rect.left();
+        bbox(0, 0) = l;
+        bbox(0, 1) = t;
+        bbox(0, 2) = rect.rect.right() - l;
+        bbox(0, 3) = rect.rect.bottom() - t;
+        bboxes.push_back(bbox);
+      }
+    }
+  }
+// ...
+}
+
+// ...
+#define MEX_CLASS_METHODS train, detect
+</code></pre>
+<p>After compiling it I repeated the Mex class creating step again.</p>
+<p>And I downloaded an image to the <code>input</code> folder and changed the <code>demo.m</code>
+file as following.</p>
+<pre><code class="matlab language-matlab"># demo.m
+
+% ...
+I = imread("./input/students.jpg");
+faces = detector.detect(I);
+</code></pre>
+<p>After running the above script I got the following error.</p>
+<pre><code>&gt;&gt; demo
+Error using CNNFaceDetectorMex
+mex_function has some bug in it related to processing input argument 1
+
+Error in dlib.CNNFaceDetector/detect (line 22)
+            [varargout{1:nargout}] = dlib.CNNFaceDetectorMex(this.cpp_ptr, 2, varargin{:});
+
+Error in demo (line 5)
+faces = detector.detect(I);
+</code></pre>
+<p>This error is causing because there is no method to cast a Matlab image
+to <code>matrix&lt;rgb_pixel&gt;</code>. I implemented a new method in the
+<code>mex_wrapper.cpp</code> to cast a Matlab image to dlib matrix.</p>
+<pre><code class="cpp language-cpp"># +dlib/private/mex_wrapper.cpp
+
+// After line 640
+    template &lt;
+        long num_rows,
+        long num_cols,
+        typename mem_manager,
+        typename layout
+        &gt;
+    void assign_image (
+        const long arg_idx,
+        matrix&lt;dlib::rgb_pixel,num_rows,num_cols, mem_manager,layout&gt;&amp; img,
+        const dlib::uint8* data,
+        long nr,
+        long nc
+    )
+    {
+
+        img.set_size(nr, nc);
+        for (long c = 0; c &lt; img.nc(); ++c)
+            for (long r = 0; r &lt; img.nr(); ++r)
+                img(r,c).red = *data++;
+        for (long c = 0; c &lt; img.nc(); ++c)
+            for (long r = 0; r &lt; img.nr(); ++r)
+                img(r,c).green = *data++;
+        for (long c = 0; c &lt; img.nc(); ++c)
+            for (long r = 0; r &lt; img.nr(); ++r)
+                img(r,c).blue = *data++;
+    }
+</code></pre>
+<p>After compiling it, the matlab script was executed without any errors.</p>
+<p>Again I changed the matlab script to see a graphical output of the
+result.</p>
+<pre><code class="matlab language-matlab"># demo.m
+
+% ...
+
+for i = 1:length(faces)
+    bbox = cell2mat(faces(i));
+    I = insertShape(I, 'Rectangle', bbox, 'LineWidth',5);
+end
+
+figure; imshow(I); title('Detected faces');
+</code></pre>
+<p>It gives me the following output.</p>
+<p><img src="https://raw.githubusercontent.com/whizsid/whizsid.github.io/src/blog/examples/dlib_matlab/output/figure.jpg" alt="Figure" /></p></div><script>!function(e){function r(r){for(var n,l,f=r[0],i=r[1],p=r[2],c=0,s=[];c<f.length;c++)l=f[c],Object.prototype.hasOwnProperty.call(o,l)&&o[l]&&s.push(o[l][0]),o[l]=0;for(n in i)Object.prototype.hasOwnProperty.call(i,n)&&(e[n]=i[n]);for(a&&a(r);s.length;)s.shift()();return u.push.apply(u,p||[]),t()}function t(){for(var e,r=0;r<u.length;r++){for(var t=u[r],n=!0,f=1;f<t.length;f++){var i=t[f];0!==o[i]&&(n=!1)}n&&(u.splice(r--,1),e=l(l.s=t[0]))}return e}var n={},o={1:0},u=[];function l(r){if(n[r])return n[r].exports;var t=n[r]={i:r,l:!1,exports:{}};return e[r].call(t.exports,t,t.exports,l),t.l=!0,t.exports}l.m=e,l.c=n,l.d=function(e,r,t){l.o(e,r)||Object.defineProperty(e,r,{enumerable:!0,get:t})},l.r=function(e){"undefined"!=typeof Symbol&&Symbol.toStringTag&&Object.defineProperty(e,Symbol.toStringTag,{value:"Module"}),Object.defineProperty(e,"__esModule",{value:!0})},l.t=function(e,r){if(1&r&&(e=l(e)),8&r)return e;if(4&r&&"object"==typeof e&&e&&e.__esModule)return e;var t=Object.create(null);if(l.r(t),Object.defineProperty(t,"default",{enumerable:!0,value:e}),2&r&&"string"!=typeof e)for(var n in e)l.d(t,n,function(r){return e[r]}.bind(null,n));return t},l.n=function(e){var r=e&&e.__esModule?function(){return e.default}:function(){return e};return l.d(r,"a",r),r},l.o=function(e,r){return Object.prototype.hasOwnProperty.call(e,r)},l.p="/";var f=this.webpackJsonpportfolio=this.webpackJsonpportfolio||[],i=f.push.bind(f);f.push=r,f=f.slice();for(var p=0;p<f.length;p++)r(f[p]);var a=i;t()}([])</script><script src="/static/js/2.9180cce6.chunk.js"></script><script src="/static/js/main.2a11a075.chunk.js"></script></body></html>

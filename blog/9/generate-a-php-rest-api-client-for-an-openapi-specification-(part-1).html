@@ -1,32 +1,155 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"/><link rel="icon" href="/favicon.ico"/><meta name="viewport" content="width=device-width,initial-scale=1"/><link rel="apple-touch-icon" href="/logo.png"/><link rel="manifest" href="/manifest.json"/><link href="https://fonts.googleapis.com/css?family=Source+Code+Pro&display=swap" rel="stylesheet"/><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.css"/><meta http-equiv="X-UA-Compatible" content="IE=edge"/><meta name="viewport" content="width=device-width,initial-scale=1,shrink-to-fit=no"/><meta http-equiv="content-type" content="text/html; charset=UTF-8;charset=utf-8"/><link rel="fluid-icon" href="/logo.png" title="WhizSid"/><meta name="page-subject" content="WhizSid"/><meta name="theme-color" content="#151853"/><meta name="HandheldFriendly" content="true"/><title>WhizSid - Portfolio And Blog Posts</title><style>code,pre{white-space:pre-wrap!important}body{margin:0;padding:0}a:active,a:link,a:visited{color:inherit!important;text-decoration:none!important}.loading-fixed{position:fixed;top:0;left:0;width:100vw;height:100vh;display:block;background:#fff;z-index:10000}.loading-flex{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100vh;padding:1rem 1rem 2rem 1rem;box-sizing:border-box;overflow:hidden}.loader-wrapper{width:10em;height:10em;font-size:25px;box-sizing:border-box;border-top:.3em solid #ff69b4;border-radius:50%;position:relative;animation:rotating 2s ease-in-out infinite;--direction:1}.loader-wrapper::after,.loader-wrapper::before{content:"";position:absolute;width:inherit;height:inherit;border-radius:50%;box-sizing:border-box;top:-.2em}.loader-wrapper::before{border-top:.3em solid #1e90ff;transform:rotate(120deg)}.loader-wrapper::after{border-top:.3em solid gold;transform:rotate(240deg)}@keyframes rotating{50%{transform:rotate(calc(180deg * var(--direction)))}100%{transform:rotate(calc(360deg * var(--direction)))}}.loader{position:relative}.loader span{position:absolute;color:#000;width:inherit;height:inherit;top:40px;left:80px;text-align:center;line-height:10em;font-family:sans-serif}@-webkit-keyframes moveXL{from{left:0}to{left:220px}}@-moz-keyframes moveXL{from{left:0}to{left:220px}}@-o-keyframes moveXL{from{left:0}to{left:220px}}@keyframes moveXL{from{left:0}to{left:220px}}@-webkit-keyframes moveXR{from{left:220px}to{left:0}}@-moz-keyframes moveXR{from{left:220px}to{left:0}}@-o-keyframes moveXR{from{left:220px}to{left:0}}@keyframes moveXR{from{left:220px}to{left:0}}@-webkit-keyframes moveYT{from{top:0}to{top:220px}}@-moz-keyframes moveYT{from{top:0}to{top:220px}}@-o-keyframes moveYT{from{top:0}to{top:220px}}@keyframes moveYT{from{top:0}to{top:220px}}@-webkit-keyframes moveYB{from{top:220px}to{top:0}}@-moz-keyframes moveYB{from{top:220px}to{top:0}}@-o-keyframes moveYB{from{top:220px}to{top:0}}@keyframes moveYB{from{top:220px}to{top:0}}@-webkit-keyframes sizeI{from{width:40px;height:40px;opacity:.5}to{width:80px;height:80px;opacity:1}}@-moz-keyframes sizeI{from{width:40px;height:40px;opacity:.5}to{width:80px;height:80px;opacity:1}}@-o-keyframes sizeI{from{width:40px;height:40px;opacity:.5}to{width:80px;height:80px;opacity:1}}@keyframes sizeI{from{width:40px;height:40px;opacity:.5}to{width:80px;height:80px;opacity:1}}@-webkit-keyframes sizeI{from{width:40px;height:40px;opacity:.5}to{width:80px;height:80px;opacity:1}}canvas{display:block;position:absolute;left:0;top:48px;z-index:-1}</style><script>window.onload=function(){document.getElementsByClassName("loading-fixed")[0].remove()}</script><script id="vertex-shader" type="x-shader/x-vertex">varying vec2 vUv;
-    
-    void main(){  
-        vUv = uv; 
-        //modelViewMatrix: es la posición y orientación de la cámara dentro de la escena
-        //projectionMatrix: la proyección para la escena de la cámara incluyendo el campo de visión
-        vec4 modelViewPosition = modelViewMatrix * vec4(position, 1.0);
-        gl_Position = projectionMatrix * modelViewPosition;
-    }</script><script id="fragment-shader" type="x-shader/x-fragment">uniform float time;
-    uniform vec2 resolution;
-    uniform sampler2D texture1;
-    
-    varying vec2 vUv;
-    
-    void main() {  
-        vec2 uv1 = vUv;
-        // variable que contiene el eje de coordenadas
-        vec2 uv = gl_FragCoord.xy/resolution.xy;
-        
-        float frequency = 15.;
-        float amplitude = 0.015;
-        
-        float x = uv1.y * frequency + time * .7; 
-        float y = uv1.x * frequency + time * .3;
-        
-        uv1.x += cos(x+y) * amplitude * cos(y);
-        uv1.y += sin(x-y) * amplitude * cos(y);
+<!doctype html><html lang="en"><head><meta charset="utf-8"/><link rel="icon" href="/favicon.ico"/><meta name="viewport" content="width=device-width,initial-scale=1"/><link rel="apple-touch-icon" href="/logo.png"/><link rel="manifest" href="/manifest.json"/><link href="https://fonts.googleapis.com/css?family=Source+Code+Pro&display=swap" rel="stylesheet"/><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.css"/><meta http-equiv="X-UA-Compatible" content="IE=edge"/><meta name="viewport" content="width=device-width,initial-scale=1,shrink-to-fit=no"/><meta http-equiv="content-type" content="text/html; charset=UTF-8;charset=utf-8"/><link rel="fluid-icon" href="/logo.png" title="WhizSid"/><meta name="page-subject" content="WhizSid"/><meta name="theme-color" content="#151853"/><meta name="HandheldFriendly" content="true"/><title>WhizSid - Portfolio And Blog Posts</title><style>code,pre{white-space:pre-wrap!important}body{margin:0;padding:0}a:active,a:link,a:visited{color:inherit!important;text-decoration:none!important}.loading-fixed{position:fixed;top:0;left:0;width:100vw;height:100vh;display:block;background:#fff;z-index:10000}.loading-flex{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100vh;padding:1rem 1rem 2rem 1rem;box-sizing:border-box;overflow:hidden}.loader-wrapper{width:10em;height:10em;font-size:25px;box-sizing:border-box;border-top:.3em solid #ff69b4;border-radius:50%;position:relative;animation:rotating 2s ease-in-out infinite;--direction:1}.loader-wrapper::after,.loader-wrapper::before{content:"";position:absolute;width:inherit;height:inherit;border-radius:50%;box-sizing:border-box;top:-.2em}.loader-wrapper::before{border-top:.3em solid #1e90ff;transform:rotate(120deg)}.loader-wrapper::after{border-top:.3em solid gold;transform:rotate(240deg)}@keyframes rotating{50%{transform:rotate(calc(180deg * var(--direction)))}100%{transform:rotate(calc(360deg * var(--direction)))}}.loader{position:relative}.loader span{position:absolute;color:#000;width:inherit;height:inherit;top:40px;left:80px;text-align:center;line-height:10em;font-family:sans-serif}@-webkit-keyframes moveXL{from{left:0}to{left:220px}}@-moz-keyframes moveXL{from{left:0}to{left:220px}}@-o-keyframes moveXL{from{left:0}to{left:220px}}@keyframes moveXL{from{left:0}to{left:220px}}@-webkit-keyframes moveXR{from{left:220px}to{left:0}}@-moz-keyframes moveXR{from{left:220px}to{left:0}}@-o-keyframes moveXR{from{left:220px}to{left:0}}@keyframes moveXR{from{left:220px}to{left:0}}@-webkit-keyframes moveYT{from{top:0}to{top:220px}}@-moz-keyframes moveYT{from{top:0}to{top:220px}}@-o-keyframes moveYT{from{top:0}to{top:220px}}@keyframes moveYT{from{top:0}to{top:220px}}@-webkit-keyframes moveYB{from{top:220px}to{top:0}}@-moz-keyframes moveYB{from{top:220px}to{top:0}}@-o-keyframes moveYB{from{top:220px}to{top:0}}@keyframes moveYB{from{top:220px}to{top:0}}@-webkit-keyframes sizeI{from{width:40px;height:40px;opacity:.5}to{width:80px;height:80px;opacity:1}}@-moz-keyframes sizeI{from{width:40px;height:40px;opacity:.5}to{width:80px;height:80px;opacity:1}}@-o-keyframes sizeI{from{width:40px;height:40px;opacity:.5}to{width:80px;height:80px;opacity:1}}@keyframes sizeI{from{width:40px;height:40px;opacity:.5}to{width:80px;height:80px;opacity:1}}@-webkit-keyframes sizeI{from{width:40px;height:40px;opacity:.5}to{width:80px;height:80px;opacity:1}}canvas{display:block;position:absolute;left:0;top:48px;z-index:-1}</style><script>window.onload=function(){document.getElementsByClassName("loading-fixed")[0].remove()}</script><link href="/static/css/2.957bb6f1.chunk.css" rel="stylesheet"><meta property="og:title" content="WhizSid| Generate a PHP REST API client for an OpenAPI specification (PART-1)"/><meta name="description" property="og:description" content="Developing a REST API client is not an easy task if the API is a very massive one. As such cases ,
+we have to move for another approaches to complete our API client. Programmatically generating codes is the best and easiest approach. I am taking this approach in this post series. I am discussing about methods to generate codes, advantages of using an AST builder to generate codes and how we initial our project." /><meta property="keywords" content="Post, PHP, openapi, api-client, rest-api, ast-builder, blog, beginner, advanced, step by step" /><meta property="og:type" content="article"/><meta property="og:article:published_time" content="2021-04-13T12:59:37Z"/><meta property="og:article:modified_time" content="2021-04-13T13:09:07Z"/><meta name="author" content="Ramesh Kithsiri"/><meta property="og:article:author:first_name" content="Ramesh"/><meta property="og:article:author:last_name" content="Kithsiri"/><meta property="og:article:author:username" content="whizsid"/><meta property="fb:app_id" content="129537969147552"/><meta property="og:article:section" content="Software Engineering"/><meta property="og:article:tag" content="Post"/><meta property="og:article:tag" content="PHP"/><meta property="og:article:tag" content="openapi"/><meta property="og:article:tag" content="api-client"/><meta property="og:article:tag" content="rest-api"/><meta property="og:article:tag" content="ast-builder"/><meta property="og:image" content="https://github.com/whizsid/whizsid.github.io/raw/src/blog/images/php_api_client_1.png"/><meta property="og:url" content="https://whizsid.github.io/blog/9/generate-a-php-rest-api-client-for-an-openapi-specification-(part-1).html"/><body style="margin:0;background:#e8eaed"><div class="loading-fixed"><div class="loading-flex"><div class="loader"><div class="loader-wrapper"></div><span>Loading...</span></div></div></div><noscript>You need to enable JavaScript to run this app.</noscript><div id="root"><h1 id="generateaphprestapiclientforanopenapispecificationpart1">Generate a PHP REST API client for an OpenAPI specification (PART-1)</h1>
+<p>Nowadays most of Software Developers developing API clients by manual
+methods. Such as copy-paste and coding. It wasting more useful time. 
+Imagine if an API has more than 100 endpoints. Sometimes they have to 
+spend month or two to complete the whole API client.</p>
+<p>But this post contains a different approach than copy &amp; pasting. You can
+finish the API client in 2-5 days by using this approach. We are
+developing this API client by code generating.</p>
+<h2 id="howtogeneratecode">How to generate code</h2>
+<p>There are two different approaches to generate codes.</p>
+<ol>
+<li>Using predefined templates and render them</li>
+<li>Using an AST builder and pretty printer</li>
+</ol>
+<h3 id="whyweshouldntusepredefinedtemplates">Why we shouldn't use predefined templates</h3>
+<ol>
+<li>Code formatting issues</li>
+</ol>
+<p>Sometimes we have to define long function names and class names. At such
+cases We can not generate our code by following code standards.</p>
+<p>Example:-</p>
+<pre><code class="php language-php"># What template method returns:-
+public function myLongLongLongLongLongLongFunc(MyLongLongLongLongLongLongLongType $myLongLongLongLongParam): MyLongLongLongLongLongLongLongType {
 
-        vec4 rgba = texture2D(texture1, uv1);
-        gl_FragColor = rgba;
-    }</script><link href="/static/css/2.957bb6f1.chunk.css" rel="stylesheet"><meta property="og:title" content="WhizSid| Generate a PHP REST API client for an OpenAPI specification (PART-1)"/><meta name="description" property="og:description" content="Developing a REST API client is not an easy task if the API is a very massive one. As such cases ,
-we have to move for another approaches to complete our API client. Programmatically generating codes is the best and easiest approach. I am taking this approach in this post series. I am discussing about methods to generate codes, advantages of using an AST builder to generate codes and how we initial our project." /><meta property="keywords" content="Post, PHP, openapi, api-client, rest-api, ast-builder, blog, beginner, advanced, step by step" /><meta property="og:type" content="article"/><meta property="og:article:published_time" content="2021-04-13T12:59:37Z"/><meta property="og:article:modified_time" content="2021-04-13T13:09:07Z"/><meta name="author" content="Ramesh Kithsiri"/><meta property="og:article:author:first_name" content="Ramesh"/><meta property="og:article:author:last_name" content="Kithsiri"/><meta property="og:article:author:username" content="whizsid"/><meta property="fb:app_id" content="129537969147552"/><meta property="og:article:section" content="Software Engineering"/><meta property="og:article:tag" content="Post"/><meta property="og:article:tag" content="PHP"/><meta property="og:article:tag" content="openapi"/><meta property="og:article:tag" content="api-client"/><meta property="og:article:tag" content="rest-api"/><meta property="og:article:tag" content="ast-builder"/><meta property="og:image" content="https://github.com/whizsid/whizsid.github.io/raw/src/blog/images/php_api_client_1.png"/><meta property="og:url" content="https://whizsid.github.io/blog/9/generate-a-php-rest-api-client-for-an-openapi-specification-(part-1).html"/><body style="margin:0;background:#e8eaed"><div class="loading-fixed"><div class="loading-flex"><div class="loader"><div class="loader-wrapper"></div><span>Loading...</span></div></div></div><noscript>You need to enable JavaScript to run this app.</noscript><div id="root"></div><script>!function(e){function r(r){for(var n,l,f=r[0],i=r[1],p=r[2],c=0,s=[];c<f.length;c++)l=f[c],Object.prototype.hasOwnProperty.call(o,l)&&o[l]&&s.push(o[l][0]),o[l]=0;for(n in i)Object.prototype.hasOwnProperty.call(i,n)&&(e[n]=i[n]);for(a&&a(r);s.length;)s.shift()();return u.push.apply(u,p||[]),t()}function t(){for(var e,r=0;r<u.length;r++){for(var t=u[r],n=!0,f=1;f<t.length;f++){var i=t[f];0!==o[i]&&(n=!1)}n&&(u.splice(r--,1),e=l(l.s=t[0]))}return e}var n={},o={1:0},u=[];function l(r){if(n[r])return n[r].exports;var t=n[r]={i:r,l:!1,exports:{}};return e[r].call(t.exports,t,t.exports,l),t.l=!0,t.exports}l.m=e,l.c=n,l.d=function(e,r,t){l.o(e,r)||Object.defineProperty(e,r,{enumerable:!0,get:t})},l.r=function(e){"undefined"!=typeof Symbol&&Symbol.toStringTag&&Object.defineProperty(e,Symbol.toStringTag,{value:"Module"}),Object.defineProperty(e,"__esModule",{value:!0})},l.t=function(e,r){if(1&r&&(e=l(e)),8&r)return e;if(4&r&&"object"==typeof e&&e&&e.__esModule)return e;var t=Object.create(null);if(l.r(t),Object.defineProperty(t,"default",{enumerable:!0,value:e}),2&r&&"string"!=typeof e)for(var n in e)l.d(t,n,function(r){return e[r]}.bind(null,n));return t},l.n=function(e){var r=e&&e.__esModule?function(){return e.default}:function(){return e};return l.d(r,"a",r),r},l.o=function(e,r){return Object.prototype.hasOwnProperty.call(e,r)},l.p="/";var f=this.webpackJsonpportfolio=this.webpackJsonpportfolio||[],i=f.push.bind(f);f.push=r,f=f.slice();for(var p=0;p<f.length;p++)r(f[p]);var a=i;t()}([])</script><script src="/static/js/2.9180cce6.chunk.js"></script><script src="/static/js/main.8538a06f.chunk.js"></script></body></html>
+}
+
+# What pretty printer returns:-
+public function myLongLongLongLongLongLongFunc(
+    MyLongLongLongLongLongLongLongType $myLongLongLongLongParam
+): MyLongLongLongLongLongLongLongType {
+
+}
+</code></pre>
+<ol start="2">
+<li>Code Validation</li>
+</ol>
+<p>By using templates we can not garantee our code syntaxes correct. But AST
+builder will always validate our code while generating.</p>
+<ol start="3">
+<li>Builder</li>
+</ol>
+<p>When we using templates we need to implement builder classes to store 
+our class properties and function statements. But there are pre-built 
+builder classes in AST builder. So we do not need to re-implement a
+builder class to store properties, functions and etc. </p>
+<h3 id="whatastbuilderweshoulduse">What AST builder we should use?</h3>
+<p>There are several php AST builders and pretty printers in the github. 
+Some of these does not have more features. I am choosing the 
+<a href="https://github.com/nikic/PHP-Parser">nikic/PHP-Parser</a> for this post. 
+Because it is a very up-to-date and stable project.</p>
+<h2 id="startingtheproject">Starting The Project</h2>
+<p>First of all create a github repository and clone it. Then create a 
+gitignore file with these contents:-</p>
+<pre><code># .gitignore
+/vendor/
+composer.lock
+/gencode/vendor/
+/gencode/composer.lock
+</code></pre>
+<h3 id="folderstructure">Folder Structure</h3>
+<p>Make folders as in below structure.</p>
+<pre><code>/gencode
+----/src # Contains the source codes of the code generator
+/src# Contains the source codes of the API client
+</code></pre>
+<h3 id="installdependencies">Install dependencies</h3>
+<p>Create <code>composer.json</code> file in the root folder and the <code>gencode</code> folder.</p>
+<pre><code>$ composer init
+$ cd gencode
+$ composer init
+$ cd ../
+</code></pre>
+<p><code>composer init</code> commands will ask you for project details. Provide
+details as you want.</p>
+<p>Install the <code>nikic/PHP-Parser</code> in the <code>gencode</code> folder as the next step.</p>
+<pre><code>$ cd gencode
+$ composer require nikic/php-parser
+$ cd ../
+</code></pre>
+<p>Next add following contents to the <code>gencode/composer.json</code> file to setup
+class autoloader.</p>
+<pre><code class="json language-json"># gencode/composer.json
+{
+    // ..
+    "autoload": {
+        "psr-4": {
+            "My\\FooClient\\GenCode\\": "src/"
+        }
+    }
+}
+</code></pre>
+<p>Change <code>My\\FooClient</code> as you need.</p>
+<h2 id="startcoding">Start Coding</h2>
+<h3 id="makingaphpexecutablefile">Making a PHP executable file</h3>
+<p>First we should create a executable file as the entry point of our
+program. I am creating a file named <code>gencode</code> (without <code>.php</code> extension)
+in <code>gencode/bin</code> folder. And giving executable permissions.</p>
+<pre><code>$ mkdir gencode/bin
+$ touch gencode/bin/gencode
+$ chmod +x gencode/bin/gencode
+</code></pre>
+<p>At the moment our terminal know this file can be executed. But it don't 
+know how it should execute. So we need to tell the terminal to execute 
+it as a php script. So we will add <code>#!/usr/bin/env php</code> on top of the 
+file as a new line.</p>
+<pre><code class="php language-php"># gencode/bin/gencode
+#!/usr/bin/env php
+&lt;?php
+</code></pre>
+<p>Next add the composer autoloader file to autoload our classes.</p>
+<pre><code class="php language-php"># gencode/bin/gencode
+
+$dir = dirname(__DIR__);
+
+require_once $dir . "/vendor/autoload.php";
+</code></pre>
+<h2 id="downloadopenapispecification">Download OpenAPI Specification</h2>
+<p>As the next step, we must download the openapi specification before all
+works. Because our whole client is depending on
+this file. And we have to access it very often through
+our code generator. So we should store it in our local storage. At this
+project I am storing the specification file in a directory named <code>tmp</code>
+and using the Sigfox API specification file. Because my company is
+frequently using this Sigfox API and I am planning to move to a high
+level API client insteed of calling the API directly.</p>
+<pre><code class="php language-php"># gencode/bin/gencode
+
+// Local path for the openapi specification
+$openapiFileLocation = $dir . "/tmp/openapi.json";
+// Downloading the file if it not exist in local storage
+if (!file_exists($openapiFileLocation)) {
+
+    // Creating the tmp directory if not exists.
+    if(!is_dir($dir."/tmp")){
+        mkdir($dir."/tmp");
+    }
+
+    // Remote path for the openapi specification
+    $openapiUrl = "https://support.sigfox.com/api/apidocs";
+    // Downloading directly to the local storage
+    file_put_contents($openapiFileLocation, fopen($openapiUrl, 'r'));
+}
+
+// Reading the json content from the downloaded file
+$openapi = json_decode( file_get_contents($openapiFileLocation) , true);
+</code></pre>
+<p>And we do not need this specification file in our VCS. Because this file
+is always live in their site. So I am ignoring the file for VCS.</p>
+<pre><code># .gitignore
+/gencode/tmp/
+</code></pre>
+<p>I completed the creation of project structure at this post. At the next 
+post I will discuss about models, setters and getters creation for
+definitions.</p></div><script>!function(e){function r(r){for(var n,l,f=r[0],i=r[1],p=r[2],c=0,s=[];c<f.length;c++)l=f[c],Object.prototype.hasOwnProperty.call(o,l)&&o[l]&&s.push(o[l][0]),o[l]=0;for(n in i)Object.prototype.hasOwnProperty.call(i,n)&&(e[n]=i[n]);for(a&&a(r);s.length;)s.shift()();return u.push.apply(u,p||[]),t()}function t(){for(var e,r=0;r<u.length;r++){for(var t=u[r],n=!0,f=1;f<t.length;f++){var i=t[f];0!==o[i]&&(n=!1)}n&&(u.splice(r--,1),e=l(l.s=t[0]))}return e}var n={},o={1:0},u=[];function l(r){if(n[r])return n[r].exports;var t=n[r]={i:r,l:!1,exports:{}};return e[r].call(t.exports,t,t.exports,l),t.l=!0,t.exports}l.m=e,l.c=n,l.d=function(e,r,t){l.o(e,r)||Object.defineProperty(e,r,{enumerable:!0,get:t})},l.r=function(e){"undefined"!=typeof Symbol&&Symbol.toStringTag&&Object.defineProperty(e,Symbol.toStringTag,{value:"Module"}),Object.defineProperty(e,"__esModule",{value:!0})},l.t=function(e,r){if(1&r&&(e=l(e)),8&r)return e;if(4&r&&"object"==typeof e&&e&&e.__esModule)return e;var t=Object.create(null);if(l.r(t),Object.defineProperty(t,"default",{enumerable:!0,value:e}),2&r&&"string"!=typeof e)for(var n in e)l.d(t,n,function(r){return e[r]}.bind(null,n));return t},l.n=function(e){var r=e&&e.__esModule?function(){return e.default}:function(){return e};return l.d(r,"a",r),r},l.o=function(e,r){return Object.prototype.hasOwnProperty.call(e,r)},l.p="/";var f=this.webpackJsonpportfolio=this.webpackJsonpportfolio||[],i=f.push.bind(f);f.push=r,f=f.slice();for(var p=0;p<f.length;p++)r(f[p]);var a=i;t()}([])</script><script src="/static/js/2.9180cce6.chunk.js"></script><script src="/static/js/main.2a11a075.chunk.js"></script></body></html>

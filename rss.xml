@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?><rss version="2.0"><channel><title>WhizSid</title>
+        <link>https://whizsid.github.io/</link>
+        <description>Linux, Programming Blog (Typescript, React, C++, C, Matlab, PHP)</description>
+        <language>en-us</language>
+        <webMaster>whizsid@aol.com (Ramesh Kithsiri)</webMaster>
+        <image>https://avatars.githubusercontent.com/u/44908250?v=4</image>
+        <category>Technology</category>
+        <category>Programming</category>
+        <pubDate>Mon, 15 Nov 2021 20:52:47 +0530</pubDate>
+       <item>
+            <title>Debug an amethyst game on VS code</title>
+            <link>https://whizsid.github.io/blog/5/debug-an-amethyst-game-on-vs-code.html</link>
+            <description>Amethyst is a game engine developed with rust-lang. And it can not debug using the VS code. Because VS code can not identify the assets folder.</description>
+            <guid>https://whizsid.github.io/blog/5/debug-an-amethyst-game-on-vs-code.html</guid>
+              <pubDate>Sat, 12 Dec 2020 11:13:23 +0530</pubDate>
+              <category>Rust</category>,<category>amethyst</category>,<category>vscode</category>,<category>Post</category>
+              <comments>https://whizsid.github.io/blog/5/debug-an-amethyst-game-on-vs-code.html</comments>
+       </item>
+    
+       <item>
+            <title>Generate a PHP REST API client for an OpenAPI specification (PART-1)</title>
+            <link>https://whizsid.github.io/blog/9/generate-a-php-rest-api-client-for-an-openapi-specification-(part-1).html</link>
+            <description>Developing a REST API client is not an easy task if the API is a very massive one. As such cases ,
+we have to move for another approaches to complete our API client. Programmatically generating codes is the best and easiest approach. I am taking this approach in this post series. I am discussing about methods to generate codes, advantages of using an AST builder to generate codes and how we initial our project.</description>
+            <guid>https://whizsid.github.io/blog/9/generate-a-php-rest-api-client-for-an-openapi-specification-(part-1).html</guid>
+              <pubDate>Tue, 13 Apr 2021 18:29:37 +0530</pubDate>
+              <category>Post</category>,<category>PHP</category>,<category>openapi</category>,<category>api-client</category>,<category>rest-api</category>,<category>ast-builder</category>
+              <comments>https://whizsid.github.io/blog/9/generate-a-php-rest-api-client-for-an-openapi-specification-(part-1).html</comments>
+       </item>
+    
+       <item>
+            <title>Displaying a list of paths as a Material UI tree view</title>
+            <link>https://whizsid.github.io/blog/10/displaying-a-list-of-paths-as-a-material-ui-tree-view.html</link>
+            <description>Most of react developers using the Material UI as their day-to-day framework. But they are facing lot of issues when using dynamic nested lists. But when developing a file browser we have to use dynamic nested lists, state managements and data processing together. So it will get more complicated if we start it with a wrong step. This post contains an A-Z guide for creating a file browser.</description>
+            <guid>https://whizsid.github.io/blog/10/displaying-a-list-of-paths-as-a-material-ui-tree-view.html</guid>
+              <pubDate>Sat, 17 Apr 2021 02:34:14 +0530</pubDate>
+              <category>Post</category>,<category>Typescript</category>,<category>material-ui</category>,<category>react</category>,<category>ui-ux</category>
+              <comments>https://whizsid.github.io/blog/10/displaying-a-list-of-paths-as-a-material-ui-tree-view.html</comments>
+       </item>
+    
+       <item>
+            <title>Wrapping dlib for Matlab</title>
+            <link>https://whizsid.github.io/blog/18/wrapping-dlib-for-matlab.html</link>
+            <description>dlib is a famous c++ machine learning library and Matlab is a numeric computing platform that provide many algorithms and tools to do researches. There are lot of ML algorithms in dlib that Matlab doesn't have. But still we can use the dlib algorithms in Matlab by compiling the dlib functions as Mex files In this post I am discussing about the official approach to make a dlib wrapper to matlab.</description>
+            <guid>https://whizsid.github.io/blog/18/wrapping-dlib-for-matlab.html</guid>
+              <pubDate>Wed, 22 Sep 2021 04:34:55 +0530</pubDate>
+              <category>Post</category>,<category>C++</category>,<category>Matlab</category>,<category>dlib</category>,<category>face-detect</category>,<category>face-alignment</category>,<category>machine-learning</category>
+              <comments>https://whizsid.github.io/blog/18/wrapping-dlib-for-matlab.html</comments>
+       </item>
+    
+       <item>
+            <title>How to fix wireless mouse lagging after idle for a while issue</title>
+            <link>https://whizsid.github.io/blog/21/how-to-fix-wireless-mouse-lagging-after-idle-for-a-while-issue.html</link>
+            <description>Some wireless mouses are becoming unresponsive after idle for a while on Linux. It caused by the Linux built-in power management configurations. In this post I am discussing about this issue and guiding you to fix it.</description>
+            <guid>https://whizsid.github.io/blog/21/how-to-fix-wireless-mouse-lagging-after-idle-for-a-while-issue.html</guid>
+              <pubDate>Sun, 31 Oct 2021 02:14:56 +0530</pubDate>
+              <category>Post</category>,<category>linux</category>
+              <comments>https://whizsid.github.io/blog/21/how-to-fix-wireless-mouse-lagging-after-idle-for-a-while-issue.html</comments>
+       </item>
+    
+       <item>
+            <title>Fixing Gaming Keyboard Backlight Issue - Arch Linux - Jedel K510</title>
+            <link>https://whizsid.github.io/blog/22/fixing-gaming-keyboard-backlight-issue---arch-linux---jedel-k510.html</link>
+            <description>I recently bought a Jedel K510 gaming keyboard and found that keyboard
+LEDs are not working on my Arch Linux laptop. And the LED toggle button is also not working. Because most of gaming keyboards are configured to working with only Windows or Mac OSs. In this post I am fixing this issue for my keyboard and discussing the way to fix for other gaming keyboards as well.</description>
+            <guid>https://whizsid.github.io/blog/22/fixing-gaming-keyboard-backlight-issue---arch-linux---jedel-k510.html</guid>
+              <pubDate>Mon, 08 Nov 2021 10:50:54 +0530</pubDate>
+              <category>Post</category>,<category>linux</category>
+              <comments>https://whizsid.github.io/blog/22/fixing-gaming-keyboard-backlight-issue---arch-linux---jedel-k510.html</comments>
+       </item>
+    </channel></rss>
