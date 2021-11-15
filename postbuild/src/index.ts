@@ -11,28 +11,30 @@ const GITHUB_API_URL = "https://api.github.com/graphql";
 const GITHUB_REPOSITORY = "whizsid.github.io";
 const GITHUB_PAGE = "https://whizsid.github.io/";
 const GITHUB_OWNER = "whizsid";
-const indexContent = fs.readFileSync("../build/index.html").toString();
+const indexContent = fs.readFileSync("./build/index.html").toString();
 const indexHeadEnd = indexContent.search("</head>");
 const mdConverter = new showdown.Converter();
 let sitemapContent =
     '<?xml version="1.0" encoding="UTF-8"?><urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">';
-let rssContent = `<?xml version="1.0" encoding="utf-8"?><rss version="2.0"><channel><title>WhizSid</title>
+let rssContent = `<?xml version="1.0" encoding="utf-8"?>
+        <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+        <channel>
+        <title>WhizSid</title>
         <link>https://whizsid.github.io/</link>
         <description>Linux, Programming Blog (Typescript, React, C++, C, Matlab, PHP)</description>
         <language>en-us</language>
         <webMaster>whizsid@aol.com (Ramesh Kithsiri)</webMaster>
-        <image>https://avatars.githubusercontent.com/u/44908250?v=4</image>
         <category>Technology</category>
         <category>Programming</category>
         <pubDate>${moment().format("ddd, DD MMM YYYY HH:mm:ss ZZ")}</pubDate>`;
 
 async function run() {
-    if (!fs.existsSync("../build/blog")) {
-        fs.mkdirSync("../build/blog");
+    if (!fs.existsSync("./build/blog")) {
+        fs.mkdirSync("./build/blog");
     }
 
     // Search Page
-    const path = "../build/search.html";
+    const path = "./build/search.html";
 
     let opengraphContents = `<meta property="og:title" content="WhizSid | Blog"/>`;
     opengraphContents += `<meta name="description" property="og:description" content="Visit my blog site to search all blog posts related to programming" />`;
@@ -67,7 +69,7 @@ async function run() {
     );
 
     // Index Page
-    const indexPath = "../build/index.html";
+    const indexPath = "./build/index.html";
 
     let indexOpengraphContents = `<meta property="og:title" content="WhizSid | Portfolio & Blog"/>`;
     indexOpengraphContents += `<meta name="description" property="og:description" content="I am working as a software\
@@ -97,10 +99,10 @@ async function run() {
 
     await fetchNextPage(1, null);
     sitemapContent += "</urlset>";
-    fs.writeFileSync("../build/sitemap.xml", sitemapContent);
+    fs.writeFileSync("./build/sitemap.xml", sitemapContent);
 
     rssContent += "</channel></rss>";
-    fs.writeFileSync("../build/rss.xml", rssContent);
+    fs.writeFileSync("./build/rss.xml", rssContent);
 }
 
 async function fetchNextPage(
@@ -188,12 +190,12 @@ interface IPage {
 }
 
 async function createPage(node: IPage) {
-    if (!fs.existsSync("../build/blog/" + node.number)) {
-        fs.mkdirSync("../build/blog/" + node.number);
+    if (!fs.existsSync("./build/blog/" + node.number)) {
+        fs.mkdirSync("./build/blog/" + node.number);
     }
 
     const path =
-        "../build/blog/" +
+        "./build/blog/" +
         node.number +
         "/" +
         titleToLink(node.title) +
@@ -300,7 +302,7 @@ async function createPage(node: IPage) {
               )}</pubDate>
               ${node.labels.nodes.map(
                   (n) => "<category>" + n.name.split(":").pop() + "</category>"
-              )}
+              ).join("")}
               <comments>${
                   GITHUB_PAGE +
                   "blog/" +

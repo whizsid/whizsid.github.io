@@ -11,6 +11,7 @@ postbuild/node_modules/
 
 # production
 /build
+postbuild/dist/
 
 # releases
 /release
