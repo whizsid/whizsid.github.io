@@ -1,384 +1,199 @@
 <!DOCTYPE html>
 <html lang="en">
+    <head>
+        <script type="text/javascript">
+            console.log("Fired");
+        </script>
+        <meta charset="utf-8" />
+        <link rel="icon" href="%PUBLIC_URL%/favicon.ico" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <link rel="apple-touch-icon" href="%PUBLIC_URL%/logo.png" />
+        <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
+        <link
+            href="https://fonts.googleapis.com/css?family=Source+Code+Pro&display=swap"
+            rel="stylesheet"
+        />
+        <link
+            href="https://fonts.googleapis.com/css?family=Open+Sans&display=swap"
+            rel="stylesheet"
+        />
+        <link
+            rel="stylesheet"
+            href="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.css"
+        />
 
-<head>
-    <meta charset="utf-8" />
-    <link rel="icon" href="%PUBLIC_URL%/favicon.ico" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <link rel="apple-touch-icon" href="%PUBLIC_URL%/logo.png" />
-    <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
-    <link href="https://fonts.googleapis.com/css?family=Source+Code+Pro&display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.css" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta
+            name="viewport"
+            content="width=device-width, initial-scale=1, shrink-to-fit=no"
+        />
+        <meta
+            http-equiv="content-type"
+            content="text/html; charset=UTF-8;charset=utf-8"
+        />
 
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
-    <meta http-equiv="content-type" content="text/html; charset=UTF-8;charset=utf-8" />
-
-    <!-- SEO And Open Graph Meta Data-->
-    <link rel="fluid-icon" href="%PUBLIC_URL%/logo.png" title="WhizSid" />
-    <meta name="page-subject" content="WhizSid" />
-    <meta name="theme-color" content="#151853" />
-    <meta name="HandheldFriendly" content="true" />
-    <title>WhizSid - Portfolio And Blog Posts</title>
-    <style type="text/css">
-        code,
-        pre {
-            white-space: pre-wrap !important;
-        }
-
-        body {
-            margin: 0;
-            padding: 0;
-        }
-
-        a:link,
-        a:visited,
-        a:active,
-        a:visited {
-            color: inherit !important;
-            text-decoration: none !important;
-        }
-
-        /* Loading animation */
-        .loading-fixed {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100vw;
-            height: 100vh;
-            display: block;
-            background: #fff;
-            z-index: 10000;
-        }
-
-        .loading-flex {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            min-height: 100vh;
-            padding: 1rem 1rem 2rem 1rem;
-            box-sizing: border-box;
-            overflow: hidden;
-        }
-
-        .loader-wrapper {
-            width: 10em;
-            height: 10em;
-            font-size: 25px;
-            box-sizing: border-box;
-            border-top: 0.3em solid hotpink;
-            border-radius: 50%;
-            position: relative;
-            animation: rotating 2s ease-in-out infinite;
-            --direction: 1;
-        }
-
-        .loader-wrapper::before,
-        .loader-wrapper::after {
-            content: "";
-            position: absolute;
-            width: inherit;
-            height: inherit;
-            border-radius: 50%;
-            box-sizing: border-box;
-            top: -0.2em;
-        }
-
-        .loader-wrapper::before {
-            border-top: 0.3em solid dodgerblue;
-            transform: rotate(120deg);
-        }
-
-        .loader-wrapper::after {
-            border-top: 0.3em solid gold;
-            transform: rotate(240deg);
-        }
-
-        @keyframes rotating {
-            50% {
-                transform: rotate(calc(180deg * var(--direction)));
+        <!-- SEO And Open Graph Meta Data-->
+        <link rel="fluid-icon" href="%PUBLIC_URL%/logo.png" title="WhizSid" />
+        <meta name="page-subject" content="WhizSid" />
+        <meta name="theme-color" content="#151853" />
+        <meta name="HandheldFriendly" content="true" />
+        <title>WhizSid - Portfolio And Blog Posts</title>
+        <style type="text/css">
+            code,
+            pre {
+                white-space: pre-wrap !important;
             }
 
-            100% {
-                transform: rotate(calc(360deg * var(--direction)));
-            }
-        }
-
-        .loader {
-            position: relative;
-        }
-
-        .loader span {
-            position: absolute;
-            color: black;
-            width: inherit;
-            height: inherit;
-            top: 40px;
-            left: 80px;
-            text-align: center;
-            line-height: 10em;
-            font-family: sans-serif;
-        }
-
-        @-webkit-keyframes moveXL {
-            from {
-                left: 0;
+            body {
+                margin: 0;
+                padding: 0;
             }
 
-            to {
-                left: 220px;
-            }
-        }
-
-        @-moz-keyframes moveXL {
-            from {
-                left: 0;
+            a:link,
+            a:visited,
+            a:active,
+            a:visited {
+                color: inherit !important;
+                text-decoration: none !important;
             }
 
-            to {
-                left: 220px;
-            }
-        }
+            /* Loading animation */
 
-        @-o-keyframes moveXL {
-            from {
-                left: 0;
-            }
-
-            to {
-                left: 220px;
-            }
-        }
-
-        @keyframes moveXL {
-            from {
-                left: 0;
+            .load {
+                position: relative;
+                margin: auto;
+                width: 100px;
+                height: 80px;
+                margin-top: 45vw;
+                margin-top: calc(50vh - 100px);
             }
 
-            to {
-                left: 220px;
-            }
-        }
-
-
-        @-webkit-keyframes moveXR {
-            from {
-                left: 220px;
-            }
-
-            to {
-                left: 0;
-            }
-        }
-
-        @-moz-keyframes moveXR {
-            from {
-                left: 220px;
-            }
-
-            to {
-                left: 0;
-            }
-        }
-
-        @-o-keyframes moveXR {
-            from {
-                left: 220px;
-            }
-
-            to {
-                left: 0;
-            }
-        }
-
-        @keyframes moveXR {
-            from {
-                left: 220px;
-            }
-
-            to {
-                left: 0;
-            }
-        }
-
-        @-webkit-keyframes moveYT {
-            from {
-                top: 0;
-            }
-
-            to {
-                top: 220px;
-            }
-        }
-
-        @-moz-keyframes moveYT {
-            from {
-                top: 0;
-            }
-
-            to {
-                top: 220px;
-            }
-        }
-
-        @-o-keyframes moveYT {
-            from {
-                top: 0;
-            }
-
-            to {
-                top: 220px;
-            }
-        }
-
-        @keyframes moveYT {
-            from {
-                top: 0;
-            }
-
-            to {
-                top: 220px;
-            }
-        }
-
-        @-webkit-keyframes moveYB {
-            from {
-                top: 220px;
-            }
-
-            to {
-                top: 0;
-            }
-        }
-
-        @-moz-keyframes moveYB {
-            from {
-                top: 220px;
-            }
-
-            to {
-                top: 0;
-            }
-        }
-
-        @-o-keyframes moveYB {
-            from {
-                top: 220px;
-            }
-
-            to {
-                top: 0;
-            }
-        }
-
-        @keyframes moveYB {
-            from {
-                top: 220px;
-            }
-
-            to {
-                top: 0;
-            }
-        }
-
-
-        @-webkit-keyframes sizeI {
-            from {
+            .gear {
+                position: absolute;
+                z-index: -10;
                 width: 40px;
                 height: 40px;
-                opacity: 0.5;
+                animation: spin 5s infinite;
             }
 
-            to {
+            .two {
+                left: 40px;
                 width: 80px;
                 height: 80px;
-                opacity: 1;
-            }
-        }
-
-        @-moz-keyframes sizeI {
-            from {
-                width: 40px;
-                height: 40px;
-                opacity: 0.5;
+                animation: spin-reverse 5s infinite;
             }
 
-            to {
-                width: 80px;
-                height: 80px;
-                opacity: 1;
-            }
-        }
-
-        @-o-keyframes sizeI {
-            from {
-                width: 40px;
-                height: 40px;
-                opacity: 0.5;
+            .three {
+                top: 45px;
+                left: -10px;
+                width: 60px;
+                height: 60px;
             }
 
-            to {
-                width: 80px;
-                height: 80px;
-                opacity: 1;
-            }
-        }
-
-        @keyframes sizeI {
-            from {
-                width: 40px;
-                height: 40px;
-                opacity: 0.5;
+            @keyframes spin {
+                50% {
+                    transform: rotate(360deg);
+                }
             }
 
-            to {
-                width: 80px;
-                height: 80px;
-                opacity: 1;
-            }
-        }
-
-        @-webkit-keyframes sizeI {
-            from {
-                width: 40px;
-                height: 40px;
-                opacity: 0.5;
+            @keyframes spin-reverse {
+                50% {
+                    transform: rotate(-360deg);
+                }
             }
 
-            to {
-                width: 80px;
-                height: 80px;
-                opacity: 1;
+            .lil-circle {
+                position: absolute;
+                border-radius: 50%;
+                box-shadow: inset 0 0 10px 2px gray, 0 0 50px white;
+                width: 100px;
+                height: 100px;
+                opacity: 0.65;
             }
-        }
 
-        canvas {
-            display: block;
-            position:absolute;
-            left:0;
-            top: 48px;
-            z-index:-1;
-        }
-    </style>
-    <script>
-        window.onload = function () {
-            document.getElementsByClassName("loading-fixed")[0].remove();
-        };
-    </script>
-</head>
+            .blur-circle {
+                position: absolute;
+                top: -19px;
+                left: -19px;
+            }
 
-<body style="margin: 0; background: #e8eaed">
-    <div class="loading-fixed">
-        <div class="loading-flex">
-            <div class="loader">
-                <div class="loader-wrapper"></div>
-                <span>Loading...</span>
+            .text {
+                color: lightgray;
+                font-size: 18px;
+                font-family: "Open Sans", sans-serif;
+                text-align: center;
+                margin-top: 60px;
+            }
+
+            .loading-fixed {
+                height: 100vh;
+                background: #fff;
+                position: fixed;
+                top: 0;
+                left: 0;
+                display: block;
+                z-index: 9999;
+                width: 100vw;
+            }
+        </style>
+        <script>
+            window.onload = function () {
+                document.getElementsByClassName("loading-fixed")[0].remove();
+            };
+        </script>
+    </head>
+
+    <body style="margin: 0; background: #e8eaed">
+        <div style="display: none" class="loading-fixed">
+            <div class="load">
+                <div class="gear one">
+                    <svg id="blue" viewbox="0 0 100 100" fill="#94DDFF">
+                        <path
+                            d="M97.6,55.7V44.3l-13.6-2.9c-0.8-3.3-2.1-6.4-3.9-9.3l7.6-11.7l-8-8L67.9,20c-2.9-1.7-6-3.1-9.3-3.9L55.7,2.4H44.3l-2.9,13.6      c-3.3,0.8-6.4,2.1-9.3,3.9l-11.7-7.6l-8,8L20,32.1c-1.7,2.9-3.1,6-3.9,9.3L2.4,44.3v11.4l13.6,2.9c0.8,3.3,2.1,6.4,3.9,9.3      l-7.6,11.7l8,8L32.1,80c2.9,1.7,6,3.1,9.3,3.9l2.9,13.6h11.4l2.9-13.6c3.3-0.8,6.4-2.1,9.3-3.9l11.7,7.6l8-8L80,67.9      c1.7-2.9,3.1-6,3.9-9.3L97.6,55.7z M50,65.6c-8.7,0-15.6-7-15.6-15.6s7-15.6,15.6-15.6s15.6,7,15.6,15.6S58.7,65.6,50,65.6z"
+                        ></path>
+                    </svg>
+                </div>
+                <div class="gear two">
+                    <svg id="pink" viewbox="0 0 100 100" fill="#FB8BB9">
+                        <path
+                            d="M97.6,55.7V44.3l-13.6-2.9c-0.8-3.3-2.1-6.4-3.9-9.3l7.6-11.7l-8-8L67.9,20c-2.9-1.7-6-3.1-9.3-3.9L55.7,2.4H44.3l-2.9,13.6      c-3.3,0.8-6.4,2.1-9.3,3.9l-11.7-7.6l-8,8L20,32.1c-1.7,2.9-3.1,6-3.9,9.3L2.4,44.3v11.4l13.6,2.9c0.8,3.3,2.1,6.4,3.9,9.3      l-7.6,11.7l8,8L32.1,80c2.9,1.7,6,3.1,9.3,3.9l2.9,13.6h11.4l2.9-13.6c3.3-0.8,6.4-2.1,9.3-3.9l11.7,7.6l8-8L80,67.9      c1.7-2.9,3.1-6,3.9-9.3L97.6,55.7z M50,65.6c-8.7,0-15.6-7-15.6-15.6s7-15.6,15.6-15.6s15.6,7,15.6,15.6S58.7,65.6,50,65.6z"
+                        ></path>
+                    </svg>
+                </div>
+                <div class="gear three">
+                    <svg id="yellow" viewbox="0 0 100 100" fill="#FFCD5C">
+                        <path
+                            d="M97.6,55.7V44.3l-13.6-2.9c-0.8-3.3-2.1-6.4-3.9-9.3l7.6-11.7l-8-8L67.9,20c-2.9-1.7-6-3.1-9.3-3.9L55.7,2.4H44.3l-2.9,13.6      c-3.3,0.8-6.4,2.1-9.3,3.9l-11.7-7.6l-8,8L20,32.1c-1.7,2.9-3.1,6-3.9,9.3L2.4,44.3v11.4l13.6,2.9c0.8,3.3,2.1,6.4,3.9,9.3      l-7.6,11.7l8,8L32.1,80c2.9,1.7,6,3.1,9.3,3.9l2.9,13.6h11.4l2.9-13.6c3.3-0.8,6.4-2.1,9.3-3.9l11.7,7.6l8-8L80,67.9      c1.7-2.9,3.1-6,3.9-9.3L97.6,55.7z M50,65.6c-8.7,0-15.6-7-15.6-15.6s7-15.6,15.6-15.6s15.6,7,15.6,15.6S58.7,65.6,50,65.6z"
+                        ></path>
+                    </svg>
+                </div>
+                <div class="lil-circle"></div>
+                <svg class="blur-circle">
+                    <filter id="blur">
+                        <fegaussianblur
+                            in="SourceGraphic"
+                            stddeviation="13"
+                        ></fegaussianblur>
+                    </filter>
+                    <circle
+                        cx="70"
+                        cy="70"
+                        r="66"
+                        fill="transparent"
+                        stroke="white"
+                        stroke-width="40"
+                        filter="url(#blur)"
+                    ></circle>
+                </svg>
             </div>
+            <div class="text">loading</div>
         </div>
-    </div>
-    <noscript>You need to enable JavaScript to run this app.</noscript>
-    <div id="root"></div>
-</body>
-
+        <script type="text/javascript">
+            document
+                .querySelector(".loading-fixed")
+                .setAttribute("style", "display: block");
+        </script>
+        <noscript>You need to enable JavaScript to run this app.</noscript>
+        <div id="root"></div>
+    </body>
 </html>

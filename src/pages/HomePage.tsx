@@ -84,6 +84,247 @@ class HomePage extends React.Component {
                             gl_FragColor = rgba;
                         }`}</script>
                     <script>{`window.initSkills()`}</script>
+                    <style type="text/css">{`
+                        @-webkit-keyframes moveXL {
+                            from {
+                                left: 0;
+                            }
+
+                            to {
+                                left: 220px;
+                            }
+                        }
+
+                        @-moz-keyframes moveXL {
+                            from {
+                                left: 0;
+                            }
+
+                            to {
+                                left: 220px;
+                            }
+                        }
+
+                        @-o-keyframes moveXL {
+                            from {
+                                left: 0;
+                            }
+
+                            to {
+                                left: 220px;
+                            }
+                        }
+
+                        @keyframes moveXL {
+                            from {
+                                left: 0;
+                            }
+
+                            to {
+                                left: 220px;
+                            }
+                        }
+
+
+                        @-webkit-keyframes moveXR {
+                            from {
+                                left: 220px;
+                            }
+
+                            to {
+                                left: 0;
+                            }
+                        }
+
+                        @-moz-keyframes moveXR {
+                            from {
+                                left: 220px;
+                            }
+
+                            to {
+                                left: 0;
+                            }
+                        }
+
+                        @-o-keyframes moveXR {
+                            from {
+                                left: 220px;
+                            }
+
+                            to {
+                                left: 0;
+                            }
+                        }
+
+                        @keyframes moveXR {
+                            from {
+                                left: 220px;
+                            }
+
+                            to {
+                                left: 0;
+                            }
+                        }
+
+                        @-webkit-keyframes moveYT {
+                            from {
+                                top: 0;
+                            }
+
+                            to {
+                                top: 220px;
+                            }
+                        }
+
+                        @-moz-keyframes moveYT {
+                            from {
+                                top: 0;
+                            }
+
+                            to {
+                                top: 220px;
+                            }
+                        }
+
+                        @-o-keyframes moveYT {
+                            from {
+                                top: 0;
+                            }
+
+                            to {
+                                top: 220px;
+                            }
+                        }
+
+                        @keyframes moveYT {
+                            from {
+                                top: 0;
+                            }
+
+                            to {
+                                top: 220px;
+                            }
+                        }
+
+                        @-webkit-keyframes moveYB {
+                            from {
+                                top: 220px;
+                            }
+
+                            to {
+                                top: 0;
+                            }
+                        }
+
+                        @-moz-keyframes moveYB {
+                            from {
+                                top: 220px;
+                            }
+
+                            to {
+                                top: 0;
+                            }
+                        }
+
+                        @-o-keyframes moveYB {
+                            from {
+                                top: 220px;
+                            }
+
+                            to {
+                                top: 0;
+                            }
+                        }
+
+                        @keyframes moveYB {
+                            from {
+                                top: 220px;
+                            }
+
+                            to {
+                                top: 0;
+                            }
+                        }
+
+
+                        @-webkit-keyframes sizeI {
+                            from {
+                                width: 40px;
+                                height: 40px;
+                                opacity: 0.5;
+                            }
+
+                            to {
+                                width: 80px;
+                                height: 80px;
+                                opacity: 1;
+                            }
+                        }
+
+                        @-moz-keyframes sizeI {
+                            from {
+                                width: 40px;
+                                height: 40px;
+                                opacity: 0.5;
+                            }
+
+                            to {
+                                width: 80px;
+                                height: 80px;
+                                opacity: 1;
+                            }
+                        }
+
+                        @-o-keyframes sizeI {
+                            from {
+                                width: 40px;
+                                height: 40px;
+                                opacity: 0.5;
+                            }
+
+                            to {
+                                width: 80px;
+                                height: 80px;
+                                opacity: 1;
+                            }
+                        }
+
+                        @keyframes sizeI {
+                            from {
+                                width: 40px;
+                                height: 40px;
+                                opacity: 0.5;
+                            }
+
+                            to {
+                                width: 80px;
+                                height: 80px;
+                                opacity: 1;
+                            }
+                        }
+
+                        @-webkit-keyframes sizeI {
+                            from {
+                                width: 40px;
+                                height: 40px;
+                                opacity: 0.5;
+                            }
+
+                            to {
+                                width: 80px;
+                                height: 80px;
+                                opacity: 1;
+                            }
+                        }
+
+                        canvas {
+                            display: block;
+                            position:absolute;
+                            left:0;
+                            top: 48px;
+                            z-index:-1;
+                        }
+                    `}</style>
                 </Helmet>
                 <Header
                     widgets={
