@@ -29,6 +29,7 @@ const styler = withStyles((theme) => ({
         marginLeft: theme.spacing(2),
     },
     modal: {
+        background: "#a9b6c1",
         width: 700,
         maxHeight: 600,
         overflowY: "auto",
@@ -320,6 +321,7 @@ class FileBrowser extends React.Component<FileBrowserProps, FileBrowserState> {
                         {loading && <span>Loading</span>}
                         {!loading && (
                             <CodeBlock
+                                onClose={this.handleModalClose}
                                 overflow={true}
                                 hideViewButton={true}
                                 filename={hash.substr(2)}

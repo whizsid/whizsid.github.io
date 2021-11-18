@@ -44,8 +44,6 @@ const styler = withStyles((theme) => ({
         },
     },
     drawer: {
-        paddingTop: theme.spacing(8),
-        padding: theme.spacing(2, 1),
         width: 240,
         flexShrink: 0,
     },
@@ -63,6 +61,9 @@ const styler = withStyles((theme) => ({
         [theme.breakpoints.up("md")]: {
             display: "none"
         }
+    },
+    firstHeader: {
+        marginTop: theme.spacing(8)
     }
 }));
 
@@ -77,6 +78,7 @@ interface LabelDrawerProps {
         grow: string;
         drawerClosed: string;
         drawerToggle: string;
+        firstHeader: string;
     };
 }
 
@@ -271,6 +273,88 @@ class LabelDrawer extends React.Component<LabelDrawerProps, LabelDrawerState> {
                 <Divider />
                     </div>
                 <List>
+                    <ListSubheader className={classes.firstHeader} disableGutters={true}>
+                        Languages
+                    </ListSubheader>
+                    {loadingLanguages && [
+                        <TextRow
+                            key={0}
+                            className={clsx(
+                                "show-loading-animation",
+                                classes.placeholder
+                            )}
+                            color={placeholderColor}
+                        />,
+                        <TextRow
+                            key={1}
+                            className={clsx(
+                                "show-loading-animation",
+                                classes.placeholder
+                            )}
+                            color={placeholderColor}
+                        />,
+                        <TextRow
+                            key={2}
+                            className={clsx(
+                                "show-loading-animation",
+                                classes.placeholder
+                            )}
+                            color={placeholderColor}
+                        />,
+                    ]}
+                    {!loadingLanguages &&
+                        languages.map((lang, i) => (
+                            <Link
+                                key={i}
+                                to={
+                                    "/search.html?label[0]=Language%3A" +
+                                    encodeURIComponent(lang.item.name)
+                                }
+                            >
+                                <ListItem divider={true} dense={true} button>
+                                    <ListItemIcon>
+                                        <svg
+                                            width="14"
+                                            height="14"
+                                            xmlns="http://www.w3.org/2000/svg"
+                                            role="img"
+                                            viewBox="0 0 24 24"
+                                        >
+                                            <path
+                                                fill="#000000"
+                                                d={lang.item.iconPath}
+                                            />
+                                        </svg>
+                                    </ListItemIcon>
+                                    <ListItemText
+                                        primaryTypographyProps={{
+                                            className: classes.tag,
+                                        }}
+                                        primary={lang.item.name
+                                            .split(":")
+                                            .pop()}
+                                    />
+                                    <ListItemIcon>
+                                        <Chip size="small" label={lang.count} />
+                                    </ListItemIcon>
+                                </ListItem>
+                            </Link>
+                        ))}
+                    {languages.length > 0 && cursorLanguages && (
+                        <ListItem
+                            onClick={this.handleClickMoreLanguages}
+                            dense={true}
+                            button
+                        >
+                            <ListItemText
+                                primaryTypographyProps={{
+                                    className: classes.tag,
+                                }}
+                                primary="Load More.."
+                            />
+                        </ListItem>
+                    )}
+                </List>
                     <ListSubheader disableGutters={true}>Tags</ListSubheader>
                     {loadingTags &&
                         tags.length === 0 && [
@@ -337,88 +421,6 @@ class LabelDrawer extends React.Component<LabelDrawerProps, LabelDrawerState> {
                             />
                         </ListItem>
                     )}
-                    <ListSubheader disableGutters={true}>
-                        Languages
-                    </ListSubheader>
-                    {loadingLanguages && [
-                        <TextRow
-                            key={0}
-                            className={clsx(
-                                "show-loading-animation",
-                                classes.placeholder
-                            )}
-                            color={placeholderColor}
-                        />,
-                        <TextRow
-                            key={1}
-                            className={clsx(
-                                "show-loading-animation",
-                                classes.placeholder
-                            )}
-                            color={placeholderColor}
-                        />,
-                        <TextRow
-                            key={2}
-                            className={clsx(
-                                "show-loading-animation",
-                                classes.placeholder
-                            )}
-                            color={placeholderColor}
-                        />,
-                    ]}
-                    {!loadingLanguages &&
-                        languages.map((lang, i) => (
-                            <Link
-                                key={i}
-                                to={
-                                    "/search.html?label[0]=Language%3A" +
-                                    lang.item.name
-                                }
-                            >
-                                <ListItem divider={true} dense={true} button>
-                                    <ListItemIcon>
-                                        <svg
-                                            width="14"
-                                            height="14"
-                                            xmlns="http://www.w3.org/2000/svg"
-                                            role="img"
-                                            viewBox="0 0 24 24"
-                                        >
-                                            <path
-                                                fill="#000000"
-                                                d={lang.item.iconPath}
-                                            />
-                                        </svg>
-                                    </ListItemIcon>
-                                    <ListItemText
-                                        primaryTypographyProps={{
-                                            className: classes.tag,
-                                        }}
-                                        primary={lang.item.name
-                                            .split(":")
-                                            .pop()}
-                                    />
-                                    <ListItemIcon>
-                                        <Chip size="small" label={lang.count} />
-                                    </ListItemIcon>
-                                </ListItem>
-                            </Link>
-                        ))}
-                    {languages.length > 0 && cursorLanguages && (
-                        <ListItem
-                            onClick={this.handleClickMoreLanguages}
-                            dense={true}
-                            button
-                        >
-                            <ListItemText
-                                primaryTypographyProps={{
-                                    className: classes.tag,
-                                }}
-                                primary="Load More.."
-                            />
-                        </ListItem>
-                    )}
-                </List>
             </Drawer>
         );
     }

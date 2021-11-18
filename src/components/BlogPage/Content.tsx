@@ -40,7 +40,7 @@ const styler = withStyles((theme) => ({
   },
   paragraph: {
     padding: theme.spacing(2, 3),
-    fontFamily: "\"Roboto\", \"Helvetica\", \"Arial\", sans-serif",
+    fontFamily: "\"Open Sans\", sans-serif",
   },
   label: {
     margin: 4,
