@@ -9,7 +9,7 @@
         <webMaster>whizsid@aol.com (Ramesh Kithsiri)</webMaster>
         <category>Technology</category>
         <category>Programming</category>
-        <pubDate>Fri, 19 Nov 2021 01:27:56 +0530</pubDate>
+        <pubDate>Mon, 22 Nov 2021 02:42:14 +0530</pubDate>
        <item>
             <title>Debug an amethyst game on VS code</title>
             <link>https://whizsid.github.io/blog/5/debug-an-amethyst-game-on-vs-code.html</link>
@@ -70,5 +70,15 @@ LEDs are not working on my Arch Linux laptop. And the LED toggle button is also 
               <pubDate>Mon, 08 Nov 2021 10:50:54 +0530</pubDate>
               <category>Post</category><category>linux</category>
               <comments>https://whizsid.github.io/blog/22/fixing-gaming-keyboard-backlight-issue---arch-linux---jedel-k510.html</comments>
+       </item>
+    
+       <item>
+            <title>How to parse, watch, apply configuration file in GTK applications</title>
+            <link>https://whizsid.github.io/blog/24/how-to-parse,-watch,-apply-configuration-file-in-gtk-applications.html</link>
+            <description>Some UI dependent GTK applications need to be updated in real-time once the configuration file changed. Most of developers re-implementing the wheel while make it work. They have to waste their valuable time to  play with threads and mutexes to implement file watcher with the GTK main-loop. But the Glib has a built-in way to accomplish this. In this post I am implementing a simple GTK application that updating styles in real-time once changed the configuration file.</description>
+            <guid>https://whizsid.github.io/blog/24/how-to-parse,-watch,-apply-configuration-file-in-gtk-applications.html</guid>
+              <pubDate>Mon, 22 Nov 2021 02:38:07 +0530</pubDate>
+              <category>Post</category><category>linux</category><category>C</category><category>gtk</category><category>glib</category>
+              <comments>https://whizsid.github.io/blog/24/how-to-parse,-watch,-apply-configuration-file-in-gtk-applications.html</comments>
        </item>
     </channel></rss>

@@ -1,0 +1,455 @@
+<!doctype html><html lang="en"><head><script type="text/javascript">console.log("Fired")</script><meta charset="utf-8"/><link rel="icon" href="/favicon.ico"/><meta name="viewport" content="width=device-width,initial-scale=1"/><link rel="apple-touch-icon" href="/logo.png"/><link rel="manifest" href="/manifest.json"/><link href="https://fonts.googleapis.com/css?family=Source+Code+Pro&display=swap" rel="stylesheet"/><link href="https://fonts.googleapis.com/css?family=Open+Sans&display=swap" rel="stylesheet"/><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.css"/><meta http-equiv="X-UA-Compatible" content="IE=edge"/><meta name="viewport" content="width=device-width,initial-scale=1,shrink-to-fit=no"/><meta http-equiv="content-type" content="text/html; charset=UTF-8;charset=utf-8"/><link rel="fluid-icon" href="/logo.png" title="WhizSid"/><meta name="page-subject" content="WhizSid"/><meta name="theme-color" content="#151853"/><meta name="HandheldFriendly" content="true"/><title>WhizSid - Portfolio And Blog Posts</title><style>code,pre{white-space:pre-wrap!important}body{margin:0;padding:0}a:active,a:link,a:visited{color:inherit!important;text-decoration:none!important}.load{position:relative;margin:auto;width:100px;height:80px;margin-top:45vw;margin-top:calc(50vh - 100px)}.gear{position:absolute;z-index:-10;width:40px;height:40px;animation:spin 5s infinite}.two{left:40px;width:80px;height:80px;animation:spin-reverse 5s infinite}.three{top:45px;left:-10px;width:60px;height:60px}@keyframes spin{50%{transform:rotate(360deg)}}@keyframes spin-reverse{50%{transform:rotate(-360deg)}}.lil-circle{position:absolute;border-radius:50%;box-shadow:inset 0 0 10px 2px gray,0 0 50px #fff;width:100px;height:100px;opacity:.65}.blur-circle{position:absolute;top:-19px;left:-19px}.text{color:#d3d3d3;font-size:18px;font-family:"Open Sans",sans-serif;text-align:center;margin-top:60px}.loading-fixed{height:100vh;background:#fff;position:fixed;top:0;left:0;display:block;z-index:9999;width:100vw}</style><script>window.onload=function(){document.getElementsByClassName("loading-fixed")[0].remove()}</script><link href="/static/css/2.957bb6f1.chunk.css" rel="stylesheet"><meta property="og:title" content="WhizSid| How to parse, watch, apply configuration file in GTK applications"/><meta name="description" property="og:description" content="Some UI dependent GTK applications need to be updated in real-time once the configuration file changed. Most of developers re-implementing the wheel while make it work. They have to waste their valuable time to  play with threads and mutexes to implement file watcher with the GTK main-loop. But the Glib has a built-in way to accomplish this. In this post I am implementing a simple GTK application that updating styles in real-time once changed the configuration file." /><meta property="keywords" content="Post, linux, C, gtk, glib, blog, beginner, advanced, step by step" /><meta property="og:type" content="article"/><meta property="og:article:published_time" content="2021-11-21T21:08:07Z"/><meta property="og:article:modified_time" content="2021-11-21T21:11:25Z"/><meta name="author" content="Ramesh Kithsiri"/><meta property="og:article:author:first_name" content="Ramesh"/><meta property="og:article:author:last_name" content="Kithsiri"/><meta property="og:article:author:username" content="whizsid"/><meta property="fb:app_id" content="129537969147552"/><meta property="og:article:section" content="Software Engineering"/><meta property="og:article:tag" content="Post"/><meta property="og:article:tag" content="linux"/><meta property="og:article:tag" content="C"/><meta property="og:article:tag" content="gtk"/><meta property="og:article:tag" content="glib"/><meta property="og:image" content="https://github.com/whizsid/whizsid.github.io/raw/src/blog/images/gtk_config.png"/><meta property="og:url" content="https://whizsid.github.io/blog/24/how-to-parse,-watch,-apply-configuration-file-in-gtk-applications.html"/><body style="margin:0;background:#e8eaed"><div style="display:none" class="loading-fixed"><div class="load"><div class="gear one"><svg id="blue" viewbox="0 0 100 100" fill="#94DDFF"><path d="M97.6,55.7V44.3l-13.6-2.9c-0.8-3.3-2.1-6.4-3.9-9.3l7.6-11.7l-8-8L67.9,20c-2.9-1.7-6-3.1-9.3-3.9L55.7,2.4H44.3l-2.9,13.6      c-3.3,0.8-6.4,2.1-9.3,3.9l-11.7-7.6l-8,8L20,32.1c-1.7,2.9-3.1,6-3.9,9.3L2.4,44.3v11.4l13.6,2.9c0.8,3.3,2.1,6.4,3.9,9.3      l-7.6,11.7l8,8L32.1,80c2.9,1.7,6,3.1,9.3,3.9l2.9,13.6h11.4l2.9-13.6c3.3-0.8,6.4-2.1,9.3-3.9l11.7,7.6l8-8L80,67.9      c1.7-2.9,3.1-6,3.9-9.3L97.6,55.7z M50,65.6c-8.7,0-15.6-7-15.6-15.6s7-15.6,15.6-15.6s15.6,7,15.6,15.6S58.7,65.6,50,65.6z"></path></svg></div><div class="gear two"><svg id="pink" viewbox="0 0 100 100" fill="#FB8BB9"><path d="M97.6,55.7V44.3l-13.6-2.9c-0.8-3.3-2.1-6.4-3.9-9.3l7.6-11.7l-8-8L67.9,20c-2.9-1.7-6-3.1-9.3-3.9L55.7,2.4H44.3l-2.9,13.6      c-3.3,0.8-6.4,2.1-9.3,3.9l-11.7-7.6l-8,8L20,32.1c-1.7,2.9-3.1,6-3.9,9.3L2.4,44.3v11.4l13.6,2.9c0.8,3.3,2.1,6.4,3.9,9.3      l-7.6,11.7l8,8L32.1,80c2.9,1.7,6,3.1,9.3,3.9l2.9,13.6h11.4l2.9-13.6c3.3-0.8,6.4-2.1,9.3-3.9l11.7,7.6l8-8L80,67.9      c1.7-2.9,3.1-6,3.9-9.3L97.6,55.7z M50,65.6c-8.7,0-15.6-7-15.6-15.6s7-15.6,15.6-15.6s15.6,7,15.6,15.6S58.7,65.6,50,65.6z"></path></svg></div><div class="gear three"><svg id="yellow" viewbox="0 0 100 100" fill="#FFCD5C"><path d="M97.6,55.7V44.3l-13.6-2.9c-0.8-3.3-2.1-6.4-3.9-9.3l7.6-11.7l-8-8L67.9,20c-2.9-1.7-6-3.1-9.3-3.9L55.7,2.4H44.3l-2.9,13.6      c-3.3,0.8-6.4,2.1-9.3,3.9l-11.7-7.6l-8,8L20,32.1c-1.7,2.9-3.1,6-3.9,9.3L2.4,44.3v11.4l13.6,2.9c0.8,3.3,2.1,6.4,3.9,9.3      l-7.6,11.7l8,8L32.1,80c2.9,1.7,6,3.1,9.3,3.9l2.9,13.6h11.4l2.9-13.6c3.3-0.8,6.4-2.1,9.3-3.9l11.7,7.6l8-8L80,67.9      c1.7-2.9,3.1-6,3.9-9.3L97.6,55.7z M50,65.6c-8.7,0-15.6-7-15.6-15.6s7-15.6,15.6-15.6s15.6,7,15.6,15.6S58.7,65.6,50,65.6z"></path></svg></div><div class="lil-circle"></div><svg class="blur-circle"><filter id="blur"><fegaussianblur in="SourceGraphic" stddeviation="13"></fegaussianblur></filter><circle cx="70" cy="70" r="66" fill="transparent" stroke="white" stroke-width="40" filter="url(#blur)"></circle></svg></div><div class="text">loading</div></div><script type="text/javascript">document.querySelector(".loading-fixed").setAttribute("style","display: block")</script><noscript>You need to enable JavaScript to run this app.</noscript><div id="root"><h1 id="howtoparsewatchapplyconfigurationfileingtkapplications">How to parse / watch / apply configuration file in GTK applications</h1>
+<p>Some UI dependent GTK applications need to be updated in real-time once
+the configuration file changed. Most of developers re-implementing the
+wheel while make it work. They have to waste their valuable time to 
+play with threads and mutexes. But the Glib has a built-in way to 
+accomplish this.</p>
+<h2 id="makingasimpleproject">Making a simple project</h2>
+<p>First I am making a simple GTK project with a simple makefile. And I am
+adding the GTK +3 as a dependency to the makefile.</p>
+<pre><code class="make language-make"># Makefile
+
+CC = gcc
+SRC_DIR = src
+CFLAGS = -Wall -g
+LIBS = gtk4
+CFLAGS += $(shell pkg-config --cflags $(LIBS))
+LDFLAGS = $(shell pkg-config --libs $(LIBS))
+LDFLAGS += -I$(SRC_DIR)
+EXE = configwatch
+
+OBJS = $(patsubst src/%.c, src/%.o, $(wildcard src/*.c))
+
+main : clean build       
+
+build: $(OBJS)
+    $(CC) $(OBJS) $(LDFLAGS) -o $(EXE) 
+
+$(SRC_DIR)/%.o: $(SRC_DIR)/%.c
+    $(CC) $(CFLAGS) -c <div id="root"></div>lt; -o $@
+
+clean:
+    $(RM) $(OBJS) $(EXE)
+</code></pre>
+<p>Next I am creating a simple GTK application with only one button by
+following their <a href="https://docs.gtk.org/gtk4/getting_started.html#hello-world-in-c">official
+documentation</a>.
+You can also copy and paste it from the above link.</p>
+<pre><code class="c language-c"># main.c
+
+#include &lt;gtk/gtk.h&gt;
+
+static void
+print_hello (GtkWidget *widget,
+             gpointer   data)
+{
+  g_print ("Hello World\n");
+}
+
+static void
+activate (GtkApplication *app,
+          gpointer        user_data)
+{
+  GtkWidget *window;
+  GtkWidget *button;
+  GtkWidget *box;
+
+  window = gtk_application_window_new (app);
+  gtk_window_set_title (GTK_WINDOW (window), "Window");
+  gtk_window_set_default_size (GTK_WINDOW (window), 200, 200);
+
+  box = gtk_box_new (GTK_ORIENTATION_VERTICAL, 0);
+  gtk_widget_set_halign (box, GTK_ALIGN_CENTER);
+  gtk_widget_set_valign (box, GTK_ALIGN_CENTER);
+
+  gtk_window_set_child (GTK_WINDOW (window), box);
+
+  button = gtk_button_new_with_label ("Hello World");
+
+  g_signal_connect (button, "clicked", G_CALLBACK (print_hello), NULL);
+  g_signal_connect_swapped (button, "clicked", G_CALLBACK (gtk_window_destroy), window);
+
+  gtk_box_append (GTK_BOX (box), button);
+
+  gtk_widget_show (window);
+}
+
+int
+main (int    argc,
+      char **argv)
+{
+  GtkApplication *app;
+  int status;
+
+  app = gtk_application_new ("org.gtk.example", G_APPLICATION_FLAGS_NONE);
+  g_signal_connect (app, "activate", G_CALLBACK (activate), NULL);
+  status = g_application_run (G_APPLICATION (app), argc, argv);
+  g_object_unref (app);
+
+  return status;
+}
+</code></pre>
+<p>Run below command to compile it and run.</p>
+<pre><code>$ make
+$ ./configwatch
+</code></pre>
+<p>Now you can see a simple GTK application with a 'Hello World' button.</p>
+<h2 id="watchingtheconfigurationfile">Watching the configuration file.</h2>
+<p>Glib is providing a decent way to monitor file changes by <a href="https://developer-old.gnome.org/gio/stable/GFileMonitor.html">GFileMonitor
+Interface</a>.
+You can watch all changes made on the configuration file without wasting
+time to playing with threads and mutexes.</p>
+<p>Now I am going make a simple file to watch changes of the configuration 
+file. First I am creating a header file for our source file.</p>
+<pre><code class="c language-c"># src/config.h
+
+void config_file_watch();
+</code></pre>
+<p>Next I will create the source file to watch configuration file stored in
+my home directory.</p>
+<pre><code class="c language-c"># src/config.c
+
+#include &lt;gtk/gtk.h&gt;
+
+// Callback to run after configuration file changed
+static void __config_file_changed(GFileMonitor *monitor, GFile *file,
+                               GFile *other_file, GFileMonitorEvent event_type,
+                               gpointer args) {
+    if(event_type == G_FILE_MONITOR_EVENT_CHANGES_DONE_HINT) {
+        g_print("File Changed\n");
+    }
+}
+
+void config_file_watch() {
+  GFile *file;
+  GFileMonitor *config_monitor;
+  GError *error = NULL;
+
+  // Creating a file handler
+  file = g_file_new_for_path("/home/ramesh/.config/configwatch/cfgrc");
+  // Creating a handler to monitor the file
+  config_monitor =
+      g_file_monitor(file, G_FILE_MONITOR_NONE, NULL, &amp;error);
+  if (error) {
+    fprintf(stderr, "could not watch preference file: %s\n", error-&gt;message);
+    exit(EXIT_FAILURE);
+  }
+  // Binding the callback function
+  g_signal_connect(config_monitor, "changed", G_CALLBACK(__config_file_changed), NULL);
+  g_print("File Watching\n");
+}
+</code></pre>
+<p>First I am creating a callback method with the signature given in <a href="https://developer-old.gnome.org/gio/stable/GFileMonitor.html#GFileMonitor-changed">the
+documentation</a>.
+And filtering only <code>G_FILE_MONITOR_EVENT_CHANGES_DONE_HINT</code> events.
+Because <code>G_FILE_MONITOR_EVENT_CHANGED</code> will be called multiple times
+when a single byte wrote to the file. But the
+<code>G_FILE_MONITOR_EVENT_CHANGES_DONE_HINT</code> event is only called once at a
+time.</p>
+<p>In the <code>config_file_watch</code> method I used <code>G_FILE_MONITOR_NONE</code> flag,
+because we have to watch only a single file. So we do not want to watch
+mounts and move events.</p>
+<p>In this step I hard-coded the file path. But the Glib is also providing
+a way to get the user config directory in a handy way.</p>
+<pre><code class="c language-c"># src/config.c
+
+void config_file_watch() {
+  // ...
+  gchar *cf_path = malloc(sizeof(gchar)*256);
+
+  g_strlcpy(cf_path, g_get_user_config_dir(), sizeof(gchar)*238);
+  cf_path = g_strconcat(cf_path, "/configwatch/cfgrc", NULL);
+  file = g_file_new_for_path(cf_path);
+  // ...
+}
+</code></pre>
+<p>By using the <code>g_get_user_config_dir</code> function you can get the config
+directory of your home directory (<code>/home/&lt;username&gt;/.config</code>)</p>
+<p>Now add the defined <code>config_file_watch</code> function before the GTK main-loop
+in the <code>main.c</code> file.</p>
+<pre><code class="c language-c"># src/main.c
+
+#include "config.h"
+
+// ...
+
+int
+main (int    argc,
+      char **argv)
+{
+  // ...
+
+  g_signal_connect (app, "activate", G_CALLBACK (activate), NULL);
+  config_file_watch();
+
+  // ...
+}
+</code></pre>
+<p>Make and run the application. The program is printing below output to
+the console when changing the configuration file in the
+<code>/home/&lt;user&gt;/.config/configwatch/cfgrc</code> path.</p>
+<pre><code>$ make
+$ ./configwatch 
+File Watching
+File Changed
+File Changed
+File Changed
+Hello World
+</code></pre>
+<h2 id="parsingtheconfigurationfile">Parsing the configuration file</h2>
+<p>You don't need to re-implement a configuration parser since Glib has
+everything that you need to implement applications. The <a href="https://developer-old.gnome.org/glib/unstable/glib-Key-value-file-parser.html">GKeyFile</a>
+is enable you to parse your configuration file. As the first step I am
+defining a struct to hold configuration file and method signatures in
+the header file to parse the configuration file.</p>
+<pre><code class="c language-c"># src/config.h
+
+#include &lt;gdk/gdk.h&gt;
+
+typedef struct {
+    GdkRGBA background;
+    GdkRGBA foreground;
+} Config;
+
+void config_file_apply_default(Config *config);
+
+void config_file_parse(Config *config, GFile *file);
+
+// ...
+</code></pre>
+<p>The first method will assign default values to the <code>Config</code> struct and
+the second method will assign actual configuration values to the
+<code>Config</code> file if available.</p>
+<p>Next I am defining the above functions in the source file and testing it
+inside the <code>__config_file_changed</code> function.</p>
+<pre><code class="c language-c"># src/config.c
+
+static void __config_file_changed(GFileMonitor *monitor, GFile *file,
+                                  GFile *other_file,
+                                  GFileMonitorEvent event_type, gpointer args) {
+  Config *config = malloc(sizeof(Config));
+  if (event_type == G_FILE_MONITOR_EVENT_CHANGES_DONE_HINT) {
+    config_file_apply_default(config);
+    config_file_parse(config, file);
+    g_print("File changed\n");
+
+    g_print("Background=%s\nForeground=%s\n",
+            gdk_rgba_to_string(&amp;config-&gt;background),
+            gdk_rgba_to_string(&amp;config-&gt;foreground));
+  }
+  free(config);
+}
+
+void config_file_apply_default(Config *config) {
+  gdk_rgba_parse(&amp;config-&gt;background, "#000000");
+  gdk_rgba_parse(&amp;config-&gt;foreground, "#ffffff");
+}
+
+void config_file_parse(Config *config, GFile *file) {
+  GKeyFile *kfile;
+  GError *error = NULL;
+  gchar *background = malloc(sizeof(gchar) * 30);
+  gchar *foreground = malloc(sizeof(gchar) * 30);
+  gboolean colparsed = FALSE;
+
+  kfile = g_key_file_new();
+  g_key_file_load_from_file(kfile, g_file_get_path(file), G_KEY_FILE_NONE,
+                            &amp;error);
+
+  if (error) {
+    fprintf(stderr, "could not parse the config file: %s\n", error-&gt;message);
+    exit(EXIT_FAILURE);
+  }
+
+  g_strlcpy(
+      background,
+      g_key_file_get_value(kfile, "Preference", "BackgroundColor", &amp;error),
+      sizeof(gchar) * 30);
+  if (error == NULL) {
+    colparsed = gdk_rgba_parse(&amp;config-&gt;background, background);
+    if (colparsed != TRUE) {
+      fprintf(stderr, "could not parse the background color.");
+      exit(EXIT_FAILURE);
+    }
+  }
+
+  error = NULL;
+
+  g_strlcpy(
+      foreground,
+      g_key_file_get_value(kfile, "Preference", "ForegroundColor", &amp;error),
+      sizeof(gchar) * 30);
+  if (error == NULL) {
+    colparsed = gdk_rgba_parse(&amp;config-&gt;foreground, foreground);
+    if (colparsed != TRUE) {
+      fprintf(stderr, "could not parse the foreground color.");
+      exit(EXIT_FAILURE);
+    }
+  }
+}
+</code></pre>
+<p>I used the <code>gdk_rgba_parse</code> to parse the color codes to <code>GdkRGBA</code> type
+and <code>gdk_rgba_to_string</code> to convert them back to strings. </p>
+<p>And used <code>g_key_file_new</code> to construct a <code>GKeyFile</code> instance,
+<code>g_key_file_load_from_file</code> to load contents from the file into the
+<code>GKeyFile</code> and used <code>g_key_file_get_value</code> to retrieve the configuration
+value by the given group name and key name.</p>
+<p>Check the above change by creating/changing the configuration file for
+following format.</p>
+<pre><code># ~/.config/configwatch/cfgrc
+
+[Preference]
+BackgroundColor=#000000
+ForegroundColor=#ffffff
+</code></pre>
+<h2 id="makingconfigurationfunctionsabstract">Making configuration functions abstract</h2>
+<p>If you need to use the <code>config_file_watch</code> function in multiple
+subpojects, You can make it to an abstract function.</p>
+<pre><code class="c language-c"># src/config.h
+
+// ...
+void config_file_watch(void (*ptr)(Config *config, void *args), void *args);
+</code></pre>
+<p>I am taking a callback and a data pointer as arguments for
+<code>config_file_watch</code> method. This callback should be called in each time
+after configuration file changed.</p>
+<pre><code class="c language-c"># src/config.c
+
+typedef struct {
+    void * args;
+    void (*ptr)(Config *config, void *args);
+} config_watch_args;
+
+static void __config_file_changed(GFileMonitor *monitor, GFile *file,
+                                  GFile *other_file,
+                                  GFileMonitorEvent event_type, gpointer args) {
+  // ...
+  config_watch_args *targs = args;
+  if (event_type == G_FILE_MONITOR_EVENT_CHANGES_DONE_HINT) {
+    // ...
+    targs-&gt;ptr(config, targs-&gt;args);
+  }
+  // ...
+}
+
+
+void config_file_watch(void (*ptr)(Config *config, void *args), void *args) {
+  // ...
+
+  config_watch_args *targs = malloc(sizeof(config_watch_args));
+
+  // ...
+
+  targs-&gt;args = args;
+  targs-&gt;ptr = ptr;
+  g_signal_connect(config_monitor, "changed", G_CALLBACK(__config_file_changed),
+                   targs);
+
+}
+</code></pre>
+<p>First I defined a struct to interchange data and callback between the 
+internal callback and the main thread. Then I assigned the passed 
+callback and data to the struct inside the <code>config_file_watch</code> function.
+After I called to the passed callback with providing the parsed
+configuration struct and the data as an argument inside 
+the <code>__config_file_changed</code> callback.</p>
+<h2 id="reloadingthecssstyles">Reloading the CSS styles</h2>
+<p>Now I have to reload the CSS in the application with the colours in the
+configuration file. To reload the CSS, I have to define a <code>CSSProvider</code>
+to use across in the application. I am defining a struct to hold the CSS
+provider across the application scope.</p>
+<pre><code class="c language-c"># src/main.c
+
+#include &lt;gtk/gtkcssprovider.h&gt;
+
+// ...
+
+typedef struct {
+  GtkCssProvider *style_provider;
+} MyApp;
+MyApp myapp;
+</code></pre>
+<p>And I am binding the CSS provider to the required widgets and assigning
+an unique id for each required widgets.</p>
+<pre><code class="c language-c"># src/main.c
+
+static void activate(GtkApplication *app, gpointer user_data) {
+  // ...
+
+  button = gtk_button_new_with_label("Hello World");
+
+  gtk_widget_set_name(GTK_WIDGET(button), "helloworldbutton");
+  gtk_style_context_add_provider(gtk_widget_get_style_context(button),
+                                 GTK_STYLE_PROVIDER(myapp.style_provider),
+                                 GTK_STYLE_PROVIDER_PRIORITY_APPLICATION);
+
+  // ...
+}
+
+int main(int argc, char **argv) {
+  // ...
+
+  myapp.style_provider = gtk_css_provider_new();
+  status = g_application_run(G_APPLICATION(app), argc, argv);
+
+  // ...
+}
+</code></pre>
+<p>I assigned the id 'helloworldbutton' to the button using the
+<code>gtk_widget_set_name</code> function and bind the CSS provider to the button
+using <code>gtk_style_context_add_provider</code> function.</p>
+<p>And I initialized the <code>css_provider</code> before the main-loop inside the
+<code>main</code> function.</p>
+<p>Now I have to define a callback function to apply CSS styles for 
+button widget.</p>
+<pre><code class="c language-c"># src/main.c
+
+// ...
+
+static void __apply_config(Config *config, void *args){
+    MyApp *tmyapp = args;
+    gchar *stylesheet = malloc(sizeof(gchar)* 256);
+    g_sprintf(
+            stylesheet,
+            "#helloworldbutton {background: %s; color: %s;}",
+            gdk_rgba_to_string(&amp;config-&gt;background),
+            gdk_rgba_to_string(&amp;config-&gt;foreground)
+    );
+    gtk_css_provider_load_from_data(tmyapp-&gt;style_provider, stylesheet, -1);
+}
+
+int main(int argc, char **argv) {
+  // ...
+
+  config_file_watch(__apply_config, &amp;myapp);
+
+  // ...
+}
+</code></pre>
+<p>I reloaded the CSS styles by using the <code>gtk_css_provider_load_from_data</code>
+function inside the callback function and used the assigned id
+'helloworldbutton' to map styles to the widget. After I passed the
+defined callback and a reference to the <code>myapp</code> to <code>config_file_watch</code>
+function.</p>
+<p>But still I am not getting any style at the startup. But once I changed
+the configuration file, all styles were reflected. So I have to trigger
+the callback manually when initializing the file monitor.</p>
+<pre><code class="c language-c"># src/config.c
+
+// ...
+void config_file_watch(void (*ptr)(Config *config, void *args), void *args) {
+  // ...
+
+  Config *init_config = malloc(sizeof(Config));
+
+  // ...
+
+  config_file_apply_default(init_config);
+  config_file_parse(init_config, file);
+  ptr(init_config, args);
+
+  // ...
+}
+</code></pre>
+<p>Finally you can see, all styles are reflected at the startup and all
+styles are changing once the configuration file changed.</p></div><script>!function(e){function r(r){for(var n,l,f=r[0],i=r[1],p=r[2],c=0,s=[];c<f.length;c++)l=f[c],Object.prototype.hasOwnProperty.call(o,l)&&o[l]&&s.push(o[l][0]),o[l]=0;for(n in i)Object.prototype.hasOwnProperty.call(i,n)&&(e[n]=i[n]);for(a&&a(r);s.length;)s.shift()();return u.push.apply(u,p||[]),t()}function t(){for(var e,r=0;r<u.length;r++){for(var t=u[r],n=!0,f=1;f<t.length;f++){var i=t[f];0!==o[i]&&(n=!1)}n&&(u.splice(r--,1),e=l(l.s=t[0]))}return e}var n={},o={1:0},u=[];function l(r){if(n[r])return n[r].exports;var t=n[r]={i:r,l:!1,exports:{}};return e[r].call(t.exports,t,t.exports,l),t.l=!0,t.exports}l.m=e,l.c=n,l.d=function(e,r,t){l.o(e,r)||Object.defineProperty(e,r,{enumerable:!0,get:t})},l.r=function(e){"undefined"!=typeof Symbol&&Symbol.toStringTag&&Object.defineProperty(e,Symbol.toStringTag,{value:"Module"}),Object.defineProperty(e,"__esModule",{value:!0})},l.t=function(e,r){if(1&r&&(e=l(e)),8&r)return e;if(4&r&&"object"==typeof e&&e&&e.__esModule)return e;var t=Object.create(null);if(l.r(t),Object.defineProperty(t,"default",{enumerable:!0,value:e}),2&r&&"string"!=typeof e)for(var n in e)l.d(t,n,function(r){return e[r]}.bind(null,n));return t},l.n=function(e){var r=e&&e.__esModule?function(){return e.default}:function(){return e};return l.d(r,"a",r),r},l.o=function(e,r){return Object.prototype.hasOwnProperty.call(e,r)},l.p="/";var f=this.webpackJsonpportfolio=this.webpackJsonpportfolio||[],i=f.push.bind(f);f.push=r,f=f.slice();for(var p=0;p<f.length;p++)r(f[p]);var a=i;t()}([])</script><script src="/static/js/2.ac8b28ac.chunk.js"></script><script src="/static/js/main.82d91667.chunk.js"></script></body></html>
