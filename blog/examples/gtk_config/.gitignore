@@ -1,0 +1,5 @@
+/src/*.o
+configwatch
+compile_commands.json
+vgcore.*
+/.cache/
