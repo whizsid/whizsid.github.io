@@ -1,6 +1,5 @@
 import { FC } from "react";
 import { Helmet } from "react-helmet";
-import Chatbox from "../components/Chatbox";
 import BlogPostsSection from "../components/HomePage/BlogPostsSection";
 import Breadcrumb from "../components/HomePage/Breadcrumb";
 import ContactSection from "../components/HomePage/ContactSection";
@@ -327,7 +326,6 @@ const HomePage: FC = () => {
             <BlogPostsSection />
             <SkillsSection />
             <ContactSection />
-            <Chatbox messages={[]} />
         </div>
     );
 };

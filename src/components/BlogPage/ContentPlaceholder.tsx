@@ -17,16 +17,15 @@ const useStyles = makeStyles((theme: Theme) => ({
         margin: "auto !important",
         width: "80% !important",
         height: "3ch !important",
-        marginTop: theme.spacing(4) + "px !important",
+        marginTop: theme.spacing(4) + "!important",
     },
     grow: {
         flexGrow: 1,
     },
     image: {
-        margin: "auto !important",
         width: "400px !important",
         height: "260px !important",
-        marginTop: theme.spacing(2) + "px !important",
+        margin: theme.spacing(2) + " auto !important",
     },
     description: {
         margin: "auto !important",

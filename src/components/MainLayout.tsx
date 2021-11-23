@@ -5,6 +5,7 @@ import Header from "../components/Header";
 import { Outlet, Link } from "react-router-dom";
 import SearchBox from "./SearchBox";
 import ScrollToTop from "./ScrollToTop";
+import ChatwootWidget from "./ChatwootWidget";
 
 const MainLayout: FC = () => {
     const location = useLocation();
@@ -47,6 +48,7 @@ const MainLayout: FC = () => {
                 }
             />
             <Outlet />
+            <ChatwootWidget />
         </main>
     );
 };
