@@ -9,7 +9,7 @@ import {
     GITHUB_OWNER,
     GITHUB_REPOSITORY,
 } from "../config";
-import {MATLAB_ICON} from "../icons";
+import { MATLAB_ICON } from "../icons";
 
 interface UserRepositoryResponse {
     user: {
@@ -230,15 +230,17 @@ export const prToPost = (pr: PullRequest): BlogPost => {
     return {
         id: pr.number.toString(),
         title: pr.title,
-        postPath: (pr.files.nodes.find((path) => {
-            if (
-                path.path.split(".").pop() === "md" &&
-                path.path.startsWith("blog/posts/")
-            ) {
-                return true;
-            }
-            return false;
-        }) as { path: string }).path,
+        postPath: (
+            pr.files.nodes.find((path) => {
+                if (
+                    path.path.split(".").pop() === "md" &&
+                    path.path.startsWith("blog/posts/")
+                ) {
+                    return true;
+                }
+                return false;
+            }) as { path: string }
+        ).path,
         imagePath: (
             pr.files.nodes.find((path) => {
                 if (
@@ -332,11 +334,12 @@ export class Github {
     public static async repos(): Promise<Result<Repository[], AxiosError>> {
         let repositories: Repository[] = [];
 
-        const userRepositoryResponse = await Github.call<UserRepositoryResponse>(
-            'query { user(login:"' +
-                GITHUB_OWNER +
-                '"){ repositories (first:100){ nodes { name, stargazers { totalCount } forkCount, description, languages (first:3) { nodes { name, color } } repositoryTopics (first:10) { nodes { topic { name } } } } } } }'
-        );
+        const userRepositoryResponse =
+            await Github.call<UserRepositoryResponse>(
+                'query { user(login:"' +
+                    GITHUB_OWNER +
+                    '"){ repositories (first:100){ nodes { name, stargazers { totalCount } forkCount, description, languages (first:3) { nodes { name, color } } repositoryTopics (first:10) { nodes { topic { name } } } } } } }'
+            );
 
         if (isErr(userRepositoryResponse)) {
             return Promise.resolve(Err(userRepositoryResponse.unwrapErr()));
@@ -364,9 +367,10 @@ export class Github {
             repositories = repositories.concat(userRepositories);
         }
 
-        const orgRepositoryResponse = await Github.call<OrganizationRepositoryResponse>(
-            'query { organization(login:"FreeReacts"){ repositories (first:100){ nodes { name, stargazers { totalCount } forkCount, description, languages (first:3) { nodes { name, color } } repositoryTopics (first:10) { nodes { topic { name } } } } } } }'
-        );
+        const orgRepositoryResponse =
+            await Github.call<OrganizationRepositoryResponse>(
+                'query { organization(login:"FreeReacts"){ repositories (first:100){ nodes { name, stargazers { totalCount } forkCount, description, languages (first:3) { nodes { name, color } } repositoryTopics (first:10) { nodes { topic { name } } } } } } }'
+            );
 
         if (isErr(orgRepositoryResponse)) {
             return Promise.resolve(Err(orgRepositoryResponse.unwrapErr()));
@@ -418,7 +422,7 @@ export class Github {
             repository(name: "${GITHUB_REPOSITORY}", owner:"${GITHUB_OWNER}"){
                 pullRequests( first:${limit}${afterText}, labels:[${filters
             .map((l) => '"' + l + '"')
-            .join(",")}], states: [MERGED]){
+            .join(",")}], states: [MERGED], orderBy: {field: CREATED_AT, direction: DESC}){
                     nodes {
                         id,
                         number,
@@ -493,8 +497,12 @@ export class Github {
         }`);
 
         return Promise.resolve(
-            blogPostResponse.map(({ data: { repository: { pullRequest } } }) =>
-                prToPost(pullRequest)
+            blogPostResponse.map(
+                ({
+                    data: {
+                        repository: { pullRequest },
+                    },
+                }) => prToPost(pullRequest)
             )
         );
     }
@@ -510,12 +518,11 @@ export class Github {
     public static async search(
         keyword: string,
         limit: number,
-        labels: string[],
-        labelJoinMethod: string = "AND"
+        labels: string[]
     ): Promise<Result<SearchResult, AxiosError>> {
         const blogPostResponse = await Github.call<SearchResponse>(`query{
             search(
-                query: "is:merged is:pr is:public archived:false author:whizsid user:whizsid label:Post ${labels
+                query: "is:merged is:pr is:public archived:false author:whizsid user:whizsid label:Post sort:created-desc ${labels
                     .map((label) => "label:" + label)
                     .join(" ")} repo:whizsid.github.io ${keyword}",
                 type: ISSUE,

@@ -1,8 +1,9 @@
-import { Fab, makeStyles } from "@material-ui/core";
-import { Message as MessageIcon } from "@material-ui/icons";
+import MessageIcon from "@mui/icons-material/Message";
+import Fab from "@mui/material/Fab";
+import makeStyles from "@mui/styles/makeStyles";
 import * as React from "react";
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles({
     fab: {
         position: "fixed",
         right: "16px",
@@ -13,7 +14,7 @@ const useStyles = makeStyles((theme) => ({
         right: "24px",
         bottom: "40px"
     }
-}));
+});
 
 interface ChatboxProps {
     open?: boolean;
@@ -21,8 +22,7 @@ interface ChatboxProps {
     messages: [];
 }
 
-const Chatbox: React.FunctionComponent<ChatboxProps> = (props: ChatboxProps): JSX.Element => {
-    const { loading, open } = props;
+const Chatbox: React.FunctionComponent<ChatboxProps> = (): JSX.Element => {
     const styles = useStyles();
 
     return (

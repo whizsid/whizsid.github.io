@@ -1,14 +1,5 @@
-import * as React from "react";
+import { FC } from "react";
 
-class NotFoundErrorPage extends React.Component {
-
-    public render() {
-        return (
-            <div>
-                Something went wrong
-            </div>
-        );
-    }
-}
+const NotFoundErrorPage: FC = () => <div>Something went wrong</div>;
 
 export default NotFoundErrorPage;

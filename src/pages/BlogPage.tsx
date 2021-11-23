@@ -1,27 +1,41 @@
-import {
-    Grid,
-    withStyles,
-    Divider,
-    Typography,
-    Button,
-    IconButton,
-    Toolbar,
-    Popover,
-    List,
-    ListItem,
-    ListItemText,
-    Tooltip,
-} from "@material-ui/core";
+import CloudDownload from "@mui/icons-material/CloudDownload"; 
+import Facebook from "@mui/icons-material/Facebook"; 
+import Info from "@mui/icons-material/Info"; 
+import LinkedIn from "@mui/icons-material/LinkedIn";
+import Reddit from "@mui/icons-material/Reddit";
+import Twitter from "@mui/icons-material/Twitter";
+import Button from "@mui/material/Button";
+import Divider from "@mui/material/Divider";
+import Grid from "@mui/material/Grid";
+import IconButton from "@mui/material/IconButton";
+import List from "@mui/material/List";
+import ListItem from "@mui/material/ListItem";
+import ListItemText from "@mui/material/ListItemText";
+import Popover from "@mui/material/Popover";
+import {Theme} from "@mui/material/styles";
+import Toolbar from "@mui/material/Toolbar";
+import Tooltip from "@mui/material/Tooltip";
+import Typography from "@mui/material/Typography";
+import makeStyles from "@mui/styles/makeStyles";
+import clsx from "clsx";
 import GitalkComponent from "gitalk-pr/dist/gitalk-component";
-import * as React from "react";
-import { Redirect, RouteComponentProps } from "react-router";
+import { useEffect, useState, Fragment, FC } from "react";
+import { Helmet } from "react-helmet";
+import { RectShape } from "react-placeholder/lib/placeholders";
+import { Navigate } from "react-router";
+import { useParams } from "react-router-dom";
+import {
+    FacebookShareButton,
+    LinkedinShareButton,
+    RedditShareButton,
+    TwitterShareButton,
+} from "react-share";
 import { BlogPost, Github } from "../agents/Github";
 import Content from "../components/BlogPage/Content";
 import ContentPlaceholder from "../components/BlogPage/ContentPlaceholder";
 import FileBrowser from "../components/BlogPage/FileBrowser";
 import Recommended from "../components/BlogPage/Recommended";
-import Header from "../components/Header";
-import SearchBox from "../components/SearchBox";
+import RecommendedCardPlaceholder from "../components/BlogPage/RecommendedCardPlaceholder";
 import {
     GITHUB_CLIENT_ID,
     GITHUB_CLIENT_SECRET,
@@ -29,29 +43,11 @@ import {
     GITHUB_REPOSITORY,
     SITE_URL,
 } from "../config";
-import "../types/gitalk-pr/dist/react-component.d.ts";
-import { Helmet } from "react-helmet";
-import {
-    FacebookShareButton,
-    TwitterShareButton,
-    LinkedinShareButton,
-    RedditShareButton,
-} from "react-share";
-import { titleToLink } from "../utils";
-import {
-    Facebook,
-    Twitter,
-    LinkedIn,
-    Reddit,
-    CloudDownload,
-    Info,
-} from "@material-ui/icons";
-import RecommendedCardPlaceholder from "../components/BlogPage/RecommendedCardPlaceholder";
-import { RectShape } from "react-placeholder/lib/placeholders";
-import clsx from "clsx";
 import { placeholderColor } from "../theme";
+import "../types/gitalk-pr/dist/react-component.d.ts";
+import { titleToLink } from "../utils";
 
-const styler = withStyles((theme) => ({
+const useStyles = makeStyles((theme: Theme) => ({
     pageWrapper: {},
     contentGrid: {
         background: theme.palette.common.white,
@@ -80,7 +76,7 @@ const styler = withStyles((theme) => ({
         flexGrow: 1,
         width: "15.3vw",
         textAlign: "center",
-        [theme.breakpoints.down("sm")]: {
+        [theme.breakpoints.down("md")]: {
             width: "65vw",
         },
     },
@@ -102,459 +98,382 @@ const styler = withStyles((theme) => ({
     },
 }));
 
-interface BlogPageProps extends RouteComponentProps<{ id: string }> {
-    classes: {
-        pageWrapper: string;
-        contentGrid: string;
-        container: string;
-        commentSection: string;
-        recommended: string;
-        socialIcon: string;
-        socialButton: string;
-        shareText: string;
-        shareDiv: string;
-        socialButtonPlaceholder: string;
-        grow: string;
-        filesToolbar: string;
-    };
+interface IBlogPageParams {
+    id: string;
+    name: string;
 }
 
-interface BlogPageState {
-    blogPost?: BlogPost;
-    loading: boolean;
-    filePopupAnchorEl?: HTMLButtonElement;
-}
+const BlogPage: FC = () => {
+    const [loading, setLoading] = useState(true);
+    const [blogPost, setBlogPost] = useState(null as null | BlogPost);
+    const [filePopupAnchorEl, setFilePopupAnchorEl] = useState(
+        null as null | HTMLButtonElement
+    );
+    const { id } = useParams() as IBlogPageParams;
+    const classes = useStyles();
 
-class BlogPage extends React.Component<BlogPageProps, BlogPageState> {
-    constructor(props: BlogPageProps) {
-        super(props);
-        const postId = this.props.match.params.id;
-        this.state = {
-            loading: true,
-        };
+    useEffect(() => {
+        if (id && id.trim() !== "") {
+            setLoading(true);
 
-        this.handleSearch = this.handleSearch.bind(this);
-        this.handleClickFileDownload = this.handleClickFileDownload.bind(this);
-        this.handleCloseFileDownload = this.handleCloseFileDownload.bind(this);
-
-        Github.blogPost(parseInt(postId))
-            .then((result) => {
-                if (result.isOk()) {
-                    this.setState({
-                        blogPost: result.unwrap(),
-                        loading: false,
-                    });
-                } else {
-                    this.setState({
-                        loading: false,
-                    });
-                }
-            })
-            .catch(() => this.setState({ loading: false }));
-    }
-
-    public componentDidUpdate(prevProps: BlogPageProps) {
-        const prevPostId = parseInt(prevProps.match.params.id);
-        const curPostId = parseInt(this.props.match.params.id);
-
-        if (curPostId !== prevPostId) {
-            this.setState({
-                loading: true,
-                blogPost: undefined,
-            });
-
-            Github.blogPost(curPostId)
+            Github.blogPost(parseInt(id))
                 .then((result) => {
                     if (result.isOk()) {
-                        this.setState({
-                            blogPost: result.unwrap(),
-                            loading: false,
-                        });
-                    } else {
-                        this.setState({
-                            loading: false,
-                        });
+                        setBlogPost(result.unwrap());
                     }
+                    setLoading(false);
                 })
-                .catch(() => this.setState({ loading: false }));
+                .catch(() => setLoading(false));
         }
-    }
+    }, [id]);
 
-    protected handleSearch(labels: string[], keyword?: string) {
-        const params = new URLSearchParams();
-        for (let i = 0; i < labels.length; i++) {
-            params.set("label[" + i + "]", labels[i]);
-        }
-        if (keyword) {
-            params.set("query", keyword);
-        }
-        this.props.history.push("/search.html?" + params.toString());
-    }
-
-    protected handleClickFileDownload(
+    const handleClickFileDownload = (
         event: React.MouseEvent<HTMLButtonElement>
-    ) {
-        this.setState({
-            filePopupAnchorEl: event.currentTarget,
-        });
-    }
+    ) => {
+        setFilePopupAnchorEl(event.currentTarget);
+    };
 
-    protected handleCloseFileDownload() {
-        this.setState({
-            filePopupAnchorEl: undefined,
-        });
-    }
+    const handleCloseFileDownload = () => {
+        setFilePopupAnchorEl(null);
+    };
 
-    public render() {
-        const { classes } = this.props;
-        const { loading, blogPost, filePopupAnchorEl } = this.state;
-
-        return (
-            <div className={classes.pageWrapper}>
-                {blogPost && (
-                    <Helmet>
-                        <title>WhizSid | {blogPost.title}</title>
+    return (
+        <div className={classes.pageWrapper}>
+            {blogPost && (
+                <Helmet>
+                    <title>WhizSid | {blogPost.title}</title>
+                    <meta
+                        property="og:title"
+                        content={"WhizSid | " + blogPost.title}
+                    />
+                    <meta name="description" content={blogPost.description} />
+                    <meta
+                        name="keywords"
+                        content={blogPost.languages
+                            .map((lng) => lng.name)
+                            .concat(blogPost.tags)
+                            .concat([
+                                "blog",
+                                "beginner",
+                                "advanced",
+                                "step by step",
+                            ])
+                            .join(", ")}
+                    />
+                    <meta property="og:type" content="article" />
+                    <meta
+                        property="og:article:published_time"
+                        content={blogPost.createdAt}
+                    />
+                    <meta
+                        property="og:article:author:first_name"
+                        content="Ramesh"
+                    />
+                    <meta
+                        property="og:article:author:last_name"
+                        content="Kithsiri"
+                    />
+                    <meta
+                        property="og:article:author:username"
+                        content="whizsid"
+                    />
+                    <meta
+                        property="og:article:author:section"
+                        content="Programming"
+                    />
+                    {blogPost.tags.map((tg, i) => (
+                        <meta property="og:article:tag" key={i} content={tg} />
+                    ))}
+                    {blogPost.languages.map((lng, i) => (
                         <meta
-                            property="og:title"
-                            content={"WhizSid | " + blogPost.title}
+                            property="og:article:tag"
+                            key={i}
+                            content={lng.name}
                         />
-                        <meta
-                            name="description"
-                            content={blogPost.description}
-                        />
-                        <meta
-                            name="keywords"
-                            content={blogPost.languages
-                                .map((lng) => lng.name)
-                                .concat(blogPost.tags)
-                                .concat([
-                                    "blog",
-                                    "beginner",
-                                    "advanced",
-                                    "step by step",
-                                ])
-                                .join(", ")}
-                        />
-                        <meta property="og:type" content="article" />
-                        <meta
-                            property="og:article:published_time"
-                            content={blogPost.createdAt}
-                        />
-                        <meta
-                            property="og:article:author:first_name"
-                            content="Ramesh"
-                        />
-                        <meta
-                            property="og:article:author:last_name"
-                            content="Kithsiri"
-                        />
-                        <meta
-                            property="og:article:author:username"
-                            content="whizsid"
-                        />
-                        <meta
-                            property="og:article:author:section"
-                            content="Programming"
-                        />
-                        {blogPost.tags.map((tg, i) => (
-                            <meta
-                                property="og:article:tag"
-                                key={i}
-                                content={tg}
-                            />
-                        ))}
-                        {blogPost.languages.map((lng, i) => (
-                            <meta
-                                property="og:article:tag"
-                                key={i}
-                                content={lng.name}
-                            />
-                        ))}
-                        <meta
-                            property="og:url"
-                            content={
-                                SITE_URL +
-                                "blog/" +
-                                blogPost.id +
-                                "/" +
-                                titleToLink(blogPost.title) +
-                                ".html"
-                            }
-                        />
-                        <meta
-                            property="og:image"
-                            content={
-                                "https://github.com/whizsid/whizsid.github.io/raw/src/" +
-                                blogPost.imagePath
-                            }
-                        />
-                    </Helmet>
-                )}
-                <Header widgets={<SearchBox onSearch={this.handleSearch} />} />
+                    ))}
+                    <meta
+                        property="og:url"
+                        content={
+                            SITE_URL +
+                            "blog/" +
+                            blogPost.id +
+                            "/" +
+                            titleToLink(blogPost.title) +
+                            ".html"
+                        }
+                    />
+                    <meta
+                        property="og:image"
+                        content={
+                            "https://github.com/whizsid/whizsid.github.io/raw/src/" +
+                            blogPost.imagePath
+                        }
+                    />
+                </Helmet>
+            )}
+            <Grid
+                className={classes.container}
+                justifyContent="center"
+                container={true}
+            >
                 <Grid
-                    className={classes.container}
-                    justify="center"
-                    container={true}
+                    className={classes.contentGrid}
+                    item={true}
+                    md={8}
+                    xs={12}
                 >
-                    <Grid
-                        className={classes.contentGrid}
-                        item={true}
-                        md={8}
-                        xs={12}
-                    >
-                        {loading && <ContentPlaceholder />}
-                        {!loading && blogPost && <Content post={blogPost} />}
-                        {!loading && !blogPost && <Redirect to="/error.html" />}
-                        {!loading && blogPost && (
-                            <div className={classes.commentSection}>
-                                <GitalkComponent
-                                    options={{
-                                        number: parseInt(blogPost.id),
-                                        clientID: GITHUB_CLIENT_ID,
-                                        clientSecret: GITHUB_CLIENT_SECRET,
-                                        repo: "whizsid.github.io",
-                                        owner: "whizsid",
-                                        admin: ["whizsid"],
-                                    }}
-                                />
-                            </div>
-                        )}
-                    </Grid>
-
-                    <Grid
-                        item={true}
-                        className={classes.recommended}
-                        md={3}
-                        xs={12}
-                    >
-                        <Typography variant="h6">Share</Typography>
-                        <Divider />
-                        <div className={classes.shareDiv}>
-                            {!blogPost &&
-                                Array(4)
-                                    .fill(1)
-                                    .map((_, i) => (
-                                        <RectShape
-                                            key={i}
-                                            className={clsx(
-                                                "show-loading-animation",
-                                                classes.socialButtonPlaceholder
-                                            )}
-                                            color={placeholderColor}
-                                        />
-                                    ))}
-                            {blogPost && [
-                                <FacebookShareButton
-                                    key={0}
-                                    url={
-                                        SITE_URL +
-                                        "blog/" +
-                                        blogPost.id +
-                                        "/" +
-                                        titleToLink(blogPost.title) +
-                                        ".html"
-                                    }
-                                    quote={
-                                        blogPost
-                                            ? blogPost.title
-                                            : "WhizSid | Blog & Portfolio"
-                                    }
-                                    hashtag="#whizsid"
-                                >
-                                    <Button
-                                        component="a"
-                                        style={{
-                                            backgroundColor: "#1877F2",
-                                            color: "#FFFFFF",
-                                        }}
-                                        className={classes.socialButton}
-                                    >
-                                        <Facebook
-                                            className={classes.socialIcon}
-                                            color="inherit"
-                                        />
-                                        <div className={classes.shareText}>
-                                            {" "}
-                                            Share on Facebook{" "}
-                                        </div>
-                                    </Button>
-                                </FacebookShareButton>,
-                                <TwitterShareButton
-                                    key={0}
-                                    url={
-                                        SITE_URL +
-                                        "blog/" +
-                                        blogPost.id +
-                                        "/" +
-                                        titleToLink(blogPost.title) +
-                                        ".html"
-                                    }
-                                    title={
-                                        blogPost
-                                            ? blogPost.title
-                                            : "WhizSid | Blog & Portfolio"
-                                    }
-                                    hashtags={["whizsid"]}
-                                >
-                                    <Button
-                                        component="a"
-                                        style={{
-                                            backgroundColor: "#1DA1F2",
-                                            color: "#FFFFFF",
-                                        }}
-                                        className={classes.socialButton}
-                                    >
-                                        <Twitter
-                                            className={classes.socialIcon}
-                                            color="inherit"
-                                        />
-                                        <div className={classes.shareText}>
-                                            {" "}
-                                            Retweet On Twitter{" "}
-                                        </div>
-                                    </Button>
-                                </TwitterShareButton>,
-                                <LinkedinShareButton
-                                    key={0}
-                                    url={
-                                        SITE_URL +
-                                        "blog/" +
-                                        blogPost.id +
-                                        "/" +
-                                        titleToLink(blogPost.title) +
-                                        ".html"
-                                    }
-                                    title={
-                                        blogPost
-                                            ? blogPost.title
-                                            : "WhizSid | Blog & Portfolio"
-                                    }
-                                >
-                                    <Button
-                                        component="a"
-                                        style={{
-                                            backgroundColor: "#0A66C2",
-                                            color: "#FFFFFF",
-                                        }}
-                                        className={classes.socialButton}
-                                    >
-                                        <LinkedIn
-                                            className={classes.socialIcon}
-                                            color="inherit"
-                                        />
-                                        <div className={classes.shareText}>
-                                            {" "}
-                                            Share On LinkedIn{" "}
-                                        </div>
-                                    </Button>
-                                </LinkedinShareButton>,
-                                <RedditShareButton
-                                    key={0}
-                                    url={
-                                        SITE_URL +
-                                        "blog/" +
-                                        blogPost.id +
-                                        "/" +
-                                        titleToLink(blogPost.title) +
-                                        ".html"
-                                    }
-                                    title={
-                                        blogPost
-                                            ? blogPost.title
-                                            : "WhizSid | Blog & Portfolio"
-                                    }
-                                >
-                                    <Button
-                                        component="a"
-                                        style={{
-                                            backgroundColor: "#FF4500",
-                                            color: "#FFFFFF",
-                                        }}
-                                        className={classes.socialButton}
-                                    >
-                                        <Reddit
-                                            className={classes.socialIcon}
-                                            color="inherit"
-                                        />
-                                        <div className={classes.shareText}>
-                                            {" "}
-                                            Share On Reddit{" "}
-                                        </div>
-                                    </Button>
-                                </RedditShareButton>,
-                            ]}
+                    {loading && <ContentPlaceholder />}
+                    {!loading && blogPost && <Content post={blogPost} />}
+                    {!loading && !blogPost && <Navigate to="/error.html" />}
+                    {!loading && blogPost && (
+                        <div className={classes.commentSection}>
+                            <GitalkComponent
+                                options={{
+                                    admin: ["whizsid"],
+                                    clientID: GITHUB_CLIENT_ID,
+                                    clientSecret: GITHUB_CLIENT_SECRET,
+                                    number: parseInt(blogPost.id),
+                                    owner: "whizsid",
+                                    repo: "whizsid.github.io",
+                                }}
+                            />
                         </div>
-                        <br />
-                        <br />
-                        {blogPost && blogPost.example && (
-                            <React.Fragment>
-                                <Toolbar
-                                    className={classes.filesToolbar}
-                                    variant="dense"
-                                >
-                                    <Typography variant="h6">Files</Typography>
-                                    <div className={classes.grow} />
-                                    <IconButton
-                                        onClick={this.handleClickFileDownload}
-                                        size="small"
-                                        title="Download Files"
-                                    >
-                                        <CloudDownload />
-                                    </IconButton>
-                                    <Popover
-                                        open={!!filePopupAnchorEl}
-                                        anchorEl={filePopupAnchorEl}
-                                        onClose={this.handleCloseFileDownload}
-                                        anchorOrigin={{
-                                            vertical: "bottom",
-                                            horizontal: "center",
-                                        }}
-                                        transformOrigin={{
-                                            vertical: "top",
-                                            horizontal: "center",
-                                        }}
-                                    >
-                                        <List>
-                                            <ListItem
-                                                component="a"
-                                                href={`https://github.com/${GITHUB_OWNER}/${GITHUB_REPOSITORY}/releases/download/${blogPost.id}/changed.zip`}
-                                                button
-                                            >
-                                                <ListItemText primary="Changed Files" />
-                                            </ListItem>
-                                            <ListItem
-                                                component="a"
-                                                href={`https://github.com/${GITHUB_OWNER}/${GITHUB_REPOSITORY}/releases/download/${blogPost.id}/all.zip`}
-                                                button
-                                            >
-                                                <ListItemText primary="All Files" />
-                                            </ListItem>
-                                        </List>
-                                    </Popover>
-                                    <Tooltip title="You can view only changed files from below tree view. Please click the left download button if you want all files.">
-                                        <IconButton size="small">
-                                            <Info />
-                                        </IconButton>
-                                    </Tooltip>
-                                </Toolbar>
-                                <Divider />
-                                <FileBrowser {...blogPost.example} />
-                                <br />
-                                <br />
-                            </React.Fragment>
-                        )}
-                        <Typography variant="h6">Recommended</Typography>
-                        <Divider />
-                        {blogPost && <Recommended post={blogPost} />}
-                        {!blogPost && [
-                            <RecommendedCardPlaceholder key={0} />,
-                            <RecommendedCardPlaceholder key={1} />,
-                        ]}
-                    </Grid>
+                    )}
                 </Grid>
-            </div>
-        );
-    }
-}
 
-export default styler(BlogPage);
+                <Grid
+                    item={true}
+                    className={classes.recommended}
+                    md={3}
+                    xs={12}
+                >
+                    <Typography variant="h6">Share</Typography>
+                    <Divider />
+                    <div className={classes.shareDiv}>
+                        {!blogPost &&
+                            Array(4)
+                                .fill(1)
+                                .map((_, i) => (
+                                    <RectShape
+                                        key={i}
+                                        className={clsx(
+                                            "show-loading-animation",
+                                            classes.socialButtonPlaceholder
+                                        )}
+                                        color={placeholderColor}
+                                    />
+                                ))}
+                        {blogPost && [
+                            <FacebookShareButton
+                                key={0}
+                                url={
+                                    SITE_URL +
+                                    "blog/" +
+                                    blogPost.id +
+                                    "/" +
+                                    titleToLink(blogPost.title) +
+                                    ".html"
+                                }
+                                quote={
+                                    blogPost
+                                        ? blogPost.title
+                                        : "WhizSid | Blog & Portfolio"
+                                }
+                                hashtag="#whizsid"
+                            >
+                                <Button
+                                    component="a"
+                                    style={{
+                                        backgroundColor: "#1877F2",
+                                        color: "#FFFFFF",
+                                    }}
+                                    className={classes.socialButton}
+                                >
+                                    <Facebook
+                                        className={classes.socialIcon}
+                                        color="inherit"
+                                    />
+                                    <div className={classes.shareText}>
+                                        {" "}
+                                        Share on Facebook{" "}
+                                    </div>
+                                </Button>
+                            </FacebookShareButton>,
+                            <TwitterShareButton
+                                key={0}
+                                url={
+                                    SITE_URL +
+                                    "blog/" +
+                                    blogPost.id +
+                                    "/" +
+                                    titleToLink(blogPost.title) +
+                                    ".html"
+                                }
+                                title={
+                                    blogPost
+                                        ? blogPost.title
+                                        : "WhizSid | Blog & Portfolio"
+                                }
+                                hashtags={["whizsid"]}
+                            >
+                                <Button
+                                    component="a"
+                                    style={{
+                                        backgroundColor: "#1DA1F2",
+                                        color: "#FFFFFF",
+                                    }}
+                                    className={classes.socialButton}
+                                >
+                                    <Twitter
+                                        className={classes.socialIcon}
+                                        color="inherit"
+                                    />
+                                    <div className={classes.shareText}>
+                                        {" "}
+                                        Retweet On Twitter{" "}
+                                    </div>
+                                </Button>
+                            </TwitterShareButton>,
+                            <LinkedinShareButton
+                                key={0}
+                                url={
+                                    SITE_URL +
+                                    "blog/" +
+                                    blogPost.id +
+                                    "/" +
+                                    titleToLink(blogPost.title) +
+                                    ".html"
+                                }
+                                title={
+                                    blogPost
+                                        ? blogPost.title
+                                        : "WhizSid | Blog & Portfolio"
+                                }
+                            >
+                                <Button
+                                    component="a"
+                                    style={{
+                                        backgroundColor: "#0A66C2",
+                                        color: "#FFFFFF",
+                                    }}
+                                    className={classes.socialButton}
+                                >
+                                    <LinkedIn
+                                        className={classes.socialIcon}
+                                        color="inherit"
+                                    />
+                                    <div className={classes.shareText}>
+                                        {" "}
+                                        Share On LinkedIn{" "}
+                                    </div>
+                                </Button>
+                            </LinkedinShareButton>,
+                            <RedditShareButton
+                                key={0}
+                                url={
+                                    SITE_URL +
+                                    "blog/" +
+                                    blogPost.id +
+                                    "/" +
+                                    titleToLink(blogPost.title) +
+                                    ".html"
+                                }
+                                title={
+                                    blogPost
+                                        ? blogPost.title
+                                        : "WhizSid | Blog & Portfolio"
+                                }
+                            >
+                                <Button
+                                    component="a"
+                                    style={{
+                                        backgroundColor: "#FF4500",
+                                        color: "#FFFFFF",
+                                    }}
+                                    className={classes.socialButton}
+                                >
+                                    <Reddit
+                                        className={classes.socialIcon}
+                                        color="inherit"
+                                    />
+                                    <div className={classes.shareText}>
+                                        {" "}
+                                        Share On Reddit{" "}
+                                    </div>
+                                </Button>
+                            </RedditShareButton>,
+                        ]}
+                    </div>
+                    <br />
+                    <br />
+                    {blogPost && blogPost.example && (
+                        <Fragment>
+                            <Toolbar
+                                className={classes.filesToolbar}
+                                variant="dense"
+                            >
+                                <Typography variant="h6">Files</Typography>
+                                <div className={classes.grow} />
+                                <IconButton
+                                    onClick={handleClickFileDownload}
+                                    size="small"
+                                    title="Download Files"
+                                >
+                                    <CloudDownload />
+                                </IconButton>
+                                <Popover
+                                    open={!!filePopupAnchorEl}
+                                    anchorEl={filePopupAnchorEl}
+                                    onClose={handleCloseFileDownload}
+                                    anchorOrigin={{
+                                        horizontal: "center",
+                                        vertical: "bottom",
+                                    }}
+                                    transformOrigin={{
+                                        horizontal: "center",
+                                        vertical: "top",
+                                    }}
+                                >
+                                    <List>
+                                        <ListItem
+                                            component="a"
+                                            href={`https://github.com/${GITHUB_OWNER}/${GITHUB_REPOSITORY}/releases/download/${blogPost.id}/changed.zip`}
+                                            button
+                                        >
+                                            <ListItemText primary="Changed Files" />
+                                        </ListItem>
+                                        <ListItem
+                                            component="a"
+                                            href={`https://github.com/${GITHUB_OWNER}/${GITHUB_REPOSITORY}/releases/download/${blogPost.id}/all.zip`}
+                                            button
+                                        >
+                                            <ListItemText primary="All Files" />
+                                        </ListItem>
+                                    </List>
+                                </Popover>
+                                <Tooltip title="You can view only changed files from below tree view. Please click the left download button if you want all files.">
+                                    <IconButton size="small">
+                                        <Info />
+                                    </IconButton>
+                                </Tooltip>
+                            </Toolbar>
+                            <Divider />
+                            <FileBrowser {...blogPost.example} />
+                            <br />
+                            <br />
+                        </Fragment>
+                    )}
+                    <Typography variant="h6">Recommended</Typography>
+                    <Divider />
+                    {blogPost && <Recommended post={blogPost} />}
+                    {!blogPost && [
+                        <RecommendedCardPlaceholder key={0} />,
+                        <RecommendedCardPlaceholder key={1} />,
+                    ]}
+                </Grid>
+            </Grid>
+        </div>
+    );
+};
+
+export default BlogPage;

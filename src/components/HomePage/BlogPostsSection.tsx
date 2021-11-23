@@ -1,90 +1,81 @@
 import { None } from "@hqoss/monads";
-import { Grid, Typography, withStyles, Button } from "@material-ui/core";
-import * as React from "react";
+import Button from "@mui/material/Button";
+import Grid from "@mui/material/Grid";
+import Typography from "@mui/material/Typography";
+import { Theme } from "@mui/material/styles";
+import makeStyles from "@mui/styles/makeStyles";
+import { FC, useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 import { BlogPost, Github } from "../../agents/Github";
 import BlogPostCard from "../BlogPostCard";
 import BlogPostCardPlaceholder from "../BlogPostCardPlaceholder";
-import {Link} from "react-router-dom";
 
-const styler = withStyles((theme) => ({
+const useStyles = makeStyles((theme: Theme) => ({
     header: {
         background: "#98b3bc",
         padding: 8,
         color: theme.palette.common.white,
-        display: "flex"
+        display: "flex",
     },
     grow: {
-        flexGrow: 1
+        flexGrow: 1,
     },
     blogLink: {
-        color: theme.palette.common.white
-    }
+        color: theme.palette.common.white,
+    },
 }));
 
-interface BlogPostsSectionState {
-    loading: boolean;
-    posts: BlogPost[];
-}
+const BlogPostsSection: FC = () => {
+    const classes = useStyles();
+    const [loading, setLoading] = useState(true);
+    const [posts, setPosts] = useState([] as BlogPost[]);
 
-interface BlogPostsSectionProps {
-    classes: {
-        header: string;
-        grow: string;
-        blogLink: string;
-    };
-}
-
-class BlogPostsSection extends React.Component<
-    BlogPostsSectionProps,
-    BlogPostsSectionState
-> {
-    constructor(props: BlogPostsSectionProps) {
-        super(props);
-
-        this.state = {
-            loading: true,
-            posts: [],
-        };
-
-        Github.blogPosts(None, [], 5).then((postsResult) => {
+    useEffect(() => {
+        Github.blogPosts(None, [], 6).then((postsResult) => {
+            setLoading(false);
             if (postsResult.isOk()) {
                 const posts = postsResult.unwrap().posts;
-                this.setState({ posts, loading: false });
+                setPosts(posts);
             }
         });
-    }
+    }, []);
 
-    public renderCards(): JSX.Element[] {
-        const { loading, posts } = this.state;
-
+    const renderCards = (): JSX.Element[] => {
         if (loading) {
-            return Array.from({ length: 3 }).fill(
-                <Grid item={true}>
+            return [0,1,2,3,4,5,6].map((i)=>(
+                <Grid key={i} item={true}>
                     <BlogPostCardPlaceholder />
                 </Grid>
-            ) as JSX.Element[];
+            ));
         } else {
-            return posts.map((post) => (
-                <Grid item={true}>
+            return posts.map((post, i) => (
+                <Grid item={true} key={i}>
                     <BlogPostCard {...post} />
                 </Grid>
             ));
         }
-    }
+    };
 
-    public render() {
-        const { classes } = this.props;
-        return (
-            <div>
-                <div className={classes.header}>
-                    <Typography variant="h6">Blog Posts</Typography>
-                        <div className={classes.grow} />
-                            <Button variant="outlined" size="small" component={Link} to="/search.html" className={classes.blogLink} >Visit Blog</Button>
-                </div>
-                <Grid justify="center" container={true}>{this.renderCards()}</Grid>
+    return (
+        <div>
+            <div className={classes.header}>
+                <Typography variant="h6">Blog Posts</Typography>
+                <div className={classes.grow} />
+                <Button
+                    variant="outlined"
+                    size="small"
+                    component={Link}
+                    to="/search.html"
+                    className={classes.blogLink}
+                >
+                    Visit Blog
+                </Button>
             </div>
-        );
-    }
-}
+            <Grid justifyContent="center" container={true}>
+                {renderCards()}
+            </Grid>
+        </div>
+    );
+};
 
-export default styler(BlogPostsSection);
+export default BlogPostsSection;

@@ -1,52 +1,40 @@
-import { fade, withStyles } from "@material-ui/core";
-import InputBase from "@material-ui/core/InputBase";
-import List from "@material-ui/core/List";
-import ListItem from "@material-ui/core/ListItem";
-import ListItemText from "@material-ui/core/ListItemText";
-import ListSubheader from "@material-ui/core/ListSubheader";
-import SearchIcon from "@material-ui/icons/Search";
+import SearchIcon from "@mui/icons-material/Search";
+import { alpha, Theme } from "@mui/material/styles";
+import InputBase from "@mui/material/InputBase";
+import List from "@mui/material/List";
+import ListItem from "@mui/material/ListItem";
+import ListItemText from "@mui/material/ListItemText";
+import ListSubheader from "@mui/material/ListSubheader";
+import ListItemButton from "@mui/material/ListItemButton";
+import IconButton from "@mui/material/IconButton";
+import AddIcon from "@mui/icons-material/Add";
+import makeStyles from "@mui/styles/makeStyles";
 import clsx from "clsx";
-import { debounce } from "debounce";
-import * as React from "react";
+import { useDebouncedCallback } from "use-debounce";
+import { FC, useState } from "react";
 import { Link } from "react-router-dom";
 import { Github, SearchResult } from "../agents/Github";
 import { titleToLink } from "../utils";
 
-interface SearchBoxProps {
-    onSearch: (labels: string[], keyword?: string) => void;
+interface ISearchBoxProps {
+    onSearch: (labels: string[], keyword: string | null) => void;
     onResponse?: (response: SearchResult) => void;
-    classes: {
-        inputRoot: string;
-        inputInput: string;
-        inputForm: string;
-        searchIcon: string;
-        search: string;
-        labels: string;
-        label: string;
-        plus: string;
-        result: string;
-        resultFocused: string;
-        resultText: string;
-        resultHeader: string;
-        resultHint: string;
-        resultEmpty: string;
-    };
 }
 
-const styler = withStyles(theme => ({
+const useStyles = makeStyles((theme: Theme) => ({
     search: {
         position: "relative",
         borderRadius: theme.shape.borderRadius,
-        backgroundColor: fade(theme.palette.common.white, 0.15),
+        backgroundColor: alpha(theme.palette.common.white, 0.15),
         "&:hover": {
-            backgroundColor: fade(theme.palette.common.white, 0.25),
+            backgroundColor: alpha(theme.palette.common.white, 0.25),
         },
         width: "auto",
-            minWidth: 300,
-            marginLeft: theme.spacing(5),
+        minWidth: 300,
+        marginLeft: theme.spacing(5),
         display: "none",
         [theme.breakpoints.up("sm")]: {
-           display: "block"
+            display: "block",
         },
     },
     searchIcon: {
@@ -62,7 +50,7 @@ const styler = withStyles(theme => ({
         color: "inherit",
     },
     inputForm: {
-        display: "inline-flex"
+        display: "inline-flex",
     },
     inputInput: {
         padding: theme.spacing(1, 1, 1, 0),
@@ -85,7 +73,7 @@ const styler = withStyles(theme => ({
         borderRightColor: "rgba(256,256,256,0.5)",
         padding: theme.spacing(0, 1),
         fontSize: "0.8em",
-        fontFamily: "\"Roboto\", \"Helvetica\", \"Arial\", sans-serif"
+        fontFamily: '"Roboto", "Helvetica", "Arial", sans-serif',
     },
     label: {
         height: "1em",
@@ -93,7 +81,7 @@ const styler = withStyles(theme => ({
         cursor: "pointer",
     },
     plus: {
-        padding: theme.spacing(0, 1)
+        padding: theme.spacing(0, 1),
     },
     result: {
         position: "absolute",
@@ -116,144 +104,143 @@ const styler = withStyles(theme => ({
         height: 300,
     },
     resultEmpty: {
-        height: 80
+        height: 80,
     },
     resultText: {
         color: theme.palette.common.black + "!important",
-        fontStyle: "none"
+        fontStyle: "none",
     },
     resultHeader: {
         background: theme.palette.common.white,
     },
     resultHint: {
         color: theme.palette.text.secondary,
-    }
+    },
+    labelLink: {
+        flex: "1 1 auto",
+    },
+    labelButtons: {
+        flexGrow: 0,
+    },
 }));
 
-interface SearchBoxState {
-    focused: boolean;
-    result?: SearchResult;
-    keyword?: string;
-    labels: string[];
-    loading: boolean;
-}
+const SearchBox: FC<ISearchBoxProps> = ({
+    onSearch,
+    onResponse,
+}: ISearchBoxProps) => {
+    const [focused, setFocused] = useState(false);
+    const [loading, setLoading] = useState(false);
+    const [labels, setLabels] = useState([] as string[]);
+    const [keyword, setKeyword] = useState(null as string | null);
+    const [result, setResult] = useState(null as SearchResult | null);
+    const classes = useStyles();
 
-class SearchBox extends React.Component<SearchBoxProps, SearchBoxState> {
-    constructor(props: SearchBoxProps) {
-        super(props);
+    const fetchData = (newKeyword?: string, newLabels?: string[]) => {
+        setLoading(true);
 
-        this.state = {
-            focused: false,
-            labels: [],
-            loading: false,
-            keyword: ""
-        };
-
-        this.onFocus = this.onFocus.bind(this);
-        this.onBlur = this.onBlur.bind(this);
-        this.onChange = this.onChange.bind(this);
-        this.fetchData = debounce(this.fetchData, 800);
-        this.onSubmit = this.onSubmit.bind(this);
-    }
-
-    protected fetchData() {
-        const { keyword, labels } = this.state;
-        this.setState({
-            loading: true
-        });
-
-        Github.search(keyword ? keyword : " ", 20, labels ? labels : []).then(data => {
-            if (data.isOk()) {
-                const response = data.unwrap();
-                if (this.props.onResponse) {
-                    this.props.onResponse(response);
+        Github.search(
+            newKeyword || keyword || "",
+            20,
+            newLabels || labels || []
+        )
+            .then((data) => {
+                setLoading(false);
+                if (data.isOk()) {
+                    const response = data.unwrap();
+                    onResponse && onResponse(response);
+                    setResult(response);
                 }
-                this.setState({
-                    result: response
-                });
-            }
-            this.setState({
-                loading: false
-            });
-        }).catch(() => this.setState({ loading: false }));
-    }
+            })
+            .catch(() => setLoading(false));
+    };
 
-    protected onFocus() {
-        this.setState({
-            focused: true
-        });
-    }
+    const fetchDataDebounced = useDebouncedCallback(fetchData, 800);
 
-    protected onBlur() {
-        window.setTimeout(() =>
-            this.setState({
-                focused: false
-            }), 600);
-    }
+    const handleFocus = () => {
+        setFocused(true);
+    };
 
-    protected onChange(el: React.ChangeEvent<HTMLInputElement>) {
-        this.setState({
-            keyword: el.target.value
-        }, () => this.fetchData());
-    }
+    const handleBlur = () => {
+        window.setTimeout(() => setFocused(false), 600);
+    };
 
-    public selectLabel(prefix: string, label: string) {
-        const { keyword, labels } = this.state;
-        const modifiedKeyword = keyword?.replace(new RegExp(label + "(\\s|)","i"), "");
+    const handleChange = (el: React.ChangeEvent<HTMLInputElement>) => {
+        setLoading(true);
+        setKeyword(el.target.value);
+        fetchDataDebounced(el.target.value);
+    };
+
+    const handleSelectLabel = (prefix: string, label: string) => {
+        const modifiedKeyword = keyword?.replace(
+            new RegExp(label + "(\\s|)", "i"),
+            ""
+        );
         const labelName = prefix + ":" + label;
 
-        this.setState({
-            keyword: modifiedKeyword,
-            labels: [...labels.filter(l => l !== labelName), labelName]
-        }, () => this.fetchData());
-    }
+        const newLabels = [...labels.filter((l) => l !== labelName), labelName];
 
-    public removeLabel(label: string) {
-        this.setState({
-            labels: this.state.labels.filter(l => l !== label)
-        }, () => this.fetchData());
-    }
+        setKeyword(modifiedKeyword || null);
+        setLabels(newLabels);
+        fetchData(modifiedKeyword, newLabels);
+    };
 
-    public onSubmit(e: React.FormEvent){
+    const handleRemoveLabel = (label: string) => {
+        const newLabels = labels.filter((l) => l !== label);
+        setLabels(newLabels);
+        fetchData(undefined, newLabels);
+    };
+
+    const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
-        this.props.onSearch(this.state.labels, this.state.keyword);
+        onSearch(labels, keyword);
+    };
+
+    const isEmpty = (!keyword || keyword === "") && labels.length === 0;
+    const isResult =
+        result &&
+        (!!result.tags.length ||
+            !!result.posts.length ||
+            !!result.languages.length);
+
+    let hint: string;
+
+    if (isEmpty) {
+        hint = "Please type here to search..";
+    } else if (loading) {
+        hint = "Be patient.. Fetching your results...";
+    } else {
+        hint = "Sorry! No results found :-(";
     }
 
-    public render() {
-        const { classes, onSearch } = this.props;
-        const { focused, result, keyword, labels, loading } = this.state;
-
-        const isEmpty = (!keyword || keyword === "") && labels.length === 0;
-        const isResult = result && (!!result.tags.length || !!result.posts.length || !!result.languages.length);
-
-        let hint: string;
-
-        if (isEmpty) {
-            hint = "Please type here to search..";
-        } else if (loading) {
-            hint = "Be patient.. Fetching your results...";
-        } else {
-            hint = "Sorry! No results found :-(";
-        }
-
-        return <div className={classes.search}>
+    return (
+        <div className={classes.search}>
             <div className={classes.searchIcon}>
                 <SearchIcon />
             </div>
-            <div className={classes.labels} >
+            <div className={classes.labels}>
                 {labels.map((label, key) => [
-                    <span key={key} onClick={() => this.removeLabel(label)} className={classes.label} >{label.split(`:`)[1]}</span>,
-                    key < labels.length - 1 ? <span key={1000 + key} className={classes.plus}>+</span> : undefined
+                    <span
+                        key={key}
+                        onClick={() => handleRemoveLabel(label)}
+                        className={classes.label}
+                    >
+                        {label.split(`:`)[1]}
+                    </span>,
+                    key < labels.length - 1 ? (
+                        <span key={1000 + key} className={classes.plus}>
+                            +
+                        </span>
+                    ) : undefined,
                 ])}
             </div>
-            <form onSubmit={this.onSubmit} className={classes.inputForm}>
+            <form onSubmit={handleSubmit} className={classes.inputForm}>
                 <InputBase
                     name="keyword"
                     placeholder="Search…"
-                    value={keyword}
-                    onFocus={this.onFocus}
-                    onBlur={this.onBlur}
-                    onChange={this.onChange}
+                    value={keyword || ""}
+                    onFocus={handleFocus}
+                    onBlur={handleBlur}
+                    onChange={handleChange}
                     classes={{
                         root: classes.inputRoot,
                         input: classes.inputInput,
@@ -261,60 +248,160 @@ class SearchBox extends React.Component<SearchBoxProps, SearchBoxState> {
                     inputProps={{ "aria-label": "search" }}
                 />
             </form>
-            <div className={clsx(
-                classes.result,
-                focused ? classes.resultFocused : undefined,
-                !isResult ? classes.resultEmpty : undefined,
-            )}>
+            <div
+                className={clsx(
+                    classes.result,
+                    focused ? classes.resultFocused : undefined,
+                    !isResult ? classes.resultEmpty : undefined
+                )}
+            >
                 <List>
                     {!isEmpty && isResult && !loading && (
-                        <ListItem onClick={() => onSearch(labels, keyword)} button={true}>
-                            <ListItemText primaryTypographyProps={{ className: classes.resultText }} primary={"Show all results"} />
+                        <ListItem
+                            onClick={() => onSearch(labels, keyword)}
+                            button={true}
+                        >
+                            <ListItemText
+                                primaryTypographyProps={{
+                                    className: classes.resultText,
+                                }}
+                                primary={"Show all results"}
+                            />
                         </ListItem>
                     )}
-                    {(isEmpty || loading || !isResult) && (<ListItem disabled={true}>
-                        <ListItemText primaryTypographyProps={{ className: classes.resultHint }} primary={hint} />
-                    </ListItem>)}
+                    {(isEmpty || loading || !isResult) && (
+                        <ListItem disabled={true}>
+                            <ListItemText
+                                primaryTypographyProps={{
+                                    className: classes.resultHint,
+                                }}
+                                primary={hint}
+                            />
+                        </ListItem>
+                    )}
 
-                    {(result && result.posts.length > 0) && [
-                        <ListSubheader key="postsubheader" className={classes.resultHeader}>
-                            Posts
+                    {result &&
+                        result.posts.length > 0 && [
+                            <ListSubheader
+                                key="postsubheader"
+                                className={classes.resultHeader}
+                            >
+                                Posts
                             </ListSubheader>,
-                        result.posts.map((post, key) => (
-                            <ListItem component={Link} to={"/blog/" + post.id + "/" + titleToLink(post.title) + ".html"} key={key} button>
-                                <ListItemText primaryTypographyProps={{ className: classes.resultText }} primary={post.title + " (" + post.createdAt.substring(0, 10) + ")"} />
-                            </ListItem>
-                        ))
+                            result.posts.map((post, key) => (
+                                <ListItem
+                                    component={Link}
+                                    to={
+                                        "/blog/" +
+                                        post.id +
+                                        "/" +
+                                        titleToLink(post.title) +
+                                        ".html"
+                                    }
+                                    key={key}
+                                    button
+                                >
+                                    <ListItemText
+                                        primaryTypographyProps={{
+                                            className: classes.resultText,
+                                        }}
+                                        primary={
+                                            post.title +
+                                            " (" +
+                                            post.createdAt.substring(0, 10) +
+                                            ")"
+                                        }
+                                    />
+                                </ListItem>
+                            )),
+                        ]}
 
-                    ]}
-
-                    {(result && result.languages.length > 0) && [
-                        <ListSubheader key="postsubheader" className={classes.resultHeader}>
-                            Languages
+                    {result &&
+                        result.languages.length > 0 && [
+                            <ListSubheader
+                                key="postsubheader"
+                                className={classes.resultHeader}
+                            >
+                                Languages
                             </ListSubheader>,
-                        result.languages.map((lang, key) => (
-                            <ListItem onClick={() => this.selectLabel("Language", lang.name)} key={key} button>
-                                <ListItemText primaryTypographyProps={{ className: classes.resultText }} primary={lang.name} />
-                            </ListItem>
-                        ))
-
-                    ]}
-                    {(result && result.tags.length > 0) && [
-                        <ListSubheader key="postsubheader" className={classes.resultHeader}>
-                            Tags
+                            result.languages.map((lang, key) => (
+                                <ListItem
+                                    key={key}
+                                    button
+                                    secondaryAction={
+                                        <IconButton
+                                            onClick={() =>
+                                                handleSelectLabel("Language", lang.name)
+                                            }
+                                            edge="end"
+                                            size="small"
+                                        >
+                                            <AddIcon />
+                                        </IconButton>
+                                    }
+                                >
+                                    <Link
+                                        to={
+                                            "/search.html?label[0]=Language%3A" +
+                                            encodeURIComponent(lang.name)
+                                        }
+                                        className={classes.labelLink}
+                                    >
+                                        <ListItemText
+                                            primaryTypographyProps={{
+                                                className: classes.resultText,
+                                            }}
+                                            primary={lang.name}
+                                        />
+                                    </Link>
+                                </ListItem>
+                            )),
+                        ]}
+                    {result &&
+                        result.tags.length > 0 && [
+                            <ListSubheader
+                                key="postsubheader"
+                                className={classes.resultHeader}
+                            >
+                                Tags
                             </ListSubheader>,
-                        result.tags.map((tag, key) => (
-                            <ListItem onClick={() => this.selectLabel("Tag", tag)} key={key} button>
-                                <ListItemText primaryTypographyProps={{ className: classes.resultText }} primary={tag} />
-                            </ListItem>
-                        ))
-
-                    ]}
+                            result.tags.map((tag, key) => (
+                                <ListItem
+                                    key={key}
+                                    button
+                                    secondaryAction={
+                                        <IconButton
+                                            onClick={() =>
+                                                handleSelectLabel("Tag", tag)
+                                            }
+                                            edge="end"
+                                            size="small"
+                                        >
+                                            <AddIcon />
+                                        </IconButton>
+                                    }
+                                >
+                                    <Link
+                                        to={
+                                            "/search.html?label[0]=Tag%3A" +
+                                            encodeURIComponent(tag)
+                                        }
+                                        className={classes.labelLink}
+                                    >
+                                        <ListItemText
+                                            primaryTypographyProps={{
+                                                className: classes.resultText,
+                                            }}
+                                            primary={tag}
+                                        />
+                                    </Link>
+                                </ListItem>
+                            )),
+                        ]}
                 </List>
             </div>
-        </div>;
-    }
+        </div>
+    );
+};
 
-}
-
-export default styler(SearchBox);
+export default SearchBox;

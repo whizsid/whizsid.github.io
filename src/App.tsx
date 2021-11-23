@@ -1,27 +1,31 @@
-import { MuiThemeProvider } from "@material-ui/core/styles";
-import * as React from "react";
-import Helmet from "react-helmet";
+import {
+    StyledEngineProvider,
+    ThemeProvider,
+} from "@mui/material/styles";
 import "react-placeholder/lib/reactPlaceholder.css";
-import Router from "./Router";
+import { useRoutes } from "react-router-dom";
 import theme from "./theme";
+import routes from "./routes";
+import {Helmet} from "react-helmet";
+import {FC} from "react";
 
-
-export default class App extends React.Component {
-    public render() {
-        return (
-            <MuiThemeProvider theme={theme}>
+const App: FC = () => {
+    const routing = useRoutes(routes);
+    return (
+        <StyledEngineProvider injectFirst>
+            <ThemeProvider theme={theme}>
                 <Helmet
                     link={[
                         {
                             rel: "stylesheet",
-                            href: "https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap"
-                        }
+                            href: "https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap",
+                        },
                     ]}
                 />
-                <div className="App">
-                    <Router />
-                </div>
-            </MuiThemeProvider>
-        );
-    }
-}
+                {routing}
+            </ThemeProvider>
+        </StyledEngineProvider>
+    );
+};
+
+export default App;

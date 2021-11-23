@@ -1,30 +1,27 @@
-import {
-    Collapse,
-    IconButton,
-    List,
-    ListItem,
-    ListItemIcon,
-    ListItemText,
-    Modal,
-    Paper,
-    withStyles,
-} from "@material-ui/core";
-import {
-    Close,
-    Description,
-    ExpandLess,
-    ExpandMore,
-    Folder,
-} from "@material-ui/icons";
-import * as React from "react";
-import { RouteComponentProps, withRouter } from "react-router-dom";
+import Close from "@mui/icons-material/Close";
+import Description from "@mui/icons-material/Description";
+import ExpandLess from "@mui/icons-material/ExpandLess";
+import ExpandMore from "@mui/icons-material/ExpandMore";
+import Folder from "@mui/icons-material/Folder";
+import Collapse from "@mui/material/Collapse";
+import IconButton from "@mui/material/IconButton";
+import List from "@mui/material/List";
+import ListItem from "@mui/material/ListItem";
+import ListItemIcon from "@mui/material/ListItemIcon";
+import ListItemText from "@mui/material/ListItemText";
+import Modal from "@mui/material/Modal";
+import Paper from "@mui/material/Paper";
+import makeStyles from "@mui/styles/makeStyles";
+import { Theme } from "@mui/material/styles";
+import langMap from "lang-map";
+import { FC, useEffect, useState } from "react";
 import { Example } from "../../agents/Github";
 import { Http } from "../../agents/Http";
 import { GITHUB_OWNER, GITHUB_REPOSITORY } from "../../config";
 import CodeBlock from "./CodeBlock";
-import langMap from "lang-map";
+import { useLocation, useNavigate } from "react-router";
 
-const styler = withStyles((theme) => ({
+const useStyles = makeStyles((theme: Theme) => ({
     collapse: {
         marginLeft: theme.spacing(2),
     },
@@ -39,7 +36,7 @@ const styler = withStyles((theme) => ({
         top: "50%",
         left: "50%",
         transform: "translate(-50%, -50%)",
-        [theme.breakpoints.down("sm")]: {
+        [theme.breakpoints.down("md")]: {
             width: "80vw",
             maxWidth: 700,
             maxHeight: "80vh",
@@ -56,117 +53,74 @@ const styler = withStyles((theme) => ({
         "&:hover": {
             background: theme.palette.grey["200"],
         },
-        [theme.breakpoints.down("sm")]: {
+        [theme.breakpoints.down("md")]: {
             display: "block",
         },
     },
 }));
 
-type FileBrowserProps = RouteComponentProps &
-    Example & {
-        classes: {
-            collapse: string;
-            modal: string;
-            modalClose: string;
-        };
-    };
+type FileBrowserProps = Example;
 
-interface FileBrowserState {
-    expanded: string[];
-    open: boolean;
-    loading: boolean;
-    data?: string;
-}
+const FileBrowser: FC<FileBrowserProps> = ({ commit, name, files }: FileBrowserProps) => {
+    const [expanded, setExpanded] = useState([] as string[]);
+    const [open, setOpen] = useState(false);
+    const [loading, setLoading] = useState(false);
+    const [data, setData] = useState(null as string | null);
+    const location = useLocation();
+    const navigate = useNavigate();
+    const classes = useStyles();
 
-class FileBrowser extends React.Component<FileBrowserProps, FileBrowserState> {
-    constructor(props: FileBrowserProps) {
-        super(props);
-
-        this.state = {
-            expanded: [],
-            open: false,
-            loading: false,
-        };
-        this.handleToggleFolder = this.handleToggleFolder.bind(this);
-        this.handleModalClose = this.handleModalClose.bind(this);
-        this.handleModalOpen = this.handleModalOpen.bind(this);
-        if (this.props.location.hash.startsWith("#!")) {
-            const filePath = props.location.hash.substr(2);
-            this.previewFile(filePath);
-        }
-    }
-
-    public componentDidUpdate(prevProps: FileBrowserProps) {
-        const prevHash = prevProps.location.hash;
-        const curHash = this.props.location.hash;
-
-        if (prevHash !== curHash && curHash.startsWith("#!")) {
-            const filePath = curHash.substr(2);
-            this.previewFile(filePath);
-        }
-    }
-
-    protected previewFile(fileName: string) {
-        const { name, commit } = this.props;
-        this.setState({
-            open: true,
-            loading: true,
-            data: undefined,
-        });
-
+    const previewFile = (fileName: string) => {
+        setOpen(true);
+        setLoading(true);
+        setData(null);
         Http.getContent(
             `https://raw.githubusercontent.com/${GITHUB_OWNER}/${GITHUB_REPOSITORY}/${commit}/blog/examples/${name}/${fileName}`
-        ).then((res) => {
-            if (res.isOk()) {
-                this.setState({
-                    loading: false,
-                    data: res.unwrap(),
-                });
-            } else {
-                this.setState({
-                    loading: false,
-                    data: undefined,
-                });
-            }
-        });
-    }
+        )
+            .then((res) => {
+                setLoading(false);
+                if (res.isOk()) {
+                    setData(res.unwrap());
+                }
+            })
+            .catch(() => setLoading(false));
+    };
 
-    protected handleToggleFolder(folder: string, expand: boolean) {
-        const { expanded } = this.state;
-        if (expand) {
-            this.setState({
-                expanded: [...expanded, folder],
-            });
-        } else {
-            this.setState({
-                expanded: expanded.filter((file) => !file.startsWith(folder)),
-            });
+    useEffect(() => {
+        if (location.hash.startsWith("#!")) {
+            const filePath = location.hash.substr(2);
+            previewFile(filePath);
         }
-    }
+    }, [location.hash]);
 
-    protected handleModalClose() {
-        this.setState({
-            open: false,
-        });
-        this.props.history.push("#_");
-    }
+    const handleToggleFolder = (folder: string, expand: boolean) => {
+        if (expand) {
+            setExpanded([...expanded, folder]);
+        } else {
+            setExpanded(expanded.filter((file) => !file.startsWith(folder)));
+        }
+    };
 
-    protected handleModalOpen(file: string) {
-        const hash = this.props.location.hash;
+    const handleModalClose = () => {
+        setOpen(false);
+        navigate("#_");
+    };
+
+    const handleModalOpen = (file: string) => {
+        const hash = location.hash;
         if (
             hash.length !== 0 &&
             hash.startsWith("#!") &&
             hash.substr(2) === file
         ) {
-            this.setState({
-                open: true,
-            });
+            setOpen(true);
         }
-    }
+    };
 
-    protected renderList(files: string[], currentPath?: string): JSX.Element[] {
-        const { expanded } = this.state;
-        const { classes } = this.props;
+    const renderList = (
+        files: string[],
+        currentPath?: string
+    ): JSX.Element[] => {
         const list: JSX.Element[] = [];
         const subFiles: string[] = [];
         let prevFolder: string | undefined;
@@ -196,7 +150,7 @@ class FileBrowser extends React.Component<FileBrowserProps, FileBrowserState> {
                             divider
                             dense={true}
                             onClick={() =>
-                                this.handleToggleFolder(nextPath, !expand)
+                                handleToggleFolder(nextPath, !expand)
                             }
                         >
                             <ListItemIcon>
@@ -214,7 +168,7 @@ class FileBrowser extends React.Component<FileBrowserProps, FileBrowserState> {
                             timeout="auto"
                             unmountOnExit
                         >
-                            {this.renderList(subFiles, nextPath)}
+                            {renderList(subFiles, nextPath)}
                         </Collapse>
                     );
                     prevFolder = splitted[0];
@@ -232,7 +186,7 @@ class FileBrowser extends React.Component<FileBrowserProps, FileBrowserState> {
                             divider
                             dense={true}
                             onClick={() =>
-                                this.handleToggleFolder(nextPath, !expand)
+                                handleToggleFolder(nextPath, !expand)
                             }
                         >
                             <ListItemIcon>
@@ -250,7 +204,7 @@ class FileBrowser extends React.Component<FileBrowserProps, FileBrowserState> {
                             timeout="auto"
                             unmountOnExit
                         >
-                            {this.renderList(subFiles, nextPath)}
+                            {renderList(subFiles, nextPath)}
                         </Collapse>
                     );
                     prevFolder = undefined;
@@ -262,7 +216,7 @@ class FileBrowser extends React.Component<FileBrowserProps, FileBrowserState> {
                         href={"#!" + file}
                         component="a"
                         dense={true}
-                        onClick={() => this.handleModalOpen(file)}
+                        onClick={() => handleModalOpen(file)}
                         key={file}
                         button
                     >
@@ -276,65 +230,68 @@ class FileBrowser extends React.Component<FileBrowserProps, FileBrowserState> {
         });
 
         return list;
-    }
+    };
 
-    public render() {
-        const {
-            files,
-            location: { hash },
-            classes,
-        } = this.props;
-        const { loading, open, data } = this.state;
+    const fileName = location.hash.split("/").pop();
+    const extension =
+        fileName && fileName.includes(".")
+            ? fileName.split(".").pop()
+            : undefined;
 
-        const fileName = hash.split("/").pop();
-        const extension =
-            fileName && fileName.includes(".")
-                ? fileName.split(".").pop()
-                : undefined;
-
-        let language: string | undefined;
-        if (extension) {
-            language = langMap.languages(extension)[0];
-        } else if (data) {
-            const firstLine = data.substr(0, data.search("\n"));
-            if (firstLine.startsWith("#!/usr/bin/env ")) {
-                const compilerMap = new Map();
-                compilerMap.set("php", "php");
-                language = compilerMap.get(firstLine.split(" ")[1]);
-            }
+    let language: string | undefined;
+    if (extension) {
+        switch(extension){
+            case "m":
+                language = "matlab";
+                break;
+            case "cpp":
+                language = "cpp";
+                break;
+            default:
+                language = langMap.languages(extension)[0];
+                break;
         }
-
-        return (
-            <div>
-                {open && (
-                    <IconButton
-                        onClick={this.handleModalClose}
-                        color="secondary"
-                        className={classes.modalClose}
-                        size="small"
-                    >
-                        <Close />
-                    </IconButton>
-                )}
-                <Modal open={open} onClose={this.handleModalClose}>
-                    <Paper className={classes.modal}>
-                        {loading && <span>Loading</span>}
-                        {!loading && (
-                            <CodeBlock
-                                onClose={this.handleModalClose}
-                                overflow={true}
-                                hideViewButton={true}
-                                filename={hash.substr(2)}
-                                value={data ?? ""}
-                                language={language}
-                            />
-                        )}
-                    </Paper>
-                </Modal>
-                <List>{this.renderList(files)}</List>
-            </div>
-        );
+    } else if (data) {
+        const firstLine = data.substr(0, data.search("\n"));
+        if (firstLine.startsWith("#!/usr/bin/env ")) {
+            const compilerMap = new Map();
+            compilerMap.set("php", "php");
+            language = compilerMap.get(firstLine.split(" ")[1]);
+        } else if (fileName?.endsWith("Makefile")) {
+            language = "makefile";
+        }
     }
-}
 
-export default withRouter(styler(FileBrowser));
+    return (
+        <div>
+            {open && (
+                <IconButton
+                    onClick={handleModalClose}
+                    color="secondary"
+                    className={classes.modalClose}
+                    size="small"
+                >
+                    <Close />
+                </IconButton>
+            )}
+            <Modal open={open} onClose={handleModalClose}>
+                <Paper className={classes.modal}>
+                    {loading && <span>Loading</span>}
+                    {!loading && (
+                        <CodeBlock
+                            onClose={handleModalClose}
+                            overflow={true}
+                            hideViewButton={true}
+                            filename={location.hash.substr(2)}
+                            value={data ?? ""}
+                            language={language}
+                        />
+                    )}
+                </Paper>
+            </Modal>
+            <List>{renderList(files)}</List>
+        </div>
+    );
+};
+
+export default FileBrowser;

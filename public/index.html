@@ -10,18 +10,18 @@
         <link rel="apple-touch-icon" href="%PUBLIC_URL%/logo.png" />
         <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
         <link
-            href="https://fonts.googleapis.com/css?family=Source+Code+Pro&display=swap"
-            rel="stylesheet"
-        />
-        <link
-            href="https://fonts.googleapis.com/css?family=Open+Sans&display=swap"
-            rel="stylesheet"
-        />
-        <link
             rel="stylesheet"
             href="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.css"
         />
-
+        <link
+            rel="stylesheet"
+            id="font-css"
+            href="https://fonts.googleapis.com/css2?display=swap&amp;family=Nunito%3Awght%40400%3B600%3B700"
+            type="text/css"
+            media=""
+            as="style"
+            onload="this.onload=null;this.rel='stylesheet'"
+        />
         <meta http-equiv="X-UA-Compatible" content="IE=edge" />
         <meta
             name="viewport"
@@ -47,6 +47,7 @@
             body {
                 margin: 0;
                 padding: 0;
+                font-family: nunito,sans-serif;
             }
 
             a:link,
@@ -120,7 +121,7 @@
             .text {
                 color: lightgray;
                 font-size: 18px;
-                font-family: "Open Sans", sans-serif;
+                font-family: nunito,sans-serif;
                 text-align: center;
                 margin-top: 60px;
             }

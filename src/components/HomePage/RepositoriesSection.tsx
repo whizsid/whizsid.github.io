@@ -1,5 +1,7 @@
-import {Typography, withStyles} from "@material-ui/core";
-import * as React from "react";
+import Typography from "@mui/material/Typography";
+import { Theme } from "@mui/material/styles";
+import makeStyles from "@mui/styles/makeStyles";
+import { useState, useEffect, FC } from "react";
 import { Helmet } from "react-helmet";
 import Slider from "react-slick";
 import "slick-carousel/slick/slick-theme.css";
@@ -8,10 +10,10 @@ import { Github, Repository } from "../../agents/Github";
 import RepositoryCard from "./RepositoryCard";
 import RepositoryCardPlaceholder from "./RepositoryCardPlaceholder";
 
-const styler = withStyles(theme=>({
+const useStyles = makeStyles((theme: Theme) => ({
     root: {
         background: "#f6f8fa",
-        borderBottom: "solid 32px #f0f0f0"
+        borderBottom: "solid 32px #f0f0f0",
     },
     header: {
         background: "#b0b0b0",
@@ -21,23 +23,9 @@ const styler = withStyles(theme=>({
         height: 42,
         fontWeight: "bold",
         paddingTop: theme.spacing(1),
-        paddingLeft: theme.spacing(1)
-    }
-
+        paddingLeft: theme.spacing(1),
+    },
 }));
-
-interface RepositoriesSectionProps {
-    classes: {
-        root: string;
-        header: string;
-    };
-}
-
-interface RepositoriesSectionState {
-    repos: Repository[];
-    loading: boolean;
-    error: boolean;
-}
 
 const slickSettings = {
     dots: true,
@@ -50,70 +38,59 @@ const slickSettings = {
     autoplaySpeed: 1500,
     responsive: [
         {
-          breakpoint: 1024,
-          settings: {
-            slidesToShow: 3,
-            slidesToScroll: 2,
-            infinite: true,
-            dots: true
-          }
+            breakpoint: 1024,
+            settings: {
+                slidesToShow: 3,
+                slidesToScroll: 2,
+                infinite: true,
+                dots: true,
+            },
         },
         {
-          breakpoint: 600,
-          settings: {
-            slidesToShow: 2,
-            slidesToScroll: 2,
-            initialSlide: 2
-          }
+            breakpoint: 600,
+            settings: {
+                slidesToShow: 2,
+                slidesToScroll: 2,
+                initialSlide: 2,
+            },
         },
         {
-          breakpoint: 480,
-          settings: {
-            slidesToShow: 1,
-            slidesToScroll: 1
-          }
-        }
-      ]
-  };
+            breakpoint: 480,
+            settings: {
+                slidesToShow: 1,
+                slidesToScroll: 1,
+            },
+        },
+    ],
+};
 
-class RepositoriesSection extends React.Component <RepositoriesSectionProps, RepositoriesSectionState>{
+const RepositoriesSection: FC = () => {
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(false);
+    const [repos, setRepos] = useState([] as Repository[]);
+    const classes = useStyles();
 
-    constructor(props:RepositoriesSectionProps){
-        super(props);
-        this.state = {
-            repos: [],
-            loading: true,
-            error: false
-        };
+    useEffect(() => {
+        Github.repos().then((res) => {
+            setLoading(false);
+            if (res.isOk()) {
+                setRepos(res.unwrap());
+            } else {
+                setError(true);
+            }
+        });
+    }, []);
 
-        this.fetchRepos();
+    if (error) {
+        return null;
     }
 
-    async fetchRepos(){
-        const repos = await Github.repos();
-
-        if(repos.isOk()){
-            this.setState({repos: repos.unwrap(), loading: false});
-        } else {
-            this.setState({loading: false, error: true});
-        }
-    }
-
-    public render(){
-        const {classes} = this.props;
-
-        const {error, loading, repos} = this.state;
-
-        if(error){
-            return null;
-        }
-
-        return (
-            <div className={classes.root}>
-                <Helmet
-                    style={[
-                        {
-                            cssText: `
+    return (
+        <div className={classes.root}>
+            <Helmet
+                style={[
+                    {
+                        cssText: `
                                 .slick-track {
                                     display: flex!important;
                                     flex-direction: row!important;
@@ -126,26 +103,30 @@ class RepositoriesSection extends React.Component <RepositoriesSectionProps, Rep
                                     height: inherit !important;
                                 }
                             `,
-                            type: "text/css"
-                        }
-                    ]}
-                />
-                <div className={classes.header}>
-                    <Typography color="inherit" variant="h6">Opensource Projects</Typography>
-                </div>
-                {loading?(
-                <Slider {...slickSettings}>
-                    {[0,0,0,0,0,0,0].map((v,k)=>(
-                        <RepositoryCardPlaceholder key={k}/>
-                    ))}
-                </Slider>):(
-                    <Slider {...slickSettings}>
-                        {repos.map((repo,k)=>(<RepositoryCard key={k} {...repo} />))}
-                    </Slider>
-                )}
+                        type: "text/css",
+                    },
+                ]}
+            />
+            <div className={classes.header}>
+                <Typography color="inherit" variant="h6">
+                    Opensource Projects
+                </Typography>
             </div>
-        );
-    }
-}
+            {loading ? (
+                <Slider {...slickSettings}>
+                    {[0, 0, 0, 0, 0, 0, 0].map((_v, k) => (
+                        <RepositoryCardPlaceholder key={k} />
+                    ))}
+                </Slider>
+            ) : (
+                <Slider {...slickSettings}>
+                    {repos.map((repo, k) => (
+                        <RepositoryCard key={k} {...repo} />
+                    ))}
+                </Slider>
+            )}
+        </div>
+    );
+};
 
-export default styler(RepositoriesSection);
+export default RepositoriesSection;

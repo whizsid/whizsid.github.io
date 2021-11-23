@@ -1,6 +1,6 @@
-import createMuiTheme from "@material-ui/core/styles/createMuiTheme";
+import { createTheme } from "@mui/material/styles";
 
-const theme = createMuiTheme({
+const theme = createTheme({
     palette: {
         background: {
             default : "#e8eaed"

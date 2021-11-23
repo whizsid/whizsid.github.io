@@ -1,20 +1,20 @@
 import { None, Some } from "@hqoss/monads";
-import {
-    Chip,
-    Divider,
-    IconButton,
-    List,
-    ListItem,
-    ListItemIcon,
-    ListItemText,
-    ListSubheader,
-    Toolbar,
-    withStyles,
-} from "@material-ui/core";
-import Drawer from "@material-ui/core/Drawer";
-import {ChevronLeft, ChevronRight} from "@material-ui/icons";
+import ChevronLeft from "@mui/icons-material/ChevronLeft";
+import ChevronRight from "@mui/icons-material/ChevronRight";
+import Chip from "@mui/material/Chip";
+import Divider from "@mui/material/Divider";
+import IconButton from "@mui/material/IconButton";
+import List from "@mui/material/List";
+import ListItem from "@mui/material/ListItem";
+import ListItemIcon from "@mui/material/ListItemIcon";
+import ListItemText from "@mui/material/ListItemText";
+import ListSubheader from "@mui/material/ListSubheader";
+import Toolbar from "@mui/material/Toolbar";
+import Drawer from "@mui/material/Drawer";
+import { Theme } from "@mui/material/styles";
+import makeStyles from "@mui/styles/makeStyles";
+import { useState, useEffect, FC } from "react";
 import clsx from "clsx";
-import * as React from "react";
 import { TextRow } from "react-placeholder/lib/placeholders";
 import { Link } from "react-router-dom";
 import {
@@ -26,9 +26,9 @@ import {
 } from "../../agents/Github";
 import { placeholderColor } from "../../theme";
 
-const isMobile = window.innerWidth<=768;
+const isMobile = window.innerWidth <= 768;
 
-const styler = withStyles((theme) => ({
+const useStyles = makeStyles((theme: Theme) => ({
     tag: {
         color: theme.palette.common.black + "!important",
         fontStyle: "none",
@@ -59,56 +59,41 @@ const styler = withStyles((theme) => ({
     },
     drawerToggle: {
         [theme.breakpoints.up("md")]: {
-            display: "none"
-        }
+            display: "none",
+        },
     },
     firstHeader: {
-        marginTop: theme.spacing(8)
-    }
+        marginTop: theme.spacing(8),
+    },
 }));
 
-interface LabelDrawerProps {
+interface ILabelDrawerProps {
     open?: boolean;
     onToggle?: (toggle: boolean) => void;
-    classes: {
-        tag: string;
-        placeholder: string;
-        langIcon: string;
-        drawer: string;
-        grow: string;
-        drawerClosed: string;
-        drawerToggle: string;
-        firstHeader: string;
-    };
 }
 
-interface LabelDrawerState {
-    loadingTags: boolean;
-    loadingLanguages: boolean;
-    cursorTags?: string;
-    cursorLanguages?: string;
-    tags: WithCount<Label>[];
-    languages: WithCount<Language>[];
+interface Item<T> {
+    loading: boolean;
+    cursor?: string;
+    items: WithCount<T>[];
 }
 
-class LabelDrawer extends React.Component<LabelDrawerProps, LabelDrawerState> {
-    constructor(props: LabelDrawerProps) {
-        super(props);
+const LabelDrawer: FC<ILabelDrawerProps> = ({
+    onToggle,
+    open,
+}: ILabelDrawerProps) => {
+    const classes = useStyles();
 
-        this.state = {
-            loadingTags: true,
-            loadingLanguages: true,
-            tags: [],
-            languages: [],
-        };
+    const [tags, setTags] = useState({
+        loading: true,
+        items: [],
+    } as Item<Label>);
+    const [languages, setLanguages] = useState({
+        loading: true,
+        items: [],
+    } as Item<Language>);
 
-        this.handleClickMoreTags = this.handleClickMoreTags.bind(this);
-        this.handleOpenDrawerButtonClick = this.handleOpenDrawerButtonClick.bind(this);
-        this.handleCloseDrawerButtonClick = this.handleCloseDrawerButtonClick.bind(this);
-        this.handleClickMoreLanguages = this.handleClickMoreLanguages.bind(
-            this
-        );
-
+    useEffect(() => {
         Github.searchLabels(Some("Language:"), None, 10)
             .then((result) => {
                 if (result.isOk()) {
@@ -117,18 +102,18 @@ class LabelDrawer extends React.Component<LabelDrawerProps, LabelDrawerState> {
                         count: lbl.pullRequests.totalCount,
                         item: labelToLang(lbl),
                     }));
-                    this.setState({
-                        loadingLanguages: false,
-                        languages,
-                        cursorLanguages: success.cursor.isSome()
+                    setLanguages({
+                        loading: false,
+                        items: languages,
+                        cursor: success.cursor.isSome()
                             ? success.cursor.unwrap()
                             : undefined,
                     });
                 } else {
-                    this.setState({ loadingLanguages: false });
+                    setLanguages({ ...languages, loading: false });
                 }
             })
-            .catch(() => this.setState({ loadingLanguages: false }));
+            .catch(() => setLanguages({ ...languages, loading: false }));
 
         Github.searchLabels(Some("Tag:"), None, 20)
             .then((result) => {
@@ -138,32 +123,31 @@ class LabelDrawer extends React.Component<LabelDrawerProps, LabelDrawerState> {
                         count: tg.pullRequests.totalCount,
                         item: tg,
                     }));
-                    this.setState({
-                        loadingTags: false,
-                        tags,
-                        cursorTags: success.cursor.isSome()
+                    setTags({
+                        loading: false,
+                        items: tags,
+                        cursor: success.cursor.isSome()
                             ? success.cursor.unwrap()
                             : undefined,
                     });
                 } else {
-                    this.setState({ loadingTags: false });
+                    setTags({ ...tags, loading: false });
                 }
             })
-            .catch(() => this.setState({ loadingTags: false }));
-    }
+            .catch(() => setTags({ ...tags, loading: false }));
+    }, []);
 
-    protected handleClickMoreTags() {
-        const { loadingTags, cursorTags, tags } = this.state;
-
-        if (loadingTags || !cursorTags) {
+    const handleClickMoreTags = () => {
+        if (tags.loading || !tags.cursor) {
             return true;
         }
 
-        this.setState({
-            loadingTags: true,
+        setTags({
+            ...tags,
+            loading: true,
         });
 
-        Github.searchLabels(Some("Tag:"), Some(cursorTags), 20)
+        Github.searchLabels(Some("Tag:"), Some(tags.cursor), 20)
             .then((result) => {
                 if (result.isOk()) {
                     const success = result.unwrap();
@@ -171,32 +155,28 @@ class LabelDrawer extends React.Component<LabelDrawerProps, LabelDrawerState> {
                         count: tg.pullRequests.totalCount,
                         item: tg,
                     }));
-                    this.setState({
-                        loadingTags: false,
-                        tags: tags.concat(newTags),
-                        cursorTags: success.cursor.isSome()
+                    setTags({
+                        loading: false,
+                        items: tags.items.concat(newTags),
+                        cursor: success.cursor.isSome()
                             ? success.cursor.unwrap()
                             : undefined,
                     });
                 } else {
-                    this.setState({ loadingTags: false });
+                    setTags({ ...tags, loading: false });
                 }
             })
-            .catch(() => this.setState({ loadingTags: false }));
-    }
+            .catch(() => setTags({ ...tags, loading: false }));
+    };
 
-    protected handleClickMoreLanguages() {
-        const { loadingLanguages, cursorLanguages, languages } = this.state;
-
-        if (loadingLanguages || !cursorLanguages) {
+    const handleClickMoreLanguages = () => {
+        if (languages.loading || !languages.cursor) {
             return true;
         }
 
-        this.setState({
-            loadingLanguages: true,
-        });
+        setLanguages({ ...languages, loading: true });
 
-        Github.searchLabels(Some("Tag:"), Some(cursorLanguages), 20)
+        Github.searchLabels(Some("Language:"), Some(languages.cursor), 20)
             .then((result) => {
                 if (result.isOk()) {
                     const success = result.unwrap();
@@ -204,226 +184,205 @@ class LabelDrawer extends React.Component<LabelDrawerProps, LabelDrawerState> {
                         count: lbl.pullRequests.totalCount,
                         item: labelToLang(lbl),
                     }));
-                    this.setState({
-                        loadingLanguages: false,
-                        languages: languages.concat(newLanguages),
-                        cursorLanguages: success.cursor.isSome()
+                    setLanguages({
+                        loading: false,
+                        items: languages.items.concat(newLanguages),
+                        cursor: success.cursor.isSome()
                             ? success.cursor.unwrap()
                             : undefined,
                     });
                 } else {
-                    this.setState({ loadingLanguages: false });
+                    setLanguages({ ...languages, loading: false });
                 }
             })
-            .catch(() => this.setState({ loadingLanguages: false }));
-    }
+            .catch(() => setLanguages({ ...languages, loading: false }));
+    };
 
-    protected handleOpenDrawerButtonClick(){
-        if(this.props.onToggle){
-            this.props.onToggle(true);
-        }
-    }
+    const handleOpenDrawerButtonClick = () => {
+        onToggle && onToggle(true);
+    };
 
-    protected handleCloseDrawerButtonClick(){
-        if(this.props.onToggle){
-            this.props.onToggle(false);
-        }
-    }
+    const handleCloseDrawerButtonClick = () => {
+        onToggle && onToggle(false);
+    };
 
-    render() {
-        const { classes , open} = this.props;
-        const {
-            loadingTags,
-            loadingLanguages,
-            tags,
-            languages,
-            cursorTags,
-            cursorLanguages,
-        } = this.state;
-
-        if(!open&&isMobile){
-            return (
-                     <Drawer
+    if (!open && isMobile) {
+        return (
+            <Drawer
                 PaperProps={{ className: classes.drawerClosed }}
                 open={true}
                 variant="persistent"
             >
                 <Toolbar variant="dense">
-                        <IconButton onClick={this.handleOpenDrawerButtonClick} size="small" >
-                            <ChevronRight />
-                            </IconButton>
+                    <IconButton
+                        onClick={handleOpenDrawerButtonClick}
+                        size="small"
+                    >
+                        <ChevronRight />
+                    </IconButton>
                 </Toolbar>
-                    </Drawer>
-            );
-        }
-
-        return (
-            <Drawer
-                PaperProps={{ className: classes.drawer }}
-                open={true}
-                variant="persistent"
-                >
-                <div className={classes.drawerToggle}>
-                <Toolbar variant="dense">
-                    <div className={classes.grow} />
-                        <IconButton onClick={this.handleCloseDrawerButtonClick} size="small" >
-                            <ChevronLeft />
-                            </IconButton>
-                </Toolbar>
-                <Divider />
-                    </div>
-                <List>
-                    <ListSubheader className={classes.firstHeader} disableGutters={true}>
-                        Languages
-                    </ListSubheader>
-                    {loadingLanguages && [
-                        <TextRow
-                            key={0}
-                            className={clsx(
-                                "show-loading-animation",
-                                classes.placeholder
-                            )}
-                            color={placeholderColor}
-                        />,
-                        <TextRow
-                            key={1}
-                            className={clsx(
-                                "show-loading-animation",
-                                classes.placeholder
-                            )}
-                            color={placeholderColor}
-                        />,
-                        <TextRow
-                            key={2}
-                            className={clsx(
-                                "show-loading-animation",
-                                classes.placeholder
-                            )}
-                            color={placeholderColor}
-                        />,
-                    ]}
-                    {!loadingLanguages &&
-                        languages.map((lang, i) => (
-                            <Link
-                                key={i}
-                                to={
-                                    "/search.html?label[0]=Language%3A" +
-                                    encodeURIComponent(lang.item.name)
-                                }
-                            >
-                                <ListItem divider={true} dense={true} button>
-                                    <ListItemIcon>
-                                        <svg
-                                            width="14"
-                                            height="14"
-                                            xmlns="http://www.w3.org/2000/svg"
-                                            role="img"
-                                            viewBox="0 0 24 24"
-                                        >
-                                            <path
-                                                fill="#000000"
-                                                d={lang.item.iconPath}
-                                            />
-                                        </svg>
-                                    </ListItemIcon>
-                                    <ListItemText
-                                        primaryTypographyProps={{
-                                            className: classes.tag,
-                                        }}
-                                        primary={lang.item.name
-                                            .split(":")
-                                            .pop()}
-                                    />
-                                    <ListItemIcon>
-                                        <Chip size="small" label={lang.count} />
-                                    </ListItemIcon>
-                                </ListItem>
-                            </Link>
-                        ))}
-                    {languages.length > 0 && cursorLanguages && (
-                        <ListItem
-                            onClick={this.handleClickMoreLanguages}
-                            dense={true}
-                            button
-                        >
-                            <ListItemText
-                                primaryTypographyProps={{
-                                    className: classes.tag,
-                                }}
-                                primary="Load More.."
-                            />
-                        </ListItem>
-                    )}
-                </List>
-                    <ListSubheader disableGutters={true}>Tags</ListSubheader>
-                    {loadingTags &&
-                        tags.length === 0 && [
-                            <TextRow
-                                key={0}
-                                className={clsx(
-                                    "show-loading-animation",
-                                    classes.placeholder
-                                )}
-                                color={placeholderColor}
-                            />,
-                            <TextRow
-                                key={1}
-                                className={clsx(
-                                    "show-loading-animation",
-                                    classes.placeholder
-                                )}
-                                color={placeholderColor}
-                            />,
-                            <TextRow
-                                key={2}
-                                className={clsx(
-                                    "show-loading-animation",
-                                    classes.placeholder
-                                )}
-                                color={placeholderColor}
-                            />,
-                        ]}
-                    {(!loadingTags || tags.length > 0) &&
-                        tags.map((tag, i) => (
-                            <Link
-                                key={i}
-                                to={"/search.html?label[0]=" + tag.item.name}
-                            >
-                                <ListItem
-                                    divider={true}
-                                    key={i}
-                                    dense={true}
-                                    button
-                                >
-                                    <ListItemText
-                                        primaryTypographyProps={{
-                                            className: classes.tag,
-                                        }}
-                                        primary={tag.item.name.split(":").pop()}
-                                    />
-                                    <ListItemIcon>
-                                        <Chip size="small" label={tag.count} />
-                                    </ListItemIcon>
-                                </ListItem>
-                            </Link>
-                        ))}
-                    {tags.length > 0 && cursorTags && (
-                        <ListItem
-                            onClick={this.handleClickMoreTags}
-                            dense={true}
-                            button
-                        >
-                            <ListItemText
-                                primaryTypographyProps={{
-                                    className: classes.tag,
-                                }}
-                                primary="Load More.."
-                            />
-                        </ListItem>
-                    )}
             </Drawer>
         );
     }
-}
 
-export default styler(LabelDrawer);
+    return (
+        <Drawer
+            PaperProps={{ className: classes.drawer }}
+            open={true}
+            variant="persistent"
+        >
+            <div className={classes.drawerToggle}>
+                <Toolbar variant="dense">
+                    <div className={classes.grow} />
+                    <IconButton
+                        onClick={handleCloseDrawerButtonClick}
+                        size="small"
+                    >
+                        <ChevronLeft />
+                    </IconButton>
+                </Toolbar>
+                <Divider />
+            </div>
+            <List>
+                <ListSubheader
+                    className={classes.firstHeader}
+                    disableGutters={true}
+                >
+                    Languages
+                </ListSubheader>
+                {languages.loading && [
+                    <TextRow
+                        key={0}
+                        className={clsx(
+                            "show-loading-animation",
+                            classes.placeholder
+                        )}
+                        color={placeholderColor}
+                    />,
+                    <TextRow
+                        key={1}
+                        className={clsx(
+                            "show-loading-animation",
+                            classes.placeholder
+                        )}
+                        color={placeholderColor}
+                    />,
+                    <TextRow
+                        key={2}
+                        className={clsx(
+                            "show-loading-animation",
+                            classes.placeholder
+                        )}
+                        color={placeholderColor}
+                    />,
+                ]}
+                {!languages.loading &&
+                    languages.items.map((lang, i) => (
+                        <Link
+                            key={i}
+                            to={
+                                "/search.html?label[0]=Language%3A" +
+                                encodeURIComponent(lang.item.name)
+                            }
+                        >
+                            <ListItem divider={true} dense={true} button>
+                                <ListItemIcon>
+                                    <svg
+                                        width="14"
+                                        height="14"
+                                        xmlns="http://www.w3.org/2000/svg"
+                                        role="img"
+                                        viewBox="0 0 24 24"
+                                    >
+                                        <path
+                                            fill="#000000"
+                                            d={lang.item.iconPath}
+                                        />
+                                    </svg>
+                                </ListItemIcon>
+                                <ListItemText
+                                    primaryTypographyProps={{
+                                        className: classes.tag,
+                                    }}
+                                    primary={lang.item.name.split(":").pop()}
+                                />
+                                <ListItemIcon>
+                                    <Chip size="small" label={lang.count} />
+                                </ListItemIcon>
+                            </ListItem>
+                        </Link>
+                    ))}
+                {languages.items.length > 0 && languages.cursor && (
+                    <ListItem
+                        onClick={handleClickMoreLanguages}
+                        dense={true}
+                        button
+                    >
+                        <ListItemText
+                            primaryTypographyProps={{
+                                className: classes.tag,
+                            }}
+                            primary="Load More.."
+                        />
+                    </ListItem>
+                )}
+            </List>
+            <ListSubheader disableGutters={true}>Tags</ListSubheader>
+            {tags.loading &&
+                tags.items.length === 0 && [
+                    <TextRow
+                        key={0}
+                        className={clsx(
+                            "show-loading-animation",
+                            classes.placeholder
+                        )}
+                        color={placeholderColor}
+                    />,
+                    <TextRow
+                        key={1}
+                        className={clsx(
+                            "show-loading-animation",
+                            classes.placeholder
+                        )}
+                        color={placeholderColor}
+                    />,
+                    <TextRow
+                        key={2}
+                        className={clsx(
+                            "show-loading-animation",
+                            classes.placeholder
+                        )}
+                        color={placeholderColor}
+                    />,
+                ]}
+            {(!tags.loading || tags.items.length > 0) &&
+                tags.items.map((tag, i) => (
+                    <Link key={i} to={"/search.html?label[0]=" + tag.item.name}>
+                        <ListItem divider={true} key={i} dense={true} button>
+                            <ListItemText
+                                primaryTypographyProps={{
+                                    className: classes.tag,
+                                }}
+                                primary={tag.item.name.split(":").pop()}
+                            />
+                            <ListItemIcon>
+                                <Chip size="small" label={tag.count} />
+                            </ListItemIcon>
+                        </ListItem>
+                    </Link>
+                ))}
+            {tags.items.length > 0 && tags.cursor && (
+                <ListItem onClick={handleClickMoreTags} dense={true} button>
+                    <ListItemText
+                        primaryTypographyProps={{
+                            className: classes.tag,
+                        }}
+                        primary="Load More.."
+                    />
+                </ListItem>
+            )}
+        </Drawer>
+    );
+};
+
+export default LabelDrawer;
