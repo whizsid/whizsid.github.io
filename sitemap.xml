@@ -82,4 +82,16 @@
           <priority>0.8</priority>
 
        </url>
+    
+       <url>
+
+          <loc>https://whizsid.github.io/blog/25/converting-a-doctrine-2-entity-to-an-array.html</loc>
+
+          <lastmod>2022-01-01</lastmod>
+
+          <changefreq>never</changefreq>
+
+          <priority>0.8</priority>
+
+       </url>
     </urlset>

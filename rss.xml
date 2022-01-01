@@ -9,7 +9,7 @@
         <webMaster>whizsid@aol.com (Ramesh Kithsiri)</webMaster>
         <category>Technology</category>
         <category>Programming</category>
-        <pubDate>Sat, 01 Jan 2022 20:51:38 +0530</pubDate>
+        <pubDate>Sat, 01 Jan 2022 20:54:28 +0530</pubDate>
        <item>
             <title>Debug an amethyst game on VS code</title>
             <link>https://whizsid.github.io/blog/5/debug-an-amethyst-game-on-vs-code.html</link>
@@ -80,5 +80,18 @@ LEDs are not working on my Arch Linux laptop. And the LED toggle button is also 
               <pubDate>Mon, 22 Nov 2021 02:38:07 +0530</pubDate>
               <category>Post</category><category>linux</category><category>C</category><category>gtk</category><category>glib</category>
               <comments>https://whizsid.github.io/blog/24/how-to-parse,-watch,-apply-configuration-file-in-gtk-applications.html</comments>
+       </item>
+    
+       <item>
+            <title>Converting a doctrine 2 entity to an array</title>
+            <link>https://whizsid.github.io/blog/25/converting-a-doctrine-2-entity-to-an-array.html</link>
+            <description>Doctrine 2 is a powerful and popular PHP ORM engine. When using ORM
+engines you have to deal with objects as entities. But in real-world
+complex scenarios, you have to convert entities to arrays
+for processing. most of developers struggling when converting doctrine entities to PHP arrays. Because the design of doctrine is providing a strong encapsulation. In this post I am discussing the ways to solve this.</description>
+            <guid>https://whizsid.github.io/blog/25/converting-a-doctrine-2-entity-to-an-array.html</guid>
+              <pubDate>Sat, 01 Jan 2022 20:46:34 +0530</pubDate>
+              <category>Post</category><category>PHP</category><category>symfony</category><category>doctrine</category>
+              <comments>https://whizsid.github.io/blog/25/converting-a-doctrine-2-entity-to-an-array.html</comments>
        </item>
     </channel></rss>
