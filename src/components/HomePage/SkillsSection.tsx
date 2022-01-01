@@ -256,8 +256,7 @@ const SkillsSection: FC = () => {
     return (
         <div id="skillSection" className={classes.container}>
             <Typography className={classes.header} variant="h6">
-                {" "}
-                Skills{" "}
+                Skills Pool
             </Typography>
             <Grid container justifyContent="center">
                 <Grid xs={12} md={4} item>
