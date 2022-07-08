@@ -12,7 +12,7 @@
   "dependencies": {
     "axios": "^0.24.0",
     "js-base64": "^3.7.2",
-    "moment": "^2.29.1",
+    "moment": "^2.29.4",
     "showdown": "^1.9.1",
     "xmlbuilder2": "^3.0.2"
   },
